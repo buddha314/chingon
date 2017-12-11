@@ -21,9 +21,14 @@ module Chingon {
       super.init();
     }
 
+
     proc init(A: []) {
-      this.SD = A.domain;
-      this.A = A;
+      this.vdom = {A.domain.dim(1), A.domain.dim(2)};
+      super.init();
+      for ij in A.domain {
+        this.SD += ij;
+        this.A(ij) = A(ij);
+      }
     }
   }
 }
