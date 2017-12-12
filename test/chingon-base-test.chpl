@@ -1,16 +1,17 @@
 use Chingon,
     LinearAlgebra;
 
-var g = new Graph("Vato");
-writeln(g.name);
+//var g = new Graph("Vato");
+//writeln(g.name);
 var vn: domain(string);
 vn.add("star lord");
 vn.add("gamora");
 vn.add("groot");
 vn.add("drax");
 vn.add("rocket");
-g = new Graph("Vato", vn);
-writeln(g.vnames);
+vn.add("mantis");
+vn.add("yondu");
+vn.add("nebula");
 
 var nv: int = 8,
     D: domain(2) = {1..nv, 1..nv},
@@ -27,5 +28,9 @@ SD += (5,6); A[5,6] = 1;
 SD += (6,7); A[6,7] = 1;
 SD += (6,8); A[6,8] = 1;
 SD += (7,8); A[7,8] = 1;
-g = new Graph(A);
+var g = new Graph(A=A);
 writeln(g.A);
+var g2 = new Graph(A=A, name="Vato");
+writeln(g2.name);
+var g3 = new Graph(A=A, name="Vato", vnames = vn);
+writeln(g3.vnames);
