@@ -35,8 +35,6 @@ writeln("g2 name: ", g2.name);
 var g3 = new Graph(A=A, name="Vato", vnames = vn);
 writeln("g3 name: ", g3.name);
 
-/*
-for v in g3.vnames {
+for v in g3.vnames.sorted() {
   writeln("g3 vids[", v, "]: ", g3.vids[v]);
 }
-*/
