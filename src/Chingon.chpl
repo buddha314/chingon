@@ -61,4 +61,9 @@ module Chingon {
     }
     return result;
   }
+
+  proc Graph.neighbors(vname: string) {
+    var vid = this.vids[vname];
+    return neighbors(vid);
+  }
 }

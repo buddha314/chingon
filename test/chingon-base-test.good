@@ -19,3 +19,6 @@ g3 vids[yondu]: 7
 neighbor of 1: 2: gamora
 neighbor of 1: 3: groot
 neighbor of 1: 4: drax
+neighbor of 1: 2: gamora
+neighbor of 1: 3: groot
+neighbor of 1: 4: drax
