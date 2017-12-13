@@ -1,0 +1,54 @@
+.. default-domain:: chpl
+
+.. module:: Chingon
+   :synopsis: Documentation for Chingon 
+
+Chingon
+=======
+**Usage**
+
+.. code-block:: chapel
+
+   use Chingon;
+
+Documentation for Chingon 
+
+.. class:: Graph
+
+   
+   Much of this library is motivated by the book `Graph Algorithms in the Language of Linear Algebra by Kepner and Gilbert <http://bookstore.siam.org/se22/>`_
+   
+
+
+   .. attribute:: var vdom: domain(2)
+
+   .. attribute:: var SD: vdom.defaultSparseDistchpl__buildSparseDomainRuntimeTypevdom
+
+   .. attribute:: var A: [SD] real
+
+   .. attribute:: var name: string
+
+   .. attribute:: var vnames: domain(string)
+
+   .. attribute:: var vids: [vnames] int
+
+   .. attribute:: var nameIndex: [1..0] string
+
+   .. method:: proc init(A: [])
+
+   .. method:: proc init(A: [], name: string)
+
+   .. method:: proc init(A: [], name: string, vnames: [])
+
+.. method:: proc Graph.neighbors(vid: int)
+
+   
+   returns an array of vertex ids (row/col numbers) for a given vertex id
+    
+
+.. method:: proc Graph.neighbors(vname: string)
+
+   
+   Returns an array of vertex ids (row/col numbers) for a given vertex name
+    
+
