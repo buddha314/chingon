@@ -16,3 +16,6 @@ g3 vids[nebula]: 8
 g3 vids[rocket]: 5
 g3 vids[star lord]: 1
 g3 vids[yondu]: 7
+neighbor of 1: 2: gamora
+neighbor of 1: 3: groot
+neighbor of 1: 4: drax

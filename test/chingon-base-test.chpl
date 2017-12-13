@@ -38,3 +38,8 @@ writeln("g3 name: ", g3.name);
 for v in g3.vnames.sorted() {
   writeln("g3 vids[", v, "]: ", g3.vids[v]);
 }
+var n1 = g3.neighbors(1);
+for n in g3.neighbors(1).sorted() {
+  writeln("neighbor of 1: ", n, ": ", g3.nameIndex[n]);
+}
+//writeln("n1: ", n1);

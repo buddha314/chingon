@@ -48,4 +48,17 @@ module Chingon {
       }
     }
   }
+
+  /*
+  returns an array of vertex ids (row/col numbers) for a given vertex
+   */
+  proc Graph.neighbors(vid: int) {
+    var result: [1..0] int;
+    for (i,j) in this.A.domain {
+      if i == vid {
+        result.push_back(j);
+      }
+    }
+    return result;
+  }
 }
