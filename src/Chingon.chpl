@@ -2,6 +2,9 @@
 module Chingon {
   use Sort;
 
+  /*
+   Much of this library is motivated by the book `Graph Algorithms in the Language of Linear Algebra by Kepner and Gilbert <http://bookstore.siam.org/se22/>`_
+   */
   class Graph {
     var vdom: domain(2),
         SD: sparse subdomain(vdom),
@@ -50,7 +53,7 @@ module Chingon {
   }
 
   /*
-  returns an array of vertex ids (row/col numbers) for a given vertex
+  returns an array of vertex ids (row/col numbers) for a given vertex id
    */
   proc Graph.neighbors(vid: int) {
     var result: [1..0] int;
@@ -62,6 +65,9 @@ module Chingon {
     return result;
   }
 
+  /*
+  Returns an array of vertex ids (row/col numbers) for a given vertex name
+   */
   proc Graph.neighbors(vname: string) {
     var vid = this.vids[vname];
     return neighbors(vid);
