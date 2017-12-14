@@ -1,4 +1,4 @@
-# Chingon v 0.1.1
+# Chingon v 0.1.2
 
 The (Ch) (I)mplementation of (N)umerical (G)raph (O)peratio(n)s is a [GraphBLAS](http://graphblas.org/)-like library written in [Chapel](https://chapel-lang.org/).
 
@@ -11,7 +11,5 @@ At the moment, we are only aware of one other [GraphBLAS](https://github.com/cmu
 ## Related Projects
 
 * Notably, that of [Azad and Buluc](https://chapel-lang.org/CHIUW/2017/azad-slides.pdf)
-* Chingon uses [NumSuch](https://github.com/buddha314/numsuch) for the underlying statistical methods.  It's inception is a response to [this ticket](https://github.com/buddha314/numsuch/issues/35) and this [earlier ticket](https://github.com/chapel-lang/chapel/issues/6840) 
+* Chingon uses [NumSuch](https://github.com/buddha314/numsuch) for the underlying statistical methods.  It's inception is a response to [this ticket](https://github.com/buddha314/numsuch/issues/35) and this [earlier ticket](https://github.com/chapel-lang/chapel/issues/6840)
 * Chingon is attempting to be compatible with [Mason](https://chapel-lang.org/docs/master/tools/mason/mason.html).
-
-
