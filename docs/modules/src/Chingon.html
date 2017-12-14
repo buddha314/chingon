@@ -85,6 +85,7 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="">Chingon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#documentation-for-chingon-v-0-1-1">Documentation for Chingon v 0.1.1</a></li>
 </ul>
 
             
@@ -135,11 +136,15 @@
 <div class="highlight-chapel"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Chingon</span><span class="p">;</span>
 </pre></div>
 </div>
-<p>Documentation for Chingon</p>
+</div>
+<div class="section" id="documentation-for-chingon-v-0-1-1">
+<h1>Documentation for Chingon v 0.1.1<a class="headerlink" href="#documentation-for-chingon-v-0-1-1" title="Permalink to this headline">¶</a></h1>
+<p>Much of this library is motivated by the book <a class="reference external" href="http://bookstore.siam.org/se22/">Graph Algorithms in the Language of Linear Algebra by Kepner and Gilbert</a></p>
 <dl class="class">
 <dt id="Chingon.Graph">
 <em class="property">class </em><code class="descname">Graph</code><a class="headerlink" href="#Chingon.Graph" title="Permalink to this definition">¶</a></dt>
-<dd><p>Much of this library is motivated by the book <a class="reference external" href="http://bookstore.siam.org/se22/">Graph Algorithms in the Language of Linear Algebra by Kepner and Gilbert</a></p>
+<dd><p>A Graph object is a (sparse) matrix with some meta-data attached to it.  The underlying
+matrix</p>
 <dl class="attribute">
 <dt id="Chingon.Graph.vdom">
 <em class="property">var </em><code class="descname">vdom</code>: domain(2)<a class="headerlink" href="#Chingon.Graph.vdom" title="Permalink to this definition">¶</a></dt>
@@ -188,7 +193,26 @@
 <dl class="method">
 <dt>
 <em class="property">proc </em><code class="descname">init</code><span class="sig-paren">(</span><em>A: []</em>, <em>name: string</em>, <em>vnames: []</em><span class="sig-paren">)</span></dt>
-<dd></dd></dl>
+<dd><p>Example object initialization:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>var nv: int = 8,
+    D: domain(2) = {1..nv, 1..nv},
+    SD: sparse subdomain(D),
+    A: [SD] real;
+
+SD += (1,2); A[1,2] = 1;
+SD += (1,3); A[1,3] = 1;
+SD += (1,4); A[1,4] = 1;
+SD += (2,4); A[2,4] = 1;
+SD += (3,4); A[3,4] = 1;
+SD += (4,5); A[4,5] = 1;
+SD += (5,6); A[5,6] = 1;
+SD += (6,7); A[6,7] = 1;
+SD += (6,8); A[6,8] = 1;
+SD += (7,8); A[7,8] = 1;
+var g3 = new Graph(A=A, name=&quot;Vato&quot;, vnames = vn);
+</pre></div>
+</div>
+</dd></dl>
 
 </dd></dl>
 
@@ -196,12 +220,33 @@
 <dt id="Chingon.Graph.neighbors">
 <em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">neighbors</code><span class="sig-paren">(</span><em>vid: int</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.neighbors" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns an array of vertex ids (row/col numbers) for a given vertex id</p>
+<p>well, I don&#8217;t know about that:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>for n in g3.neighbors(1).sorted() {
+  writeln(&quot;neighbor of 1: &quot;, n, &quot;: &quot;, g3.nameIndex[n]);
+}
+&gt;&gt;
+neighbor of 1: 2: gamora
+neighbor of 1: 3: groot
+neighbor of 1: 4: drax
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt>
 <em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">neighbors</code><span class="sig-paren">(</span><em>vname: string</em><span class="sig-paren">)</span></dt>
-<dd><p>Returns an array of vertex ids (row/col numbers) for a given vertex name</p>
+<dd><blockquote>
+<div>Returns an array of vertex ids (row/col numbers) for a given vertex name.</div></blockquote>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>for n in g3.neighbors(&quot;star lord&quot;).sorted() {
+  writeln(&quot;neighbor of 1: &quot;, n, &quot;: &quot;, g3.nameIndex[n]);
+}
+&gt;&gt;
+neighbor of 1: 2: gamora
+neighbor of 1: 3: groot
+neighbor of 1: 4: drax
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
