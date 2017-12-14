@@ -1,1 +1,24 @@
-Vato
+1.0 1.0 1.0
+1.0
+1.0
+1.0
+1.0
+1.0 1.0
+1.0
+
+g2 name: Vato
+g3 name: Vato
+g3 vids[drax]: 4
+g3 vids[gamora]: 2
+g3 vids[groot]: 3
+g3 vids[mantis]: 6
+g3 vids[nebula]: 8
+g3 vids[rocket]: 5
+g3 vids[star lord]: 1
+g3 vids[yondu]: 7
+neighbor of 1: 2: gamora
+neighbor of 1: 3: groot
+neighbor of 1: 4: drax
+neighbor of 1: 2: gamora
+neighbor of 1: 3: groot
+neighbor of 1: 4: drax
