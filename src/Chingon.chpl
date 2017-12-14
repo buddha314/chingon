@@ -6,7 +6,8 @@ Much of this library is motivated by the book `Graph Algorithms in the Language 
 
 */
 module Chingon {
-  use Sort;
+  use Sort,
+      LayoutCS;
 
   /*
     A Graph object is a (sparse) matrix with some meta-data attached to it.  The underlying
@@ -14,7 +15,7 @@ module Chingon {
    */
   class Graph {
     var vdom: domain(2),
-        SD: sparse subdomain(vdom),
+        SD: sparse subdomain(vdom) dmapped CS(),
         A: [SD] real,
         name: string,
         vnames: domain(string),
@@ -81,6 +82,19 @@ Example object initialization::
   }
 
   /*
+Internal iterator to get vertex ids that are neighbors of "vid"
+:arg vid: A vertex id
+:type vid: int
+
+:rtype: iterator
+
+TODO: Make sure the diagonal is removed.
+   */
+  iter Graph.nbs(vid: int) {
+    for col in this.SD.dimIter(2,vid) do yield col;
+  }
+
+  /*
 returns an array of vertex ids (row/col numbers) for a given vertex id
 
 well, I don't know about that::
@@ -95,13 +109,11 @@ well, I don't know about that::
 */
   proc Graph.neighbors(vid: int) {
     var result: [1..0] int;
-    for (i,j) in this.A.domain {
-      if i == vid {
-        result.push_back(j);
-      }
-    }
+    for x in nbs(vid) do result.push_back(x);
     return result;
   }
+
+
   /*
   Returns an array of vertex ids (row/col numbers) for a given vertex name.
 
@@ -118,5 +130,15 @@ example::
   proc Graph.neighbors(vname: string) {
     var vid = this.vids[vname];
     return neighbors(vid);
+  }
+
+  /*
+   returns: Array of degrees for each vertex.  This the count of edges, not the sum of weights.
+   rtype: int []
+   */
+  proc Graph.degree() {
+    const B = this.A;
+    // Make sure we are not using the weighted graph
+    B[this.SD] = 1;
   }
 }
