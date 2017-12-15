@@ -91,7 +91,7 @@ Internal iterator to get vertex ids that are neighbors of "vid"
 TODO: Make sure the diagonal is removed.
    */
   iter Graph.nbs(vid: int) {
-    for col in this.SD.dimIter(2,vid) do yield col;
+    for col in this.SD.dimIter(2,vid) do if col != vid then yield col;
   }
 
   /*
