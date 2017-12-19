@@ -34,22 +34,22 @@ module Chingon {
         vids: [vnames] int,
         nameIndex: [1..0] string;
 
-    proc init(M: []) {
-      this.vdom = {M.domain.dim(1), M.domain.dim(2)};
+    proc init(W: []) {
+      this.vdom = {W.domain.dim(1), W.domain.dim(2)};
       super.init();
-      for ij in M.domain {
+      for ij in W.domain {
         this.SD += ij;
-        this.W(ij) = M(ij);
+        this.W(ij) = W(ij);
       }
     }
 
-    proc init(M:[], name: string) {
-      this.vdom = {M.domain.dim(1), M.domain.dim(2)};
+    proc init(W:[], name: string) {
+      this.vdom = {W.domain.dim(1), W.domain.dim(2)};
       this.name = name;
       super.init();
-      for ij in M.domain {
+      for ij in W.domain {
         this.SD += ij;
-        this.W(ij) = M(ij);
+        this.W(ij) = W(ij);
       }
     }
 
@@ -74,8 +74,8 @@ Example object initialization::
   var g3 = new Graph(M=M, name="Vato", vnames = vn);
 
      */
-    proc init(M:[], name: string, vnames: []) {
-      this.vdom = {M.domain.dim(1), M.domain.dim(2)};
+    proc init(W:[], name: string, vnames: []) {
+      this.vdom = {W.domain.dim(1), W.domain.dim(2)};
       this.name = name;
       super.init();
       for j in 1..vnames.size {
@@ -83,12 +83,12 @@ Example object initialization::
         this.vids[vnames[j]] = j;
         this.nameIndex.push_back(vnames[j]);
       }
-      if vnames.size != M.domain.dim(1).size {
+      if vnames.size != W.domain.dim(1).size {
         halt();
       }
-      for ij in M.domain {
+      for ij in W.domain {
         this.SD += ij;
-        this.W(ij) = M(ij);
+        this.W(ij) = W(ij);
       }
     }
   }
