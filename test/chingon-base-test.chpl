@@ -1,6 +1,5 @@
 use Chingon,
-    LinearAlgebra,
-    LayoutCS;
+    LinearAlgebra;
 
 //var g = new Graph("Vato");
 //writeln(g.name);

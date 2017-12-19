@@ -15,7 +15,6 @@ the literature is inconsistent, we define some important concepts here.
 */
 module Chingon {
   use Sort,
-      LayoutCS,
       LinearAlgebra.Sparse,
       LinearAlgebra;
 
