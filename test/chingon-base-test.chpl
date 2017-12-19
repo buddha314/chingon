@@ -30,11 +30,11 @@ SD += (5,6); A[5,6] = 1;
 SD += (6,7); A[6,7] = 1;
 SD += (6,8); A[6,8] = 1;
 SD += (7,8); A[7,8] = 1;
-var g = new Graph(W=A);
+var g = new Graph(M=A);
 writeln(g.W);
-var g2 = new Graph(W=A, name="Vato");
+var g2 = new Graph(M=A, name="Vato");
 writeln("g2 name: ", g2.name);
-var g3 = new Graph(W=A, name="Vato", vnames = vn);
+var g3 = new Graph(M=A, name="Vato", vnames = vn);
 writeln("g3 name: ", g3.name);
 
 for v in g3.vnames.sorted() {
