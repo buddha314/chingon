@@ -4,10 +4,20 @@ Documentation for Chingon v 0.1.1
 
 Much of this library is motivated by the book `Graph Algorithms in the Language of Linear Algebra by Kepner and Gilbert <http://bookstore.siam.org/se22/>`_
 
+Some basic definitions.  We are attempting to operate according to general standards.  Since some of
+the literature is inconsistent, we define some important concepts here.
+
+*  A: The Adjacency matrix, A(i,j) is the weight between vertices i and j.  A(i,i) = 0.
+   In the case of directed matrices, the edge represents the weight or indicator of i to j.
+*  W: The weight matrix, W(i,j) is the weight between vertices i and j and may have non-zero diagonal
+*  Laplacian Matrix L = D - A for simple graphs: https://en.wikipedia.org/wiki/Laplacian_matrix#Laplacian_matrix_for_simple_graphs
+
 */
 module Chingon {
   use Sort,
-      LayoutCS;
+      LayoutCS,
+      LinearAlgebra.Sparse,
+      LinearAlgebra;
 
   /*
     A Graph object is a (sparse) matrix with some meta-data attached to it.  The underlying
@@ -15,29 +25,31 @@ module Chingon {
    */
   class Graph {
     var vdom: domain(2),
-        SD: sparse subdomain(vdom) dmapped CS(),
-        A: [SD] real,
+        SD: sparse subdomain(vdom) dmapped  CS(compressRows=true),
+        W: [SD] real,
+        //SD = CSRDomain(1..0),
+        //A = CSRMatrix(SD),
         name: string,
         vnames: domain(string),
         vids: [vnames] int,
         nameIndex: [1..0] string;
 
-    proc init(A: []) {
-      this.vdom = {A.domain.dim(1), A.domain.dim(2)};
+    proc init(M: []) {
+      this.vdom = {M.domain.dim(1), M.domain.dim(2)};
       super.init();
-      for ij in A.domain {
+      for ij in M.domain {
         this.SD += ij;
-        this.A(ij) = A(ij);
+        this.W(ij) = M(ij);
       }
     }
 
-    proc init(A:[], name: string) {
-      this.vdom = {A.domain.dim(1), A.domain.dim(2)};
+    proc init(M:[], name: string) {
+      this.vdom = {M.domain.dim(1), M.domain.dim(2)};
       this.name = name;
       super.init();
-      for ij in A.domain {
+      for ij in M.domain {
         this.SD += ij;
-        this.A(ij) = A(ij);
+        this.W(ij) = M(ij);
       }
     }
 
@@ -47,23 +59,23 @@ Example object initialization::
   var nv: int = 8,
       D: domain(2) = {1..nv, 1..nv},
       SD: sparse subdomain(D),
-      A: [SD] real;
+      M: [SD] real;
 
-  SD += (1,2); A[1,2] = 1;
-  SD += (1,3); A[1,3] = 1;
-  SD += (1,4); A[1,4] = 1;
-  SD += (2,4); A[2,4] = 1;
-  SD += (3,4); A[3,4] = 1;
-  SD += (4,5); A[4,5] = 1;
-  SD += (5,6); A[5,6] = 1;
-  SD += (6,7); A[6,7] = 1;
-  SD += (6,8); A[6,8] = 1;
-  SD += (7,8); A[7,8] = 1;
-  var g3 = new Graph(A=A, name="Vato", vnames = vn);
+  SD += (1,2); M[1,2] = 1;
+  SD += (1,3); M[1,3] = 1;
+  SD += (1,4); M[1,4] = 1;
+  SD += (2,4); M[2,4] = 1;
+  SD += (3,4); M[3,4] = 1;
+  SD += (4,5); M[4,5] = 1;
+  SD += (5,6); M[5,6] = 1;
+  SD += (6,7); M[6,7] = 1;
+  SD += (6,8); M[6,8] = 1;
+  SD += (7,8); M[7,8] = 1;
+  var g3 = new Graph(M=M, name="Vato", vnames = vn);
 
      */
-    proc init(A:[], name: string, vnames: []) {
-      this.vdom = {A.domain.dim(1), A.domain.dim(2)};
+    proc init(M:[], name: string, vnames: []) {
+      this.vdom = {M.domain.dim(1), M.domain.dim(2)};
       this.name = name;
       super.init();
       for j in 1..vnames.size {
@@ -71,12 +83,12 @@ Example object initialization::
         this.vids[vnames[j]] = j;
         this.nameIndex.push_back(vnames[j]);
       }
-      if vnames.size != A.domain.dim(1).size {
+      if vnames.size != M.domain.dim(1).size {
         halt();
       }
-      for ij in A.domain {
+      for ij in M.domain {
         this.SD += ij;
-        this.A(ij) = A(ij);
+        this.W(ij) = M(ij);
       }
     }
   }
@@ -137,8 +149,47 @@ example::
    rtype: int []
    */
   proc Graph.degree() {
-    const B = this.A;
-    // Make sure we are not using the weighted graph
-    B[this.SD] = 1;
+    var ds: [SD.dim(1)] real;
+    forall i in SD.dim(1) {
+      ds[i] = neighbors(i).size;
+      if SD.member((i,i)) {
+        ds[i] -= W[i,i];
+      }
+    }
+    return ds;
+    /*
+    var diagDom = CSRDomain(SD.dim(1));
+    var one: [SD.dim(1)] A.eltType = 1;
+    // B will be the diagonal vector
+    var B: [diagDom] A.eltType;
+    for i in 1..vdom.size {
+      if SD.member((i,i)) {
+        writeln("yep");
+        diagDom += (i,i);
+        //B[i,i] = A[i,i];
+        B[i,i] = neighbors(i).size;
+      }
+    }
+    //return A.dot(one);
+    //return B;
+    */
+  }
+
+  /*
+  Returns the Adjacency matrix A * 1 to give the total sum of weights
+  :rtype: real []
+   */
+  proc Graph.weights() {
+    return 0;
+  }
+
+  /*
+  The vertexEntropy calculates the ratio of edge strength to the interior and exterior of a given subgraph
+
+
+  :arg interior: A set of vertex string names representing a sub-graph.
+   */
+  proc Graph.vertexEntropy(interior: domain, vertex: int) {
+    var dims = for v in interior do vids[v];
   }
 }
