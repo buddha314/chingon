@@ -140,6 +140,14 @@
 <div class="section" id="documentation-for-chingon-v-0-1-1">
 <h1>Documentation for Chingon v 0.1.1<a class="headerlink" href="#documentation-for-chingon-v-0-1-1" title="Permalink to this headline">¶</a></h1>
 <p>Much of this library is motivated by the book <a class="reference external" href="http://bookstore.siam.org/se22/">Graph Algorithms in the Language of Linear Algebra by Kepner and Gilbert</a></p>
+<p>Some basic definitions.  We are attempting to operate according to general standards.  Since some of
+the literature is inconsistent, we define some important concepts here.</p>
+<ul class="simple">
+<li>A: The Adjacency matrix, A(i,j) is the weight between vertices i and j.  A(i,i) = 0.
+In the case of directed matrices, the edge represents the weight or indicator of i to j.</li>
+<li>W: The weight matrix, W(i,j) is the weight between vertices i and j and may have non-zero diagonal</li>
+<li>Laplacian Matrix L = D - A for simple graphs: <a class="reference external" href="https://en.wikipedia.org/wiki/Laplacian_matrix#Laplacian_matrix_for_simple_graphs">https://en.wikipedia.org/wiki/Laplacian_matrix#Laplacian_matrix_for_simple_graphs</a></li>
+</ul>
 <dl class="class">
 <dt id="Chingon.Graph">
 <em class="property">class </em><code class="descname">Graph</code><a class="headerlink" href="#Chingon.Graph" title="Permalink to this definition">¶</a></dt>
@@ -152,12 +160,12 @@ matrix</p>
 
 <dl class="attribute">
 <dt id="Chingon.Graph.SD">
-<em class="property">var </em><code class="descname">SD</code>: vdom.defaultSparseDistchpl__buildSparseDomainRuntimeTypevdom<a class="headerlink" href="#Chingon.Graph.SD" title="Permalink to this definition">¶</a></dt>
+<em class="property">var </em><code class="descname">SD</code>: vdom.defaultSparseDistchpl__buildSparseDomainRuntimeTypevdom dmapped CS(compressRows = true)<a class="headerlink" href="#Chingon.Graph.SD" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="Chingon.Graph.A">
-<em class="property">var </em><code class="descname">A</code>: [SD] real<a class="headerlink" href="#Chingon.Graph.A" title="Permalink to this definition">¶</a></dt>
+<dt id="Chingon.Graph.W">
+<em class="property">var </em><code class="descname">W</code>: [SD] real<a class="headerlink" href="#Chingon.Graph.W" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -180,40 +188,117 @@ matrix</p>
 <em class="property">var </em><code class="descname">nameIndex</code>: [1..0] string<a class="headerlink" href="#Chingon.Graph.nameIndex" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="attribute">
+<dt id="Chingon.Graph.directed">
+<em class="property">var </em><code class="descname">directed</code>: bool = false<a class="headerlink" href="#Chingon.Graph.directed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="Chingon.Graph.init">
-<em class="property">proc </em><code class="descname">init</code><span class="sig-paren">(</span><em>A: []</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.init" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt>
-<em class="property">proc </em><code class="descname">init</code><span class="sig-paren">(</span><em>A: []</em>, <em>name: string</em><span class="sig-paren">)</span></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt>
-<em class="property">proc </em><code class="descname">init</code><span class="sig-paren">(</span><em>A: []</em>, <em>name: string</em>, <em>vnames: []</em><span class="sig-paren">)</span></dt>
+<em class="property">proc </em><code class="descname">init</code><span class="sig-paren">(</span><em>W: []</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Example object initialization:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span>var nv: int = 8,
     D: domain(2) = {1..nv, 1..nv},
     SD: sparse subdomain(D),
-    A: [SD] real;
+    M: [SD] real;
 
-SD += (1,2); A[1,2] = 1;
-SD += (1,3); A[1,3] = 1;
-SD += (1,4); A[1,4] = 1;
-SD += (2,4); A[2,4] = 1;
-SD += (3,4); A[3,4] = 1;
-SD += (4,5); A[4,5] = 1;
-SD += (5,6); A[5,6] = 1;
-SD += (6,7); A[6,7] = 1;
-SD += (6,8); A[6,8] = 1;
-SD += (7,8); A[7,8] = 1;
-var g3 = new Graph(A=A, name=&quot;Vato&quot;, vnames = vn);
+  SD += (1,2); W[1,2] = 1;
+  SD += (1,3); W[1,3] = 1;
+  SD += (1,4); W[1,4] = 1;
+  SD += (2,2); W[2,2] = 1;
+  SD += (2,4); W[2,4] = 1;
+  SD += (3,4); W[3,4] = 1;
+  SD += (4,5); W[4,5] = 1;
+  SD += (5,6); W[5,6] = 1;
+  SD += (6,7); W[6,7] = 1;
+  SD += (6,8); W[6,8] = 1;
+  SD += (7,8); W[7,8] = 1;
+var g3 = new Graph(M=M, name=&quot;Vato&quot;, vnames = vn);
+
+ In ascii, the graph is
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span>(3)--(1)--(2)&gt; (a loop)
+ |    |    |
+ |    |    |
+ ----(4)----
+      |
+      |--(5)--(6)--(7)--(8)  // TURN TURN KICK TURN!  Bob Fosse Lives!
+               |---------|
+</pre></div>
+</div>
+<p>The Weighted Matrix (assuming undirected) is thus</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>1) star lord: 0 1 1 1 0 0 0 0
+2)    gamora: 0 1 0 1 0 0 0 0
+3)     groot: 0 0 0 1 0 0 0 0
+4)      drax: 0 0 0 0 1 0 0 0
+5)    rocket: 0 0 0 0 0 1 0 0
+6)    mantis: 0 0 0 0 0 0 1 1
+7)     yondu: 0 0 0 0 0 0 0 1
+8)    nebula: 0 0 0 0 0 0 0 0
+</pre></div>
+</div>
+<p>With symmetric version</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>1) star lord: 0 1 1 1 0 0 0 0
+2)    gamora: 1 1 0 1 0 0 0 0
+3)     groot: 1 0 0 1 0 0 0 0
+4)      drax: 1 1 1 0 1 0 0 0
+5)    rocket: 0 0 0 1 0 1 0 0
+6)    mantis: 0 0 0 0 1 0 1 1
+7)     yondu: 0 0 0 0 0 1 0 1
+8)    nebula: 0 0 0 0 0 1 1 0
 </pre></div>
 </div>
 </dd></dl>
 
+<dl class="method">
+<dt>
+<em class="property">proc </em><code class="descname">init</code><span class="sig-paren">(</span><em>W: []</em>, <em>name: string</em><span class="sig-paren">)</span></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><strong>W</strong> &#8211; matrix of reals</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Graph</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">proc </em><code class="descname">init</code><span class="sig-paren">(</span><em>W: []</em>, <em>directed: bool</em><span class="sig-paren">)</span></dt>
+<dd><p>In an undirected graph, the lower tri is populated from the upper tri, so given
+values on the lower tri are ignored</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">proc </em><code class="descname">init</code><span class="sig-paren">(</span><em>W: []</em>, <em>directed = bool</em>, <em>name: string</em>, <em>vnames: []</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="method">
+<dt id="Chingon.Graph.loadW">
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">loadW</code><span class="sig-paren">(</span><em>W: []</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.loadW" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="itermethod">
+<dt id="Chingon.Graph.nbs">
+<em class="property">iter </em><code class="descclassname">Graph.</code><code class="descname">nbs</code><span class="sig-paren">(</span><em>vid: int</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.nbs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal iterator to get vertex ids that are neighbors of &#8220;vid&#8221;
+:arg vid: A vertex id
+:type vid: int</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">iterator</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -247,6 +332,50 @@ neighbor of 1: 3: groot
 neighbor of 1: 4: drax
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt id="Chingon.Graph.degree">
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">degree</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.degree" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns: Array of degrees for each vertex.  This the count of edges, not the sum of weights.
+rtype: int []</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Chingon.Graph.weights">
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">weights</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the Adjacency matrix A * 1 to give the total sum of weights
+:TODO: Merge this with the routine below to as to not duplicate code.
+:rtype: real []</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">weights</code><span class="sig-paren">(</span><em>interior: []</em><span class="sig-paren">)</span></dt>
+<dd><p>Returns the sum of the incident weights on an &#8220;interior&#8221; set of vertices.  Calculation is to take
+a vector of ones[interior] and do o^T.dot(W^T)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">real []</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Chingon.Graph.vertexEntropy">
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">vertexEntropy</code><span class="sig-paren">(</span><em>interior: domain</em>, <em>vertex: int</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.vertexEntropy" title="Permalink to this definition">¶</a></dt>
+<dd><p>The vertexEntropy calculates the ratio of edge strength to the interior and exterior of a given subgraph</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><strong>interior</strong> &#8211; A set of vertex string names representing a sub-graph.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
