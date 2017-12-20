@@ -48,11 +48,9 @@ the literature is inconsistent, we define some important concepts here.
 
    .. attribute:: var nameIndex: [1..0] string
 
-   .. method:: proc init(M: [])
+   .. attribute:: var directed: bool = false
 
-   .. method:: proc init(M: [], name: string)
-
-   .. method:: proc init(M: [], name: string, vnames: [])
+   .. method:: proc init(W: [])
 
       
       Example object initialization::
@@ -62,19 +60,76 @@ the literature is inconsistent, we define some important concepts here.
             SD: sparse subdomain(D),
             M: [SD] real;
       
-        SD += (1,2); M[1,2] = 1;
-        SD += (1,3); M[1,3] = 1;
-        SD += (1,4); M[1,4] = 1;
-        SD += (2,4); M[2,4] = 1;
-        SD += (3,4); M[3,4] = 1;
-        SD += (4,5); M[4,5] = 1;
-        SD += (5,6); M[5,6] = 1;
-        SD += (6,7); M[6,7] = 1;
-        SD += (6,8); M[6,8] = 1;
-        SD += (7,8); M[7,8] = 1;
+          SD += (1,2); W[1,2] = 1;
+          SD += (1,3); W[1,3] = 1;
+          SD += (1,4); W[1,4] = 1;
+          SD += (2,2); W[2,2] = 1;
+          SD += (2,4); W[2,4] = 1;
+          SD += (3,4); W[3,4] = 1;
+          SD += (4,5); W[4,5] = 1;
+          SD += (5,6); W[5,6] = 1;
+          SD += (6,7); W[6,7] = 1;
+          SD += (6,8); W[6,8] = 1;
+          SD += (7,8); W[7,8] = 1;
         var g3 = new Graph(M=M, name="Vato", vnames = vn);
       
+         In ascii, the graph is
+      
+      ::
+      
+        (3)--(1)--(2)> (a loop)
+         |    |    |
+         |    |    |
+         ----(4)----
+              |
+              |--(5)--(6)--(7)--(8)  // TURN TURN KICK TURN!  Bob Fosse Lives!
+                       |---------|
+      
+      The Weighted Matrix (assuming undirected) is thus
+      
+      ::
+      
+        1) star lord: 0 1 1 1 0 0 0 0
+        2)    gamora: 0 1 0 1 0 0 0 0
+        3)     groot: 0 0 0 1 0 0 0 0
+        4)      drax: 0 0 0 0 1 0 0 0
+        5)    rocket: 0 0 0 0 0 1 0 0
+        6)    mantis: 0 0 0 0 0 0 1 1
+        7)     yondu: 0 0 0 0 0 0 0 1
+        8)    nebula: 0 0 0 0 0 0 0 0
+      
+      With symmetric version
+      
+      ::
+      
+        1) star lord: 0 1 1 1 0 0 0 0
+        2)    gamora: 1 1 0 1 0 0 0 0
+        3)     groot: 1 0 0 1 0 0 0 0
+        4)      drax: 1 1 1 0 1 0 0 0
+        5)    rocket: 0 0 0 1 0 1 0 0
+        6)    mantis: 0 0 0 0 1 0 1 1
+        7)     yondu: 0 0 0 0 0 1 0 1
+        8)    nebula: 0 0 0 0 0 1 1 0
+      
            
+
+   .. method:: proc init(W: [], name: string)
+
+      
+      :arg W: matrix of reals
+      :rtype: Graph
+       
+
+   .. method:: proc init(W: [], directed: bool)
+
+      
+      In an undirected graph, the lower tri is populated from the upper tri, so given
+      values on the lower tri are ignored
+       
+
+   .. method:: proc init(W: [], directed = bool, name: string, vnames: [])
+
+.. method:: proc Graph.loadW(W: [])
 
 .. itermethod:: iter Graph.nbs(vid: int)
 
@@ -85,7 +140,6 @@ the literature is inconsistent, we define some important concepts here.
    
    :rtype: iterator
    
-   TODO: Make sure the diagonal is removed.
       
 
 .. method:: proc Graph.neighbors(vid: int)
@@ -130,6 +184,16 @@ the literature is inconsistent, we define some important concepts here.
 
    
    Returns the Adjacency matrix A * 1 to give the total sum of weights
+   :TODO: Merge this with the routine below to as to not duplicate code.
+   :rtype: real []
+    
+
+.. method:: proc Graph.weights(interior: [])
+
+   
+   Returns the sum of the incident weights on an "interior" set of vertices.  Calculation is to take
+   a vector of ones[interior] and do o^T.dot(W^T)
+   
    :rtype: real []
     
 

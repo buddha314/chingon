@@ -59,41 +59,41 @@ Example object initialization::
 
    In ascii, the graph is
 
-``
-(3)--(1)--(2)> (a loop)
- |    |    |
- |    |    |
- ----(4)----
-      |
-      |--(5)--(6)--(7)--(8)  // TURN TURN KICK TURN!  Bob Fosse Lives!
-               |---------|
-``
+::
+
+  (3)--(1)--(2)> (a loop)
+   |    |    |
+   |    |    |
+   ----(4)----
+        |
+        |--(5)--(6)--(7)--(8)  // TURN TURN KICK TURN!  Bob Fosse Lives!
+                 |---------|
 
 The Weighted Matrix (assuming undirected) is thus
 
-``
-1) star lord: 0 1 1 1 0 0 0 0
-2)    gamora: 0 1 0 1 0 0 0 0
-3)     groot: 0 0 0 1 0 0 0 0
-4)      drax: 0 0 0 0 1 0 0 0
-5)    rocket: 0 0 0 0 0 1 0 0
-6)    mantis: 0 0 0 0 0 0 1 1
-7)     yondu: 0 0 0 0 0 0 0 1
-8)    nebula: 0 0 0 0 0 0 0 0
-``
+::
+
+  1) star lord: 0 1 1 1 0 0 0 0
+  2)    gamora: 0 1 0 1 0 0 0 0
+  3)     groot: 0 0 0 1 0 0 0 0
+  4)      drax: 0 0 0 0 1 0 0 0
+  5)    rocket: 0 0 0 0 0 1 0 0
+  6)    mantis: 0 0 0 0 0 0 1 1
+  7)     yondu: 0 0 0 0 0 0 0 1
+  8)    nebula: 0 0 0 0 0 0 0 0
 
 With symmetric version
 
-``
-1) star lord: 0 1 1 1 0 0 0 0
-2)    gamora: 1 1 0 1 0 0 0 0
-3)     groot: 1 0 0 1 0 0 0 0
-4)      drax: 1 1 1 0 1 0 0 0
-5)    rocket: 0 0 0 1 0 1 0 0
-6)    mantis: 0 0 0 0 1 0 1 1
-7)     yondu: 0 0 0 0 0 1 0 1
-8)    nebula: 0 0 0 0 0 1 1 0
-``
+::
+
+  1) star lord: 0 1 1 1 0 0 0 0
+  2)    gamora: 1 1 0 1 0 0 0 0
+  3)     groot: 1 0 0 1 0 0 0 0
+  4)      drax: 1 1 1 0 1 0 0 0
+  5)    rocket: 0 0 0 1 0 1 0 0
+  6)    mantis: 0 0 0 0 1 0 1 1
+  7)     yondu: 0 0 0 0 0 1 0 1
+  8)    nebula: 0 0 0 0 0 1 1 0
 
      */
      proc init(W: []) {
