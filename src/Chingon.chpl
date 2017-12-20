@@ -31,26 +31,10 @@ module Chingon {
         name: string,
         vnames: domain(string),
         vids: [vnames] int,
-        nameIndex: [1..0] string;
+        nameIndex: [1..0] string,
+        directed: bool = false;
 
-    proc init(W: []) {
-      this.vdom = {W.domain.dim(1), W.domain.dim(2)};
-      super.init();
-      for ij in W.domain {
-        this.SD += ij;
-        this.W(ij) = W(ij);
-      }
-    }
 
-    proc init(W:[], name: string) {
-      this.vdom = {W.domain.dim(1), W.domain.dim(2)};
-      this.name = name;
-      super.init();
-      for ij in W.domain {
-        this.SD += ij;
-        this.W(ij) = W(ij);
-      }
-    }
 
     /*
 Example object initialization::
@@ -60,22 +44,90 @@ Example object initialization::
       SD: sparse subdomain(D),
       M: [SD] real;
 
-  SD += (1,2); M[1,2] = 1;
-  SD += (1,3); M[1,3] = 1;
-  SD += (1,4); M[1,4] = 1;
-  SD += (2,4); M[2,4] = 1;
-  SD += (3,4); M[3,4] = 1;
-  SD += (4,5); M[4,5] = 1;
-  SD += (5,6); M[5,6] = 1;
-  SD += (6,7); M[6,7] = 1;
-  SD += (6,8); M[6,8] = 1;
-  SD += (7,8); M[7,8] = 1;
+    SD += (1,2); W[1,2] = 1;
+    SD += (1,3); W[1,3] = 1;
+    SD += (1,4); W[1,4] = 1;
+    SD += (2,2); W[2,2] = 1;
+    SD += (2,4); W[2,4] = 1;
+    SD += (3,4); W[3,4] = 1;
+    SD += (4,5); W[4,5] = 1;
+    SD += (5,6); W[5,6] = 1;
+    SD += (6,7); W[6,7] = 1;
+    SD += (6,8); W[6,8] = 1;
+    SD += (7,8); W[7,8] = 1;
   var g3 = new Graph(M=M, name="Vato", vnames = vn);
 
+   In ascii, the graph is
+
+``
+(3)--(1)--(2)> (a loop)
+ |    |    |
+ |    |    |
+ ----(4)----
+      |
+      |--(5)--(6)--(7)--(8)  // TURN TURN KICK TURN!  Bob Fosse Lives!
+               |---------|
+``
+
+The Weighted Matrix (assuming undirected) is thus
+
+``
+1) star lord: 0 1 1 1 0 0 0 0
+2)    gamora: 0 1 0 1 0 0 0 0
+3)     groot: 0 0 0 1 0 0 0 0
+4)      drax: 0 0 0 0 1 0 0 0
+5)    rocket: 0 0 0 0 0 1 0 0
+6)    mantis: 0 0 0 0 0 0 1 1
+7)     yondu: 0 0 0 0 0 0 0 1
+8)    nebula: 0 0 0 0 0 0 0 0
+``
+
+With symmetric version
+
+``
+1) star lord: 0 1 1 1 0 0 0 0
+2)    gamora: 1 1 0 1 0 0 0 0
+3)     groot: 1 0 0 1 0 0 0 0
+4)      drax: 1 1 1 0 1 0 0 0
+5)    rocket: 0 0 0 1 0 1 0 0
+6)    mantis: 0 0 0 0 1 0 1 1
+7)     yondu: 0 0 0 0 0 1 0 1
+8)    nebula: 0 0 0 0 0 1 1 0
+``
+
      */
-    proc init(W:[], name: string, vnames: []) {
+     proc init(W: []) {
+       this.vdom = {W.domain.dim(1), W.domain.dim(2)};
+       super.init();
+       this.loadW(W);
+     }
+
+     /*
+     :arg W: matrix of reals
+     :rtype: Graph
+      */
+     proc init(W:[], name: string) {
+       this.vdom = {W.domain.dim(1), W.domain.dim(2)};
+       this.name = name;
+       super.init();
+       this.loadW(W);
+     }
+
+     /*
+     In an undirected graph, the lower tri is populated from the upper tri, so given
+     values on the lower tri are ignored
+      */
+     proc init(W:[], directed: bool) {
+       this.vdom = {W.domain.dim(1), W.domain.dim(2)};
+       this.directed = directed;
+       super.init();
+       this.loadW(W);
+     }
+
+    proc init(W:[], directed=bool, name: string, vnames: []) {
       this.vdom = {W.domain.dim(1), W.domain.dim(2)};
       this.name = name;
+      this.directed=directed;
       super.init();
       for j in 1..vnames.size {
         this.vnames.add(vnames[j]);
@@ -85,9 +137,25 @@ Example object initialization::
       if vnames.size != W.domain.dim(1).size {
         halt();
       }
-      for ij in W.domain {
-        this.SD += ij;
-        this.W(ij) = W(ij);
+      this.loadW(W);
+    }
+  }
+
+  proc Graph.loadW(W: []) {
+    for (i,j) in W.domain {
+      if !this.directed {  // Only persist the upper triangle
+        if (i <= j) {
+          this.SD += (i,j);
+          this.W(i,j) = W(i,j);
+          // Create the lower triangular
+          if (i != j) {
+            this.SD += (j,i);
+            this.W(j,i) = W(i,j);
+          }
+        }
+      } else {
+        this.SD += (i,j);
+        this.W(i,j) = W(i,j);
       }
     }
   }
@@ -99,7 +167,6 @@ Internal iterator to get vertex ids that are neighbors of "vid"
 
 :rtype: iterator
 
-TODO: Make sure the diagonal is removed.
    */
   iter Graph.nbs(vid: int) {
     for col in this.SD.dimIter(2,vid) do if col != vid then yield col;
@@ -119,8 +186,12 @@ well, I don't know about that::
     neighbor of 1: 4: drax
 */
   proc Graph.neighbors(vid: int) {
-    var result: [1..0] int;
-    for x in nbs(vid) do result.push_back(x);
+    var D = {1..0};
+    var result: [D] int;
+
+    for col in this.SD.dimIter(2,vid) do if col != vid then result.push_back(col);
+    //for x in nbs(vid) do result.push_back(x);
+    //result.push_back(3);
     return result;
   }
 
@@ -151,9 +222,6 @@ example::
     var ds: [SD.dim(1)] real;
     forall i in SD.dim(1) {
       ds[i] = neighbors(i).size;
-      if SD.member((i,i)) {
-        ds[i] -= W[i,i];
-      }
     }
     return ds;
     /*
@@ -176,10 +244,43 @@ example::
 
   /*
   Returns the Adjacency matrix A * 1 to give the total sum of weights
+  :TODO: Merge this with the routine below to as to not duplicate code.
   :rtype: real []
    */
   proc Graph.weights() {
-    return 0;
+    const o: [this.W.domain.dim(1)] this.W.eltType = 1;
+    var r: [o.domain] this.W.eltType = o.dot(transpose(this.W));
+    // Remove the diagonal
+    for i in this.SD.dim(1) {
+      if SD.member((i,i)) {
+        r[i] -= this.W[i,i];
+      }
+    }
+    return r;
+  }
+
+  /*
+  Returns the sum of the incident weights on an "interior" set of vertices.  Calculation is to take
+  a vector of ones[interior] and do o^T.dot(W^T)
+
+  :rtype: real []
+   */
+  proc Graph.weights(interior:[]) {
+    var o: [this.W.domain.dim(1)] this.W.eltType = 0;
+    //var o: [this.SD.dim(1)] this.W.eltType = 0;
+    for i in interior {
+      o[i] = 1;
+    }
+    var r: [o.domain] this.W.eltType = this.W.dot(o);
+
+    forall i in 1..o.size {
+      if o[i] == 0 {
+        r[i] = 0;
+      } else if SD.member((i,i)) {
+        r[i] -= this.W[i,i];
+      }
+    }
+    return r;
   }
 
   /*

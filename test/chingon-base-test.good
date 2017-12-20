@@ -1,10 +1,25 @@
 1.0 1.0 1.0
+1.0 1.0 1.0
 1.0 1.0
-1.0
-1.0
-1.0
+1.0 1.0 1.0 1.0
 1.0 1.0
-1.0
+1.0 1.0 1.0
+1.0 1.0
+1.0 1.0
+
+g.directed: false
+
+gd.directed: false
+
+gd.W
+1.0 1.0 1.0
+1.0 1.0 1.0
+1.0 1.0
+1.0 1.0 1.0 1.0
+1.0 1.0
+1.0 1.0 1.0
+1.0 1.0
+1.0 1.0
 
 g2 name: Vato
 g3 name: Vato
@@ -16,12 +31,20 @@ g3 vids[nebula]: 8
 g3 vids[rocket]: 5
 g3 vids[star lord]: 1
 g3 vids[yondu]: 7
-neighbor of 1: 2: gamora
-neighbor of 1: 3: groot
-neighbor of 1: 4: drax
-neighbor of 1: 2: gamora
-neighbor of 1: 3: groot
-neighbor of 1: 4: drax
+neighbor of drax: 1: star lord
+neighbor of drax: 2: gamora
+neighbor of drax: 3: groot
+neighbor of drax: 5: rocket
+neighbor of drax: 1: star lord
+neighbor of drax: 2: gamora
+neighbor of drax: 3: groot
+neighbor of drax: 5: rocket
 
-B
-3.0 0.0 1.0 1.0 1.0 2.0 1.0 0.0
+degrees:
+3.0 2.0 2.0 4.0 2.0 3.0 2.0 2.0
+
+Weights:
+3.0 2.0 2.0 4.0 2.0 3.0 2.0 2.0
+
+Weights (1,2,4):
+2.0 2.0 0.0 2.0 0.0 0.0 0.0 0.0
