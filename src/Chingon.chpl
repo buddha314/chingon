@@ -248,36 +248,46 @@ example::
   :rtype: real []
    */
   proc Graph.weights() {
-    const o: [this.W.domain.dim(1)] this.W.eltType = 1;
-    var r: [o.domain] this.W.eltType = o.dot(transpose(this.W));
-    // Remove the diagonal
-    for i in this.SD.dim(1) {
-      if SD.member((i,i)) {
-        r[i] -= this.W[i,i];
-      }
-    }
-    return r;
+    const vs = for i in 1..this.W.domain.dim(1).last do i;
+    return weights(vs=vs, interior=false);
   }
 
   /*
   Returns the sum of the incident weights on an "interior" set of vertices.  Calculation is to take
-  a vector of ones[interior] and do o^T.dot(W^T)
+  a vector of ones[interior] and do W.dot(o)
+
+  Calls weights(vs, interior=false)
 
   :rtype: real []
    */
-  proc Graph.weights(interior:[]) {
+  proc Graph.weights(vs:[]) {
+    return weights(vs, false);
+  }
+
+  /*
+  :arg vs: Array of vertices to calculate
+  :arg interior: Bool to indicate if weights should be restricted to vertices in vs
+  */
+  proc Graph.weights(vs:[], interior: bool) {
     var o: [this.W.domain.dim(1)] this.W.eltType = 0;
-    //var o: [this.SD.dim(1)] this.W.eltType = 0;
-    for i in interior {
+    for i in vs {
       o[i] = 1;
     }
     var r: [o.domain] this.W.eltType = this.W.dot(o);
 
-    forall i in 1..o.size {
-      if o[i] == 0 {
-        r[i] = 0;
-      } else if SD.member((i,i)) {
-        r[i] -= this.W[i,i];
+    if interior {
+      forall i in 1..o.size {
+        if o[i] == 0 {
+          r[i] = 0;
+        } else if SD.member((i,i)) {
+          r[i] -= this.W[i,i];
+        }
+      }
+    } else {
+      forall i in 1..o.size {
+        if SD.member((i,i)) {
+          r[i] -= this.W[i,i];
+        }
       }
     }
     return r;
@@ -285,7 +295,6 @@ example::
 
   /*
   The vertexEntropy calculates the ratio of edge strength to the interior and exterior of a given subgraph
-
 
   :arg interior: A set of vertex string names representing a sub-graph.
    */

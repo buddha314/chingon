@@ -56,5 +56,7 @@ writeln("\ndegrees:\n", dgs);
 var ws = g3.weights();
 writeln("\nWeights:\n", ws);
 
-var wsi = g3.weights([1,2,4]);
+var wsi = g3.weights(vs=[1,2,4]);
 writeln("\nWeights (1,2,4):\n", wsi);
+var wsii = g3.weights(vs=[1,2,4], interior=true);
+writeln("\nWeights (1,2,4) interior:\n", wsii);
