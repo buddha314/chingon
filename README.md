@@ -1,6 +1,6 @@
 # Chingon v 0.1.3
 
-The (Ch) (I)mplementation of (N)umerical (G)raph (O)peratio(n)s is a [GraphBLAS](http://graphblas.org/)-like library written in [Chapel](https://chapel-lang.org/).
+The (Ch) (I)mplementation of (N)umerical (G)raph (O)peratio(n)s is a [GraphBLAS](http://graphblas.org/)-like library written in [Chapel](https://chapel-lang.org/). The docs, such as they are, are [here](https://buddha314.github.io/chingon/)
 
 Chingon is (will be) designed to be similar to a Property Graph, in that the vertices will have attributes, but is not a database.  It is more akin to [igraph](http://igraph.org/), [Pregel](https://blog.acolyer.org/2015/05/26/pregel-a-system-for-large-scale-graph-processing/) or [Giraph](http://giraph.apache.org/) but, alas, considerably humbler in scope.
 
