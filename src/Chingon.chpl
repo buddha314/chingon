@@ -265,12 +265,15 @@ example::
   }
 
   /*
+  By default, this calculates the weights for all vertices with edges against the vertices
+  in the subgraph vs.
+
   :arg vs: Array of vertices to calculate
   :arg interior: Bool to indicate if weights should be restricted to vertices in vs
   */
   proc Graph.weights(vs:[], interior: bool) {
     var o: [this.W.domain.dim(1)] this.W.eltType = 0;
-    for i in vs {
+    forall i in vs {
       o[i] = 1;
     }
     var r: [o.domain] this.W.eltType = this.W.dot(o);
@@ -298,7 +301,12 @@ example::
 
   :arg interior: A set of vertex string names representing a sub-graph.
    */
-  proc Graph.vertexEntropy(interior: domain, vertex: int) {
-    var dims = for v in interior do vids[v];
+  proc Graph.vertexEntropy(subgraph: [], vertex: int) {
+    const dgs = weights();
+    const ws = weights(vs=subgraph, interior=true);
+    for v in subgraph {
+      writeln("vertex: ", v, " ttl weight: ", dgs[v], " subgraph weight: ", ws[v] );
+    }
+    return ws;
   }
 }
