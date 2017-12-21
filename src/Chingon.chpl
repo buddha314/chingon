@@ -15,6 +15,7 @@ the literature is inconsistent, we define some important concepts here.
 */
 module Chingon {
   use Sort,
+      NumSuch,
       LinearAlgebra.Sparse,
       LinearAlgebra;
 
@@ -301,12 +302,17 @@ example::
 
   :arg interior: A set of vertex string names representing a sub-graph.
    */
-  proc Graph.vertexEntropy(subgraph: [], vertex: int) {
-    const dgs = weights();
+  proc Graph.subgraphEntropy(subgraph: [], base: []) {
     const ws = weights(vs=subgraph, interior=true);
+    var e: real = 0;
     for v in subgraph {
-      writeln("vertex: ", v, " ttl weight: ", dgs[v], " subgraph weight: ", ws[v] );
+      const d = ws[v] / base[v];
+      e += -(xlog2x(d) + xlog2x(1-d));
+      writeln("vertex: ", v, " ttl weight: ", base[v], " subgraph weight: "
+      , ws[v], " p: ", ws[v] / base[v], " q: ", 1 - ws[v] / base[v]);
     }
-    return ws;
+    //var e = xlog2x(interiorWeight/totalWeight) + xlog2x(1-interiorWeight/totalWeight);
+    //return ws;
+    return e;
   }
 }
