@@ -300,19 +300,21 @@ example::
   /*
   The vertexEntropy calculates the ratio of edge strength to the interior and exterior of a given subgraph
 
+  :TODO: Limit this to a neighborhood of the subgraph, perhaps by checking W^2 first
+
   :arg interior: A set of vertex string names representing a sub-graph.
    */
   proc Graph.subgraphEntropy(subgraph: [], base: []) {
-    const ws = weights(vs=subgraph, interior=true);
-    var e: real = 0;
-    for v in subgraph {
-      const d = ws[v] / base[v];
-      e += -(xlog2x(d) + xlog2x(1-d));
-      writeln("vertex: ", v, " ttl weight: ", base[v], " subgraph weight: "
-      , ws[v], " p: ", ws[v] / base[v], " q: ", 1 - ws[v] / base[v]);
+    const ws = weights(vs=subgraph, interior=false);
+    var e: [base.domain] real;
+    forall i in e.domain {
+      if base[i] ==0 || ws[i] == 0 {
+        e[i] = 0;
+      } else {
+        const x = ws[i] / base[i];
+        e[i] = -(xlog2x(x) + xlog2x(1-x));
+      }
     }
-    //var e = xlog2x(interiorWeight/totalWeight) + xlog2x(1-interiorWeight/totalWeight);
-    //return ws;
-    return e;
+    return (+ reduce e);
   }
 }
