@@ -188,20 +188,33 @@ the literature is inconsistent, we define some important concepts here.
    :rtype: real []
     
 
-.. method:: proc Graph.weights(interior: [])
+.. method:: proc Graph.weights(vs: [])
 
    
    Returns the sum of the incident weights on an "interior" set of vertices.  Calculation is to take
-   a vector of ones[interior] and do o^T.dot(W^T)
+   a vector of ones[interior] and do W.dot(o)
+   
+   Calls weights(vs, interior=false)
    
    :rtype: real []
     
 
-.. method:: proc Graph.vertexEntropy(interior: domain, vertex: int)
+.. method:: proc Graph.weights(vs: [], interior: bool)
+
+   
+   By default, this calculates the weights for all vertices with edges against the vertices
+   in the subgraph vs.
+   
+   :arg vs: Array of vertices to calculate
+   :arg interior: Bool to indicate if weights should be restricted to vertices in vs
+   
+
+.. method:: proc Graph.subgraphEntropy(subgraph: [], base: [])
 
    
    The vertexEntropy calculates the ratio of edge strength to the interior and exterior of a given subgraph
    
+   :TODO: Limit this to a neighborhood of the subgraph, perhaps by checking W^2 first
    
    :arg interior: A set of vertex string names representing a sub-graph.
     
