@@ -351,9 +351,10 @@ rtype: int []</p>
 
 <dl class="method">
 <dt>
-<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">weights</code><span class="sig-paren">(</span><em>interior: []</em><span class="sig-paren">)</span></dt>
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">weights</code><span class="sig-paren">(</span><em>vs: []</em><span class="sig-paren">)</span></dt>
 <dd><p>Returns the sum of the incident weights on an &#8220;interior&#8221; set of vertices.  Calculation is to take
-a vector of ones[interior] and do o^T.dot(W^T)</p>
+a vector of ones[interior] and do W.dot(o)</p>
+<p>Calls weights(vs, interior=false)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -365,14 +366,35 @@ a vector of ones[interior] and do o^T.dot(W^T)</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="Chingon.Graph.vertexEntropy">
-<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">vertexEntropy</code><span class="sig-paren">(</span><em>interior: domain</em>, <em>vertex: int</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.vertexEntropy" title="Permalink to this definition">¶</a></dt>
+<dt>
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">weights</code><span class="sig-paren">(</span><em>vs: []</em>, <em>interior: bool</em><span class="sig-paren">)</span></dt>
+<dd><p>By default, this calculates the weights for all vertices with edges against the vertices
+in the subgraph vs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>vs</strong> &#8211; Array of vertices to calculate</li>
+<li><strong>interior</strong> &#8211; Bool to indicate if weights should be restricted to vertices in vs</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Chingon.Graph.subgraphEntropy">
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">subgraphEntropy</code><span class="sig-paren">(</span><em>subgraph: []</em>, <em>base: []</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.subgraphEntropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>The vertexEntropy calculates the ratio of edge strength to the interior and exterior of a given subgraph</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><strong>interior</strong> &#8211; A set of vertex string names representing a sub-graph.</td>
+<tr class="field-odd field"><th class="field-name">TODO:</th><td class="field-body">Limit this to a neighborhood of the subgraph, perhaps by checking W^2 first</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Arguments:</th><td class="field-body"><strong>interior</strong> &#8211; A set of vertex string names representing a sub-graph.</td>
 </tr>
 </tbody>
 </table>

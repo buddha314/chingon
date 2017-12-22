@@ -56,5 +56,12 @@ writeln("\ndegrees:\n", dgs);
 var ws = g3.weights();
 writeln("\nWeights:\n", ws);
 
-var wsi = g3.weights([1,2,4]);
+var wsi = g3.weights(vs=[1,2,4]);
 writeln("\nWeights (1,2,4):\n", wsi);
+var wsii = g3.weights(vs=[1,2,4], interior=true);
+writeln("\nWeights (1,2,4) interior:\n", wsii);
+
+var ve = g3.subgraphEntropy(subgraph=[1,2,3,4], base=g3.weights());
+writeln("vertex entropy [1,2,3,4]: ", ve);
+var vf = g3.subgraphEntropy(subgraph=[1,2,3,4,5], base=g3.weights());
+writeln("vertex entropy [1,2,3,4,5]: ", vf);
