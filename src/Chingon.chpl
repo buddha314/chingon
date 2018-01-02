@@ -162,15 +162,26 @@ With symmetric version
   }
 
   /*
-Internal iterator to get vertex ids that are neighbors of "vid"
-:arg vid: A vertex id
-:type vid: int
-
-:rtype: iterator
-
+   Creates an edge between vertices fromId and toId, adds both entries
+   if graph is not directed
    */
-  iter Graph.nbs(vid: int) {
-    for col in this.SD.dimIter(2,vid) do if col != vid then yield col;
+  proc Graph.addEdge(fromId: int, toId: int, w: real) {
+    if !this.SD.member(fromId, toId) {
+        this.SD += (fromId, toId);
+        this.W[fromId, toId] = w;
+        if !this.directed {
+          this.SD += (toId, fromId);
+          this.W[toId, fromId] = w;
+        }
+    }
+
+  /*
+  Adds an edge and sets the weight to 1.0
+   */
+  proc Graph.addEdge(fromId: int, toId: int) {
+    addEdge(fromId, toId, 1.0);
+  }
+
   }
 
   /*
@@ -191,8 +202,6 @@ well, I don't know about that::
     var result: [D] int;
 
     for col in this.SD.dimIter(2,vid) do if col != vid then result.push_back(col);
-    //for x in nbs(vid) do result.push_back(x);
-    //result.push_back(3);
     return result;
   }
 
@@ -225,29 +234,12 @@ example::
       ds[i] = neighbors(i).size;
     }
     return ds;
-    /*
-    var diagDom = CSRDomain(SD.dim(1));
-    var one: [SD.dim(1)] A.eltType = 1;
-    // B will be the diagonal vector
-    var B: [diagDom] A.eltType;
-    for i in 1..vdom.size {
-      if SD.member((i,i)) {
-        writeln("yep");
-        diagDom += (i,i);
-        //B[i,i] = A[i,i];
-        B[i,i] = neighbors(i).size;
-      }
-    }
-    //return A.dot(one);
-    //return B;
-    */
   }
 
   /*
   Returns the Adjacency matrix A * 1 to give the total sum of weights, indicating the flow
   around the vertex
 
-  :TODO: Merge this with the routine below to as to not duplicate code.
   :rtype: real []
    */
   proc Graph.flow() {
@@ -302,8 +294,6 @@ example::
   /*
   The vertexEntropy calculates the ratio of edge strength to the interior and exterior of a given subgraph
 
-  :TODO: Limit this to a neighborhood of the subgraph, perhaps by checking W^2 first
-
   :arg interior: A set of vertex string names representing a sub-graph.
    */
   proc Graph.subgraphEntropy(subgraph: [], base: []) {
@@ -345,6 +335,11 @@ example::
     return g;
   }
 
+
+
+  /*
+   A class to hold sub-graphs.
+   */
   class Crystal {
     const id: int,
           ftrIds: [1..0] int;
