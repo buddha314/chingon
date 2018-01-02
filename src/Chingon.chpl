@@ -330,7 +330,7 @@ example::
    :arg toField: the field of edgeTable containing the id of the tail vertex
    :arg wField: The field of edgeTable containing the weight of the edge
    :arg directed: Boolean indicating whether graph is directed
-   :arg graphName: A name for the graph 
+   :arg graphName: A name for the graph
 
    */
   proc buildGraphFromPGTables(con:Connection
@@ -339,7 +339,47 @@ example::
       , directed:bool, graphName:string) {
     const vertexNames = vNamesFromPG(con=con, nameTable=nameTable, nameField=nameField, idField=idField);
     const W = wFromPG(con=con, edgeTable=edgeTable, fromField, toField, wField, n=vertexNames.size);
-    var g = new Graph(W=W, directed=false, name="Vato", vnames = vertexNames);
+    var g = new Graph(W=W, directed=false, name=graphName, vnames = vertexNames);
     return g;
+  }
+
+  class Crystal {
+    const id: int,
+          ftrIds: [1..0] int;
+
+    proc init(id: int, ftrIds: []) {
+      this.id = id;
+      //this.ftrId = ftrId;
+      super.init();
+      for f in ftrIds {
+        this.ftrIds.push_back(f);
+      }
+    }
+  }
+
+
+  /*
+  Creates a set of untempered crystals from a Postgres table.
+   */
+  proc buildCrystalsFromPG(
+      con: Connection
+      , constituentTable: string
+      , idField: string
+      , constituentIdField: string
+    ) {
+    var q = "SELECT %s AS cid, array_agg(%s) AS a FROM %s GROUP BY 1 ORDER BY 1, 2";
+    var cursor = con.cursor();
+    cursor.query(q, (idField, constituentIdField, constituentTable));
+    var crystals: [1..0] Crystal;
+    for row in cursor {
+      const a = row.getArray('a');
+      var cids: [1..0] int;
+      for b in a {
+        cids.push_back(b: int);
+      }
+      crystals.push_back(new Crystal(row['cid']:int, cids));
+      //writeln(row['cid']);
+    }
+    return crystals;
   }
 }

@@ -54,3 +54,5 @@ Weights (1,2,4) interior:
 graph entropy [1,2,3,4]: 1.81128
 graph entropy [1,2,3,4,5]: 1.9183
 g4.name: Vato
+crystal id: 1 -> 1 2 3 4
+crystal id: 2 -> 1 2 3 4 5

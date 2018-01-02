@@ -73,13 +73,13 @@ config const DB_HOST: string = "localhost";
 config const DB_USER: string = "buddha";
 config const DB_NAME: string = "buddha";
 config const DB_PWD: string = "buddha";
-var nameTable = "r.cho_names",
-    idField = "ftr_id",
-    nameField = "name",
-    edgeTable = "r.cho_edges",
-    fromField = "from_fid",
-    toField = "to_fid",
-    wField = "w";
+const nameTable = "r.cho_names",
+      idField = "ftr_id",
+      nameField = "name",
+      edgeTable = "r.cho_edges",
+      fromField = "from_fid",
+      toField = "to_fid",
+      wField = "w";
 
 var con = PgConnectionFactory(host=DB_HOST, user=DB_USER, database=DB_NAME, passwd=DB_PWD);
 
@@ -88,3 +88,16 @@ var g4 = buildGraphFromPGTables(con=con
   , edgeTable=edgeTable, toField=toField, fromField=fromField, wField=wField
   , directed=false, graphName=graphName);
 writeln("g4.name: ", g4.name);
+
+const constituentTable = "r.cho_constituents",
+      crystalIdField = "crystal_id",
+      constituentIdField = "constituent_id";
+
+var crystals = buildCrystalsFromPG(
+      con=con
+    , constituentTable: string
+    , idField=crystalIdField
+    , constituentIdField=constituentIdField);
+for c in crystals {
+  writeln("crystal id: ", c.id, " -> ", c.ftrIds);
+}
