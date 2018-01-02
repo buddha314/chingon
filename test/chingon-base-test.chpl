@@ -53,17 +53,17 @@ for n in g3.neighbors("drax").sorted() {
 var dgs = g3.degree();
 writeln("\ndegrees:\n", dgs);
 
-var ws = g3.weights();
-writeln("\nWeights:\n", ws);
+var ws = g3.flow();
+writeln("\nFlow:\n", ws);
 
-var wsi = g3.weights(vs=[1,2,4]);
-writeln("\nWeights (1,2,4):\n", wsi);
-var wsii = g3.weights(vs=[1,2,4], interior=true);
-writeln("\nWeights (1,2,4) interior:\n", wsii);
+var wsi = g3.flow(vs=[1,2,4]);
+writeln("\nFlow (1,2,4):\n", wsi);
+var wsii = g3.flow(vs=[1,2,4], interior=true);
+writeln("\nFlow (1,2,4) interior:\n", wsii);
 
-var ve = g3.subgraphEntropy(subgraph=[1,2,3,4], base=g3.weights());
+var ve = g3.subgraphEntropy(subgraph=[1,2,3,4], base=g3.flow());
 writeln("graph entropy [1,2,3,4]: ", ve);
-var vf = g3.subgraphEntropy(subgraph=[1,2,3,4,5], base=g3.weights());
+var vf = g3.subgraphEntropy(subgraph=[1,2,3,4,5], base=g3.flow());
 writeln("graph entropy [1,2,3,4,5]: ", vf);
 
 // Start to test against Postgres using NumSuch

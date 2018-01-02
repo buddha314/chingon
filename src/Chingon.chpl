@@ -244,35 +244,37 @@ example::
   }
 
   /*
-  Returns the Adjacency matrix A * 1 to give the total sum of weights
+  Returns the Adjacency matrix A * 1 to give the total sum of weights, indicating the flow
+  around the vertex
+
   :TODO: Merge this with the routine below to as to not duplicate code.
   :rtype: real []
    */
-  proc Graph.weights() {
+  proc Graph.flow() {
     const vs = for i in 1..this.W.domain.dim(1).last do i;
-    return weights(vs=vs, interior=false);
+    return flow(vs=vs, interior=false);
   }
 
   /*
   Returns the sum of the incident weights on an "interior" set of vertices.  Calculation is to take
   a vector of ones[interior] and do W.dot(o)
 
-  Calls weights(vs, interior=false)
+  Calls flow(vs, interior=false)
 
   :rtype: real []
    */
-  proc Graph.weights(vs:[]) {
-    return weights(vs, false);
+  proc Graph.flow(vs:[]) {
+    return flow(vs, false);
   }
 
   /*
-  By default, this calculates the weights for all vertices with edges against the vertices
+  By default, this calculates the sum of the weights for all vertices with edges against the vertices
   in the subgraph vs.
 
   :arg vs: Array of vertices to calculate
   :arg interior: Bool to indicate if weights should be restricted to vertices in vs
   */
-  proc Graph.weights(vs:[], interior: bool) {
+  proc Graph.flow(vs:[], interior: bool) {
     var o: [this.W.domain.dim(1)] this.W.eltType = 0;
     forall i in vs {
       o[i] = 1;
@@ -305,7 +307,7 @@ example::
   :arg interior: A set of vertex string names representing a sub-graph.
    */
   proc Graph.subgraphEntropy(subgraph: [], base: []) {
-    const ws = weights(vs=subgraph, interior=false);
+    const ws = flow(vs=subgraph, interior=false);
     var e: [base.domain] real;
     forall i in e.domain {
       if base[i] ==0 || ws[i] == 0 {
@@ -361,6 +363,7 @@ example::
   /*
   Creates a set of untempered crystals from a Postgres table.
   Requires data within Postgres as in test/data/entropy_base_graph_schema.sql
+
   :arg constituentTable: Postgres table with the crystal and their constituent ids
   :arg constituentIdField: The field in the constituentTable with the constituent id
   :arg idField: The field in the constituentTable that has the crystal id
