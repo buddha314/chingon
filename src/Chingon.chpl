@@ -360,6 +360,10 @@ example::
 
   /*
   Creates a set of untempered crystals from a Postgres table.
+  Requires data within Postgres as in test/data/entropy_base_graph_schema.sql
+  :arg constituentTable: Postgres table with the crystal and their constituent ids
+  :arg constituentIdField: The field in the constituentTable with the constituent id
+  :arg idField: The field in the constituentTable that has the crystal id
    */
   proc buildCrystalsFromPG(
       con: Connection
@@ -372,13 +376,11 @@ example::
     cursor.query(q, (idField, constituentIdField, constituentTable));
     var crystals: [1..0] Crystal;
     for row in cursor {
-      const a = row.getArray('a');
       var cids: [1..0] int;
-      for b in a {
+      for b in row.getArray('a') {
         cids.push_back(b: int);
       }
       crystals.push_back(new Crystal(row['cid']:int, cids));
-      //writeln(row['cid']);
     }
     return crystals;
   }
