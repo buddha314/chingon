@@ -317,4 +317,29 @@ example::
     }
     return (+ reduce e);
   }
+
+  /*
+   Builds a Graph object using `NumSuch <https://github.com/buddha314/numsuch>`_ MatrixOps module
+
+   :arg nameTable: The name of the Postgres table containing the pairs
+   :arg nameField: The name of the field in the nameTable containing the names
+   :arg idField: The name of the field in the nameTable containing the feature ids
+   :arg con: A CDO Connection to Postgres
+   :arg edgeTable: The table in PG of edges
+   :arg fromField: The field of edgeTable containing the id of the head vertex
+   :arg toField: the field of edgeTable containing the id of the tail vertex
+   :arg wField: The field of edgeTable containing the weight of the edge
+   :arg directed: Boolean indicating whether graph is directed
+   :arg graphName: A name for the graph 
+
+   */
+  proc buildGraphFromPGTables(con:Connection
+      , nameTable:string, nameField:string, idField:string
+      , edgeTable:string, toField:string, fromField:string, wField:string
+      , directed:bool, graphName:string) {
+    const vertexNames = vNamesFromPG(con=con, nameTable=nameTable, nameField=nameField, idField=idField);
+    const W = wFromPG(con=con, edgeTable=edgeTable, fromField, toField, wField, n=vertexNames.size);
+    var g = new Graph(W=W, directed=false, name="Vato", vnames = vertexNames);
+    return g;
+  }
 }

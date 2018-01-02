@@ -1,8 +1,8 @@
-use Chingon,
-    LinearAlgebra;
+use Postgres,
+    LinearAlgebra,
+    Chingon;
 
-//var g = new Graph("Vato");
-//writeln(g.name);
+var graphName = "Vato";
 var vn: [1..0] string;
 vn.push_back("star lord");
 vn.push_back("gamora");
@@ -65,3 +65,26 @@ var ve = g3.subgraphEntropy(subgraph=[1,2,3,4], base=g3.weights());
 writeln("graph entropy [1,2,3,4]: ", ve);
 var vf = g3.subgraphEntropy(subgraph=[1,2,3,4,5], base=g3.weights());
 writeln("graph entropy [1,2,3,4,5]: ", vf);
+
+// Start to test against Postgres using NumSuch
+// Data must be loaded as in data/entropy_base_graph_schema.sql
+// This only needs to be done once, if you have tested with NumSuch, the data should exist already.
+config const DB_HOST: string = "localhost";
+config const DB_USER: string = "buddha";
+config const DB_NAME: string = "buddha";
+config const DB_PWD: string = "buddha";
+var nameTable = "r.cho_names",
+    idField = "ftr_id",
+    nameField = "name",
+    edgeTable = "r.cho_edges",
+    fromField = "from_fid",
+    toField = "to_fid",
+    wField = "w";
+
+var con = PgConnectionFactory(host=DB_HOST, user=DB_USER, database=DB_NAME, passwd=DB_PWD);
+
+var g4 = buildGraphFromPGTables(con=con
+  , nameTable=nameTable, nameField=nameField, idField=idField
+  , edgeTable=edgeTable, toField=toField, fromField=fromField, wField=wField
+  , directed=false, graphName=graphName);
+writeln("g4.name: ", g4.name);
