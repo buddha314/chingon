@@ -44,9 +44,11 @@ for v in g3.vnames.sorted() {
   writeln("g3 vids[", v, "]: ", g3.vids[v]);
 }
 const p:int = 4;
+// Check for list of vertex IDs adjacent to p
 for n in g3.neighbors(p).sorted() {
   writeln("neighbor of ", g3.nameIndex[p], ": ", n, ": ", g3.nameIndex[n]);
 }
+// Check for list of vertex IDs adjacent to vertex with name "drax"
 for n in g3.neighbors("drax").sorted() {
   writeln("neighbor of drax: ", n, ": ", g3.nameIndex[n]);
 }

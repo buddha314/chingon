@@ -217,6 +217,8 @@ well, I don't know about that::
     neighbor of 1: 2: gamora
     neighbor of 1: 3: groot
     neighbor of 1: 4: drax
+
+:rtype: int []
 */
   proc Graph.neighbors(vid: int) {
     var D = {1..0};
@@ -247,7 +249,8 @@ example::
 
   /*
    returns: Array of degrees for each vertex.  This the count of edges, not the sum of weights.
-   rtype: int []
+
+:rtype: int []
    */
   proc Graph.degree() {
     var ds: [SD.dim(1)] real;
@@ -261,7 +264,7 @@ example::
   Returns the Adjacency matrix A * 1 to give the total sum of weights, indicating the flow
   around the vertex
 
-  :rtype: real []
+:rtype: real []
    */
   proc Graph.flow() {
     const vs = for i in 1..this.W.domain.dim(1).last do i;
@@ -274,7 +277,7 @@ example::
 
   Calls flow(vs, interior=false)
 
-  :rtype: real []
+:rtype: real []
    */
   proc Graph.flow(vs:[]) {
     return flow(vs, false);
@@ -282,10 +285,13 @@ example::
 
   /*
   By default, this calculates the sum of the weights for all vertices with edges against the vertices
-  in the subgraph vs.
+  in the subgraph :param:`vs`.
 
-  :arg vs: Array of vertices to calculate
-  :arg interior: Bool to indicate if weights should be restricted to vertices in vs
+:arg vs: Array of vertices to calculate
+:arg interior: Bool to indicate if weights should be restricted to vertices in :param:`vs`
+
+:returns: Sum of the weights adjacent to vertex set ``vs`` given subgraph ``interior``
+:rtype: int
   */
   proc Graph.flow(vs:[], interior: bool) {
     var o: [this.W.domain.dim(1)] this.W.eltType = 0;
@@ -316,6 +322,7 @@ example::
   The vertexEntropy calculates the ratio of edge strength to the interior and exterior of a given subgraph
 
   :arg interior: A set of vertex string names representing a sub-graph.
+  :arg base: An array of degrees for the whole graph, should be called by :proc:`Graph.flow()` beforehand
    */
   proc Graph.subgraphEntropy(subgraph: [], base: []) {
     const ws = flow(vs=subgraph, interior=false);
@@ -359,16 +366,25 @@ example::
 
 
   /*
-   A class to hold sub-graphs.
+   A class to hold sub-graphs.  The language is not standard but convenient.  A "crystal" is
+   essentially a sub-graph.  During the "tempering" process, vertices will be added and removed
+   until a minimum entropy is accomplished.  The initial vertex Ids are held in :const:`ftrIds`.  The
+   derived minimum entropy is in :var:`minEntropy` and the final vertex ids are in
    */
   class Crystal {
-    const id: int,
+    const id: string,
           ftrIds: [1..0] int;
-    var minEnergy: real;
+    var minEntropy: real;
 
-    proc init(id: int, ftrIds: []) {
+    /*
+    Constructor
+
+    :arg id: Any string identifier for this crystal.
+    :arg ftrIds: The set of vertex ids that compose the untempered crystal
+     */
+    proc init(id: string, ftrIds: []) {
       this.id = id;
-      this.minEnergy = 0.0;
+      this.minEntropy = 0.0;
       super.init();
       for f in ftrIds {
         this.ftrIds.push_back(f);
@@ -384,6 +400,9 @@ example::
   :arg constituentTable: Postgres table with the crystal and their constituent ids
   :arg constituentIdField: The field in the constituentTable with the constituent id
   :arg idField: The field in the constituentTable that has the crystal id
+
+  :returns: An array of crystals from a given Postgres table
+  :rtype: :class:`Crystal`
    */
   proc buildCrystalsFromPG(
       con: Connection
@@ -400,7 +419,7 @@ example::
       for b in row.getArray('a') {
         cids.push_back(b: int);
       }
-      crystals.push_back(new Crystal(row['cid']:int, cids));
+      crystals.push_back(new Crystal(row['cid'], cids));
     }
     return crystals;
   }
