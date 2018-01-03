@@ -399,7 +399,9 @@ example::
   class Crystal {
     const id: string,
           ftrIds: [1..0] int;
-    var minEntropy: real;
+    var initialEntropy: real,
+        minEntropy: real,
+        minFtrs: [1..0] int;
 
     /*
     Constructor
@@ -409,6 +411,7 @@ example::
      */
     proc init(id: string, ftrIds: []) {
       this.id = id;
+      this.initialEntropy = 0.0;
       this.minEntropy = 0.0;
       super.init();
       for f in ftrIds {
