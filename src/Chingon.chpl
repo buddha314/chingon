@@ -364,9 +364,11 @@ example::
   class Crystal {
     const id: int,
           ftrIds: [1..0] int;
+    var minEnergy: real;
 
     proc init(id: int, ftrIds: []) {
       this.id = id;
+      this.minEnergy = 0.0;
       super.init();
       for f in ftrIds {
         this.ftrIds.push_back(f);
