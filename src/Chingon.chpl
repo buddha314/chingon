@@ -174,6 +174,7 @@ With symmetric version
           this.W[toId, fromId] = w;
         }
     }
+  }
 
   /*
   Adds an edge and sets the weight to 1.0
@@ -182,7 +183,27 @@ With symmetric version
     addEdge(fromId, toId, 1.0);
   }
 
+  /*
+  Adds w to the edge between fromId and toId, also the reverse if not directed.
+  If the edge does not exist, it is added with weight w.
+
+   */
+  proc Graph.updateEdge(fromId: int, toId: int, w: real) {
+    if this.SD.member(fromId, toId) {
+      this.W[fromId, toId] += w;
+      if !this.directed {
+        this.W[toId, fromId] += w;
+      }
+    } else {
+      this.SD += (fromId, toId);
+      this.W[fromId, toId] = w;
+      if !this.directed {
+        this.SD += (toId, fromId);
+        this.W[toId, fromId] = w;
+      }
+    }
   }
+
 
   /*
 returns an array of vertex ids (row/col numbers) for a given vertex id
@@ -346,7 +367,6 @@ example::
 
     proc init(id: int, ftrIds: []) {
       this.id = id;
-      //this.ftrId = ftrId;
       super.init();
       for f in ftrIds {
         this.ftrIds.push_back(f);

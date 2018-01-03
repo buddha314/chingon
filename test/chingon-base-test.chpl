@@ -69,6 +69,10 @@ writeln("graph entropy [1,2,3,4,5]: ", vf);
 writeln("g3.W:\n", g3.W);
 g3.addEdge(3,5, 2.71);
 writeln("g3.W with (3,5) = 2.71\n", g3.W);
+g3.updateEdge(3,6, -4.24);
+writeln("g3.W with (3,6) += -4.24\n", g3.W);
+g3.updateEdge(3,6, 1.10);
+writeln("g3.W with (3,6) += 1.10\n", g3.W);
 
 // Start to test against Postgres using NumSuch
 // Data must be loaded as in data/entropy_base_graph_schema.sql
