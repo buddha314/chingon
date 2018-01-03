@@ -185,6 +185,16 @@ the literature is inconsistent, we define some important concepts here.
      neighbor of 1: 4: drax
       
 
+.. method:: proc Graph.boundary(vs: [])
+
+   
+   Looks for the boundary of a subgraph in G and returns an integer domain of vertex ids.
+   
+   :returns: a set of vertex ids not in `vs` but having an edge to a vertex in `vs`
+   :rtype: domain(int)
+   
+    
+
 .. method:: proc Graph.degree()
 
    

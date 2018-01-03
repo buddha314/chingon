@@ -111,3 +111,7 @@ var crystals = buildCrystalsFromPG(
 for c in crystals {
   writeln("crystal id: ", c.id, " -> ", c.ftrIds);
 }
+
+// Check boundary function
+var vs = [1,3,4];
+writeln("Boundary of vs: ", g4.boundary(vs));

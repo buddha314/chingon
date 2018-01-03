@@ -96,3 +96,4 @@ g3.W with (3,6) += 1.10
 g4.name: Vato
 crystal id: 1 -> 1 2 3 4
 crystal id: 2 -> 1 2 3 4 5
+Boundary of vs: {2, 5}

@@ -248,6 +248,31 @@ example::
   }
 
   /*
+  Looks for the boundary of a subgraph in G and returns an integer domain of vertex ids.
+
+  :returns: a set of vertex ids not in `vs` but having an edge to a vertex in `vs`
+  :rtype: domain(int)
+
+   */
+  proc Graph.boundary(vs: []) {
+    var boundary: domain(int);
+    for v in vs {
+      const ns = this.neighbors(v);
+      for n in ns {
+        if !boundary.member(n) {
+          boundary += n;
+        }
+      }
+    }
+    for v in vs {
+      if boundary.member(v) {
+        boundary -= v;
+      }
+    }
+    return boundary;
+  }
+
+  /*
    returns: Array of degrees for each vertex.  This the count of edges, not the sum of weights.
 
 :rtype: int []
