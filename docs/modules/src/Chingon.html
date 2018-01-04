@@ -285,20 +285,24 @@ values on the lower tri are ignored</p>
 <em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">loadW</code><span class="sig-paren">(</span><em>W: []</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.loadW" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="itermethod">
-<dt id="Chingon.Graph.nbs">
-<em class="property">iter </em><code class="descclassname">Graph.</code><code class="descname">nbs</code><span class="sig-paren">(</span><em>vid: int</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.nbs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Internal iterator to get vertex ids that are neighbors of &#8220;vid&#8221;
-:arg vid: A vertex id
-:type vid: int</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">iterator</td>
-</tr>
-</tbody>
-</table>
+<dl class="method">
+<dt id="Chingon.Graph.addEdge">
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">addEdge</code><span class="sig-paren">(</span><em>fromId: int</em>, <em>toId: int</em>, <em>w: real</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.addEdge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an edge between vertices fromId and toId, adds both entries
+if graph is not directed</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">addEdge</code><span class="sig-paren">(</span><em>fromId: int</em>, <em>toId: int</em><span class="sig-paren">)</span></dt>
+<dd><p>Adds an edge and sets the weight to 1.0</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Chingon.Graph.updateEdge">
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">updateEdge</code><span class="sig-paren">(</span><em>fromId: int</em>, <em>toId: int</em>, <em>w: real</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.updateEdge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds w to the edge between fromId and toId, also the reverse if not directed.
+If the edge does not exist, it is added with weight w.</p>
 </dd></dl>
 
 <dl class="method">
@@ -315,6 +319,14 @@ neighbor of 1: 3: groot
 neighbor of 1: 4: drax
 </pre></div>
 </div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int []</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -335,26 +347,42 @@ neighbor of 1: 4: drax
 </dd></dl>
 
 <dl class="method">
+<dt id="Chingon.Graph.boundary">
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">boundary</code><span class="sig-paren">(</span><em>vs: []</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.boundary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Looks for the boundary of a subgraph in G and returns an integer domain of vertex ids.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a set of vertex ids not in <cite>vs</cite> but having an edge to a vertex in <cite>vs</cite></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">domain(int)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="Chingon.Graph.degree">
 <em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">degree</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.degree" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns: Array of degrees for each vertex.  This the count of edges, not the sum of weights.
-rtype: int []</p>
+<dd><blockquote>
+<div>returns: Array of degrees for each vertex.  This the count of edges, not the sum of weights.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int []</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
-<dt id="Chingon.Graph.weights">
-<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">weights</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.weights" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the Adjacency matrix A * 1 to give the total sum of weights
-:TODO: Merge this with the routine below to as to not duplicate code.
-:rtype: real []</p>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">weights</code><span class="sig-paren">(</span><em>vs: []</em><span class="sig-paren">)</span></dt>
-<dd><p>Returns the sum of the incident weights on an &#8220;interior&#8221; set of vertices.  Calculation is to take
-a vector of ones[interior] and do W.dot(o)</p>
-<p>Calls weights(vs, interior=false)</p>
+<dt id="Chingon.Graph.flow">
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">flow</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.flow" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>Returns the Adjacency matrix A * 1 to give the total sum of weights, indicating the flow
+around the vertex</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -367,17 +395,42 @@ a vector of ones[interior] and do W.dot(o)</p>
 
 <dl class="method">
 <dt>
-<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">weights</code><span class="sig-paren">(</span><em>vs: []</em>, <em>interior: bool</em><span class="sig-paren">)</span></dt>
-<dd><p>By default, this calculates the weights for all vertices with edges against the vertices
-in the subgraph vs.</p>
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">flow</code><span class="sig-paren">(</span><em>vs: []</em><span class="sig-paren">)</span></dt>
+<dd><blockquote>
+<div><p>Returns the sum of the incident weights on an &#8220;interior&#8221; set of vertices.  Calculation is to take
+a vector of ones[interior] and do W.dot(o)</p>
+<p>Calls flow(vs, interior=false)</p>
+</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">real []</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">flow</code><span class="sig-paren">(</span><em>vs: []</em>, <em>interior: bool</em><span class="sig-paren">)</span></dt>
+<dd><blockquote>
+<div>By default, this calculates the sum of the weights for all vertices with edges against the vertices
+in the subgraph <code class="xref chpl chpl-param docutils literal"><span class="pre">vs</span></code>.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
 <li><strong>vs</strong> &#8211; Array of vertices to calculate</li>
-<li><strong>interior</strong> &#8211; Bool to indicate if weights should be restricted to vertices in vs</li>
+<li><strong>interior</strong> &#8211; Bool to indicate if weights should be restricted to vertices in <code class="xref chpl chpl-param docutils literal"><span class="pre">vs</span></code></li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Sum of the weights adjacent to vertex set <code class="docutils literal"><span class="pre">vs</span></code> given subgraph <code class="docutils literal"><span class="pre">interior</span></code></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
 </td>
 </tr>
 </tbody>
@@ -392,9 +445,105 @@ in the subgraph vs.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">TODO:</th><td class="field-body">Limit this to a neighborhood of the subgraph, perhaps by checking W^2 first</td>
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>interior</strong> &#8211; A set of vertex string names representing a sub-graph.</li>
+<li><strong>base</strong> &#8211; An array of degrees for the whole graph, should be called by <a class="reference internal" href="#Chingon.Graph.flow" title="Chingon.Graph.flow"><code class="xref chpl chpl-proc docutils literal"><span class="pre">Graph.flow()</span></code></a> beforehand</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Arguments:</th><td class="field-body"><strong>interior</strong> &#8211; A set of vertex string names representing a sub-graph.</td>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Chingon.buildGraphFromPGTables">
+<em class="property">proc </em><code class="descname">buildGraphFromPGTables</code><span class="sig-paren">(</span><em>con: Connection</em>, <em>nameTable: string</em>, <em>nameField: string</em>, <em>idField: string</em>, <em>edgeTable: string</em>, <em>toField: string</em>, <em>fromField: string</em>, <em>wField: string</em>, <em>directed: bool</em>, <em>graphName: string</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.buildGraphFromPGTables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds a Graph object using <a class="reference external" href="https://github.com/buddha314/numsuch">NumSuch</a> MatrixOps module</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>nameTable</strong> &#8211; The name of the Postgres table containing the pairs</li>
+<li><strong>nameField</strong> &#8211; The name of the field in the nameTable containing the names</li>
+<li><strong>idField</strong> &#8211; The name of the field in the nameTable containing the feature ids</li>
+<li><strong>con</strong> &#8211; A CDO Connection to Postgres</li>
+<li><strong>edgeTable</strong> &#8211; The table in PG of edges</li>
+<li><strong>fromField</strong> &#8211; The field of edgeTable containing the id of the head vertex</li>
+<li><strong>toField</strong> &#8211; the field of edgeTable containing the id of the tail vertex</li>
+<li><strong>wField</strong> &#8211; The field of edgeTable containing the weight of the edge</li>
+<li><strong>directed</strong> &#8211; Boolean indicating whether graph is directed</li>
+<li><strong>graphName</strong> &#8211; A name for the graph</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="Chingon.Crystal">
+<em class="property">class </em><code class="descname">Crystal</code><a class="headerlink" href="#Chingon.Crystal" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class to hold sub-graphs.  The language is not standard but convenient.  A &#8220;crystal&#8221; is
+essentially a sub-graph.  During the &#8220;tempering&#8221; process, vertices will be added and removed
+until a minimum entropy is accomplished.  The initial vertex Ids are held in <a class="reference internal" href="#Chingon.Crystal.ftrIds" title="Chingon.Crystal.ftrIds"><code class="xref chpl chpl-const docutils literal"><span class="pre">ftrIds</span></code></a>.  The
+derived minimum entropy is in <a class="reference internal" href="#Chingon.Crystal.minEntropy" title="Chingon.Crystal.minEntropy"><code class="xref chpl chpl-var docutils literal"><span class="pre">minEntropy</span></code></a> and the final vertex ids are in</p>
+<dl class="attribute">
+<dt id="Chingon.Crystal.id">
+<em class="property">const </em><code class="descname">id</code>: string<a class="headerlink" href="#Chingon.Crystal.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="Chingon.Crystal.ftrIds">
+<em class="property">const </em><code class="descname">ftrIds</code>: [1..0] int<a class="headerlink" href="#Chingon.Crystal.ftrIds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="Chingon.Crystal.minEntropy">
+<em class="property">var </em><code class="descname">minEntropy</code>: real<a class="headerlink" href="#Chingon.Crystal.minEntropy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="Chingon.Crystal.init">
+<em class="property">proc </em><code class="descname">init</code><span class="sig-paren">(</span><em>id: string</em>, <em>ftrIds: []</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Crystal.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>id</strong> &#8211; Any string identifier for this crystal.</li>
+<li><strong>ftrIds</strong> &#8211; The set of vertex ids that compose the untempered crystal</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="Chingon.buildCrystalsFromPG">
+<em class="property">proc </em><code class="descname">buildCrystalsFromPG</code><span class="sig-paren">(</span><em>con: Connection</em>, <em>constituentTable: string</em>, <em>idField: string</em>, <em>constituentIdField: string</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.buildCrystalsFromPG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a set of untempered crystals from a Postgres table.
+Requires data within Postgres as in test/data/entropy_base_graph_schema.sql</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
+<li><strong>constituentTable</strong> &#8211; Postgres table with the crystal and their constituent ids</li>
+<li><strong>constituentIdField</strong> &#8211; The field in the constituentTable with the constituent id</li>
+<li><strong>idField</strong> &#8211; The field in the constituentTable that has the crystal id</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An array of crystals from a given Postgres table</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#Chingon.Crystal" title="Chingon.Crystal"><code class="xref chpl chpl-class docutils literal"><span class="pre">Crystal</span></code></a></p>
+</td>
 </tr>
 </tbody>
 </table>

@@ -162,16 +162,48 @@ With symmetric version
   }
 
   /*
-Internal iterator to get vertex ids that are neighbors of "vid"
-:arg vid: A vertex id
-:type vid: int
+   Creates an edge between vertices fromId and toId, adds both entries
+   if graph is not directed
+   */
+  proc Graph.addEdge(fromId: int, toId: int, w: real) {
+    if !this.SD.member(fromId, toId) {
+        this.SD += (fromId, toId);
+        this.W[fromId, toId] = w;
+        if !this.directed {
+          this.SD += (toId, fromId);
+          this.W[toId, fromId] = w;
+        }
+    }
+  }
 
-:rtype: iterator
+  /*
+  Adds an edge and sets the weight to 1.0
+   */
+  proc Graph.addEdge(fromId: int, toId: int) {
+    addEdge(fromId, toId, 1.0);
+  }
+
+  /*
+  Adds w to the edge between fromId and toId, also the reverse if not directed.
+  If the edge does not exist, it is added with weight w.
 
    */
-  iter Graph.nbs(vid: int) {
-    for col in this.SD.dimIter(2,vid) do if col != vid then yield col;
+  proc Graph.updateEdge(fromId: int, toId: int, w: real) {
+    if this.SD.member(fromId, toId) {
+      this.W[fromId, toId] += w;
+      if !this.directed {
+        this.W[toId, fromId] += w;
+      }
+    } else {
+      this.SD += (fromId, toId);
+      this.W[fromId, toId] = w;
+      if !this.directed {
+        this.SD += (toId, fromId);
+        this.W[toId, fromId] = w;
+      }
+    }
   }
+
 
   /*
 returns an array of vertex ids (row/col numbers) for a given vertex id
@@ -185,14 +217,14 @@ well, I don't know about that::
     neighbor of 1: 2: gamora
     neighbor of 1: 3: groot
     neighbor of 1: 4: drax
+
+:rtype: int []
 */
   proc Graph.neighbors(vid: int) {
     var D = {1..0};
     var result: [D] int;
 
     for col in this.SD.dimIter(2,vid) do if col != vid then result.push_back(col);
-    //for x in nbs(vid) do result.push_back(x);
-    //result.push_back(3);
     return result;
   }
 
@@ -216,8 +248,34 @@ example::
   }
 
   /*
+  Looks for the boundary of a subgraph in G and returns an integer domain of vertex ids.
+
+  :returns: a set of vertex ids not in `vs` but having an edge to a vertex in `vs`
+  :rtype: domain(int)
+
+   */
+  proc Graph.boundary(vs: []) {
+    var boundary: domain(int);
+    for v in vs {
+      const ns = this.neighbors(v);
+      for n in ns {
+        if !boundary.member(n) {
+          boundary += n;
+        }
+      }
+    }
+    for v in vs {
+      if boundary.member(v) {
+        boundary -= v;
+      }
+    }
+    return boundary;
+  }
+
+  /*
    returns: Array of degrees for each vertex.  This the count of edges, not the sum of weights.
-   rtype: int []
+
+:rtype: int []
    */
   proc Graph.degree() {
     var ds: [SD.dim(1)] real;
@@ -225,54 +283,42 @@ example::
       ds[i] = neighbors(i).size;
     }
     return ds;
-    /*
-    var diagDom = CSRDomain(SD.dim(1));
-    var one: [SD.dim(1)] A.eltType = 1;
-    // B will be the diagonal vector
-    var B: [diagDom] A.eltType;
-    for i in 1..vdom.size {
-      if SD.member((i,i)) {
-        writeln("yep");
-        diagDom += (i,i);
-        //B[i,i] = A[i,i];
-        B[i,i] = neighbors(i).size;
-      }
-    }
-    //return A.dot(one);
-    //return B;
-    */
   }
 
   /*
-  Returns the Adjacency matrix A * 1 to give the total sum of weights
-  :TODO: Merge this with the routine below to as to not duplicate code.
-  :rtype: real []
+  Returns the Adjacency matrix A * 1 to give the total sum of weights, indicating the flow
+  around the vertex
+
+:rtype: real []
    */
-  proc Graph.weights() {
+  proc Graph.flow() {
     const vs = for i in 1..this.W.domain.dim(1).last do i;
-    return weights(vs=vs, interior=false);
+    return flow(vs=vs, interior=false);
   }
 
   /*
   Returns the sum of the incident weights on an "interior" set of vertices.  Calculation is to take
   a vector of ones[interior] and do W.dot(o)
 
-  Calls weights(vs, interior=false)
+  Calls flow(vs, interior=false)
 
-  :rtype: real []
+:rtype: real []
    */
-  proc Graph.weights(vs:[]) {
-    return weights(vs, false);
+  proc Graph.flow(vs:[]) {
+    return flow(vs, false);
   }
 
   /*
-  By default, this calculates the weights for all vertices with edges against the vertices
-  in the subgraph vs.
+  By default, this calculates the sum of the weights for all vertices with edges against the vertices
+  in the subgraph :param:`vs`.
 
-  :arg vs: Array of vertices to calculate
-  :arg interior: Bool to indicate if weights should be restricted to vertices in vs
+:arg vs: Array of vertices to calculate
+:arg interior: Bool to indicate if weights should be restricted to vertices in :param:`vs`
+
+:returns: Sum of the weights adjacent to vertex set ``vs`` given subgraph ``interior``
+:rtype: int
   */
-  proc Graph.weights(vs:[], interior: bool) {
+  proc Graph.flow(vs:[], interior: bool) {
     var o: [this.W.domain.dim(1)] this.W.eltType = 0;
     forall i in vs {
       o[i] = 1;
@@ -300,12 +346,11 @@ example::
   /*
   The vertexEntropy calculates the ratio of edge strength to the interior and exterior of a given subgraph
 
-  :TODO: Limit this to a neighborhood of the subgraph, perhaps by checking W^2 first
-
   :arg interior: A set of vertex string names representing a sub-graph.
+  :arg base: An array of degrees for the whole graph, should be called by :proc:`Graph.flow()` beforehand
    */
   proc Graph.subgraphEntropy(subgraph: [], base: []) {
-    const ws = weights(vs=subgraph, interior=false);
+    const ws = flow(vs=subgraph, interior=false);
     var e: [base.domain] real;
     forall i in e.domain {
       if base[i] ==0 || ws[i] == 0 {
@@ -316,5 +361,94 @@ example::
       }
     }
     return (+ reduce e);
+  }
+
+  /*
+   Builds a Graph object using `NumSuch <https://github.com/buddha314/numsuch>`_ MatrixOps module
+
+   :arg nameTable: The name of the Postgres table containing the pairs
+   :arg nameField: The name of the field in the nameTable containing the names
+   :arg idField: The name of the field in the nameTable containing the feature ids
+   :arg con: A CDO Connection to Postgres
+   :arg edgeTable: The table in PG of edges
+   :arg fromField: The field of edgeTable containing the id of the head vertex
+   :arg toField: the field of edgeTable containing the id of the tail vertex
+   :arg wField: The field of edgeTable containing the weight of the edge
+   :arg directed: Boolean indicating whether graph is directed
+   :arg graphName: A name for the graph
+
+   */
+  proc buildGraphFromPGTables(con:Connection
+      , nameTable:string, nameField:string, idField:string
+      , edgeTable:string, toField:string, fromField:string, wField:string
+      , directed:bool, graphName:string) {
+    const vertexNames = vNamesFromPG(con=con, nameTable=nameTable, nameField=nameField, idField=idField);
+    const W = wFromPG(con=con, edgeTable=edgeTable, fromField, toField, wField, n=vertexNames.size);
+    var g = new Graph(W=W, directed=false, name=graphName, vnames = vertexNames);
+    return g;
+  }
+
+
+
+  /*
+   A class to hold sub-graphs.  The language is not standard but convenient.  A "crystal" is
+   essentially a sub-graph.  During the "tempering" process, vertices will be added and removed
+   until a minimum entropy is accomplished.  The initial vertex Ids are held in :const:`ftrIds`.  The
+   derived minimum entropy is in :var:`minEntropy` and the final vertex ids are in
+   */
+  class Crystal {
+    const id: string,
+          ftrIds: [1..0] int;
+    var initialEntropy: real,
+        minEntropy: real,
+        minFtrs: [1..0] int;
+
+    /*
+    Constructor
+
+    :arg id: Any string identifier for this crystal.
+    :arg ftrIds: The set of vertex ids that compose the untempered crystal
+     */
+    proc init(id: string, ftrIds: []) {
+      this.id = id;
+      this.initialEntropy = 0.0;
+      this.minEntropy = 0.0;
+      super.init();
+      for f in ftrIds {
+        this.ftrIds.push_back(f);
+      }
+    }
+  }
+
+
+  /*
+  Creates a set of untempered crystals from a Postgres table.
+  Requires data within Postgres as in test/data/entropy_base_graph_schema.sql
+
+  :arg constituentTable: Postgres table with the crystal and their constituent ids
+  :arg constituentIdField: The field in the constituentTable with the constituent id
+  :arg idField: The field in the constituentTable that has the crystal id
+
+  :returns: An array of crystals from a given Postgres table
+  :rtype: :class:`Crystal`
+   */
+  proc buildCrystalsFromPG(
+      con: Connection
+      , constituentTable: string
+      , idField: string
+      , constituentIdField: string
+    ) {
+    var q = "SELECT %s AS cid, array_agg(%s) AS a FROM %s GROUP BY 1 ORDER BY 1, 2";
+    var cursor = con.cursor();
+    cursor.query(q, (idField, constituentIdField, constituentTable));
+    var crystals: [1..0] Crystal;
+    for row in cursor {
+      var cids: [1..0] int;
+      for b in row.getArray('a') {
+        cids.push_back(b: int);
+      }
+      crystals.push_back(new Crystal(row['cid'], cids));
+    }
+    return crystals;
   }
 }
