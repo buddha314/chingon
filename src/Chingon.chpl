@@ -254,7 +254,7 @@ example::
   :rtype: domain(int)
 
    */
-  proc Graph.boundary(vs: []) {
+  proc Graph.boundary(vs: domain(int)) {
     var boundary: domain(int);
     for v in vs {
       const ns = this.neighbors(v);
@@ -292,7 +292,7 @@ example::
 :rtype: real []
    */
   proc Graph.flow() {
-    const vs = for i in 1..this.W.domain.dim(1).last do i;
+    const vs: domain(int) = for i in 1..this.W.domain.dim(1).last do i;
     return flow(vs=vs, interior=false);
   }
 
@@ -304,7 +304,7 @@ example::
 
 :rtype: real []
    */
-  proc Graph.flow(vs:[]) {
+  proc Graph.flow(vs: domain(int)) {
     return flow(vs, false);
   }
 
@@ -318,7 +318,7 @@ example::
 :returns: Sum of the weights adjacent to vertex set ``vs`` given subgraph ``interior``
 :rtype: int
   */
-  proc Graph.flow(vs:[], interior: bool) {
+  proc Graph.flow(vs: domain(int), interior: bool) {
     var o: [this.W.domain.dim(1)] this.W.eltType = 0;
     forall i in vs {
       o[i] = 1;
@@ -349,7 +349,7 @@ example::
   :arg interior: A set of vertex string names representing a sub-graph.
   :arg base: An array of degrees for the whole graph, should be called by :proc:`Graph.flow()` beforehand
    */
-  proc Graph.subgraphEntropy(subgraph: [], base: []) {
+  proc Graph.subgraphEntropy(subgraph: domain(int), base: []) {
     const ws = flow(vs=subgraph, interior=false);
     var e: [base.domain] real;
     forall i in e.domain {
@@ -397,17 +397,17 @@ example::
    derived minimum entropy is in :var:`minEntropy` and the final vertex ids are in
    */
   class Crystal {
-    const id: string,
-          ftrIds: [1..0] int;
-    var initialEntropy: real,
+    const id: string;
+    var ftrIds: domain(int),
+        initialEntropy: real,
         minEntropy: real,
-        minFtrs: [1..0] int;
+        minFtrs: domain(int);
 
     /*
     Constructor
 
     :arg id: Any string identifier for this crystal.
-    :arg ftrIds: The set of vertex ids that compose the untempered crystal
+    :arg ftrIds: The set of vertex ids that compose the untempered crystal stored as ``domain(int)``
      */
     proc init(id: string, ftrIds: []) {
       this.id = id;
@@ -415,7 +415,7 @@ example::
       this.minEntropy = 0.0;
       super.init();
       for f in ftrIds {
-        this.ftrIds.push_back(f);
+        this.ftrIds += f;
       }
     }
   }

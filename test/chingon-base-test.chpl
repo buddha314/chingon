@@ -58,14 +58,14 @@ writeln("\ndegrees:\n", dgs);
 var ws = g3.flow();
 writeln("\nFlow:\n", ws);
 
-var wsi = g3.flow(vs=[1,2,4]);
+var wsi = g3.flow(vs={1,2,4});
 writeln("\nFlow (1,2,4):\n", wsi);
-var wsii = g3.flow(vs=[1,2,4], interior=true);
+var wsii = g3.flow(vs={1,2,4}, interior=true);
 writeln("\nFlow (1,2,4) interior:\n", wsii);
 
-var ve = g3.subgraphEntropy(subgraph=[1,2,3,4], base=g3.flow());
+var ve = g3.subgraphEntropy(subgraph={1,2,3,4}, base=g3.flow());
 writeln("graph entropy [1,2,3,4]: ", ve);
-var vf = g3.subgraphEntropy(subgraph=[1,2,3,4,5], base=g3.flow());
+var vf = g3.subgraphEntropy(subgraph={1,2,3,4,5}, base=g3.flow());
 writeln("graph entropy [1,2,3,4,5]: ", vf);
 
 writeln("g3.W:\n", g3.W);
@@ -113,5 +113,4 @@ for c in crystals {
 }
 
 // Check boundary function
-var vs = [1,3,4];
-writeln("Boundary of vs: ", g4.boundary(vs));
+writeln("Boundary of vs: ", g4.boundary({1,3,4}));

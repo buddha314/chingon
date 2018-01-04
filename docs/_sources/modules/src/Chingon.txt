@@ -185,7 +185,7 @@ the literature is inconsistent, we define some important concepts here.
      neighbor of 1: 4: drax
       
 
-.. method:: proc Graph.boundary(vs: [])
+.. method:: proc Graph.boundary(vs: domain(int))
 
    
    Looks for the boundary of a subgraph in G and returns an integer domain of vertex ids.
@@ -212,7 +212,7 @@ the literature is inconsistent, we define some important concepts here.
    :rtype: real []
       
 
-.. method:: proc Graph.flow(vs: [])
+.. method:: proc Graph.flow(vs: domain(int))
 
    
      Returns the sum of the incident weights on an "interior" set of vertices.  Calculation is to take
@@ -223,7 +223,7 @@ the literature is inconsistent, we define some important concepts here.
    :rtype: real []
       
 
-.. method:: proc Graph.flow(vs: [], interior: bool)
+.. method:: proc Graph.flow(vs: domain(int), interior: bool)
 
    
      By default, this calculates the sum of the weights for all vertices with edges against the vertices
@@ -236,7 +236,7 @@ the literature is inconsistent, we define some important concepts here.
    :rtype: int
      
 
-.. method:: proc Graph.subgraphEntropy(subgraph: [], base: [])
+.. method:: proc Graph.subgraphEntropy(subgraph: domain(int), base: [])
 
    
    The vertexEntropy calculates the ratio of edge strength to the interior and exterior of a given subgraph
@@ -275,9 +275,13 @@ the literature is inconsistent, we define some important concepts here.
 
    .. attribute:: const id: string
 
-   .. attribute:: const ftrIds: [1..0] int
+   .. attribute:: var ftrIds: domain(int)
+
+   .. attribute:: var initialEntropy: real
 
    .. attribute:: var minEntropy: real
+
+   .. attribute:: var minFtrs: domain(int)
 
    .. method:: proc init(id: string, ftrIds: [])
 
@@ -285,7 +289,7 @@ the literature is inconsistent, we define some important concepts here.
       Constructor
       
       :arg id: Any string identifier for this crystal.
-      :arg ftrIds: The set of vertex ids that compose the untempered crystal
+      :arg ftrIds: The set of vertex ids that compose the untempered crystal stored as ``domain(int)``
        
 
 .. function:: proc buildCrystalsFromPG(con: Connection, constituentTable: string, idField: string, constituentIdField: string)

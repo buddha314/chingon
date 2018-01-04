@@ -348,7 +348,7 @@ neighbor of 1: 4: drax
 
 <dl class="method">
 <dt id="Chingon.Graph.boundary">
-<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">boundary</code><span class="sig-paren">(</span><em>vs: []</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.boundary" title="Permalink to this definition">¶</a></dt>
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">boundary</code><span class="sig-paren">(</span><em>vs: domain(int)</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.boundary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Looks for the boundary of a subgraph in G and returns an integer domain of vertex ids.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -395,7 +395,7 @@ around the vertex</div></blockquote>
 
 <dl class="method">
 <dt>
-<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">flow</code><span class="sig-paren">(</span><em>vs: []</em><span class="sig-paren">)</span></dt>
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">flow</code><span class="sig-paren">(</span><em>vs: domain(int)</em><span class="sig-paren">)</span></dt>
 <dd><blockquote>
 <div><p>Returns the sum of the incident weights on an &#8220;interior&#8221; set of vertices.  Calculation is to take
 a vector of ones[interior] and do W.dot(o)</p>
@@ -413,7 +413,7 @@ a vector of ones[interior] and do W.dot(o)</p>
 
 <dl class="method">
 <dt>
-<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">flow</code><span class="sig-paren">(</span><em>vs: []</em>, <em>interior: bool</em><span class="sig-paren">)</span></dt>
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">flow</code><span class="sig-paren">(</span><em>vs: domain(int)</em>, <em>interior: bool</em><span class="sig-paren">)</span></dt>
 <dd><blockquote>
 <div>By default, this calculates the sum of the weights for all vertices with edges against the vertices
 in the subgraph <code class="xref chpl chpl-param docutils literal"><span class="pre">vs</span></code>.</div></blockquote>
@@ -439,7 +439,7 @@ in the subgraph <code class="xref chpl chpl-param docutils literal"><span class=
 
 <dl class="method">
 <dt id="Chingon.Graph.subgraphEntropy">
-<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">subgraphEntropy</code><span class="sig-paren">(</span><em>subgraph: []</em>, <em>base: []</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.subgraphEntropy" title="Permalink to this definition">¶</a></dt>
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">subgraphEntropy</code><span class="sig-paren">(</span><em>subgraph: domain(int)</em>, <em>base: []</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.subgraphEntropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>The vertexEntropy calculates the ratio of edge strength to the interior and exterior of a given subgraph</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -495,12 +495,22 @@ derived minimum entropy is in <a class="reference internal" href="#Chingon.Cryst
 
 <dl class="attribute">
 <dt id="Chingon.Crystal.ftrIds">
-<em class="property">const </em><code class="descname">ftrIds</code>: [1..0] int<a class="headerlink" href="#Chingon.Crystal.ftrIds" title="Permalink to this definition">¶</a></dt>
+<em class="property">var </em><code class="descname">ftrIds</code>: domain(int)<a class="headerlink" href="#Chingon.Crystal.ftrIds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="Chingon.Crystal.initialEntropy">
+<em class="property">var </em><code class="descname">initialEntropy</code>: real<a class="headerlink" href="#Chingon.Crystal.initialEntropy" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="Chingon.Crystal.minEntropy">
 <em class="property">var </em><code class="descname">minEntropy</code>: real<a class="headerlink" href="#Chingon.Crystal.minEntropy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="Chingon.Crystal.minFtrs">
+<em class="property">var </em><code class="descname">minFtrs</code>: domain(int)<a class="headerlink" href="#Chingon.Crystal.minFtrs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -513,7 +523,7 @@ derived minimum entropy is in <a class="reference internal" href="#Chingon.Cryst
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
 <li><strong>id</strong> &#8211; Any string identifier for this crystal.</li>
-<li><strong>ftrIds</strong> &#8211; The set of vertex ids that compose the untempered crystal</li>
+<li><strong>ftrIds</strong> &#8211; The set of vertex ids that compose the untempered crystal stored as <code class="docutils literal"><span class="pre">domain(int)</span></code></li>
 </ul>
 </td>
 </tr>
