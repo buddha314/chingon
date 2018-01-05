@@ -256,20 +256,8 @@ example::
    */
   proc Graph.boundary(vs: domain(int)) {
     var boundary: domain(int);
-    for v in vs {
-      const ns = this.neighbors(v);
-      for n in ns {
-        if !boundary.member(n) {
-          boundary += n;
-        }
-      }
-    }
-    for v in vs {
-      if boundary.member(v) {
-        boundary -= v;
-      }
-    }
-    return boundary;
+    for v in vs do boundary += this.neighbors(v): domain(int);
+    return boundary - vs;
   }
 
   /*
