@@ -364,14 +364,15 @@ example::
    :arg wField: The field of edgeTable containing the weight of the edge
    :arg directed: Boolean indicating whether graph is directed
    :arg graphName: A name for the graph
+   :arg weights: Boolean on whether to use the weights in the table or a 1 (indicator)
 
    */
   proc buildGraphFromPGTables(con:Connection
       , nameTable:string, nameField:string, idField:string
       , edgeTable:string, toField:string, fromField:string, wField:string
-      , directed:bool, graphName:string) {
+      , directed:bool, graphName:string, weights=true) {
     const vertexNames = vNamesFromPG(con=con, nameTable=nameTable, nameField=nameField, idField=idField);
-    const W = wFromPG(con=con, edgeTable=edgeTable, fromField, toField, wField, n=vertexNames.size);
+    const W = wFromPG(con=con, edgeTable=edgeTable, fromField, toField, wField, n=vertexNames.size, weights=weights);
     var g = new Graph(W=W, directed=false, name=graphName, vnames = vertexNames);
     return g;
   }
