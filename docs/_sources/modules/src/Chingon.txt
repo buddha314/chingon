@@ -229,12 +229,26 @@ the literature is inconsistent, we define some important concepts here.
      By default, this calculates the sum of the weights for all vertices with edges against the vertices
      in the subgraph :param:`vs`.
    
-   :arg vs: Array of vertices to calculate
+   :arg vs: Array of vertex ids to calculate
    :arg interior: Bool to indicate if weights should be restricted to vertices in :param:`vs`
    
    :returns: Sum of the weights adjacent to vertex set ``vs`` given subgraph ``interior``
-   :rtype: int
+   :rtype: int []
      
+
+.. method:: proc Graph.flow(vs: domain(string), interior: bool)
+
+   
+     By default, this calculates the sum of the weights for all vertices with edges against the vertices
+     in the subgraph :param:`vs`.
+   
+   :arg vs: Array of vertex names to calculate
+   :arg interior: Bool to indicate if weights should be restricted to vertices in :param:`vs`
+   
+   :returns: Sum of the weights adjacent to vertex set ``vs`` given subgraph ``interior``
+   :rtype: int []
+   
+      
 
 .. method:: proc Graph.subgraphEntropy(subgraph: domain(int), base: [])
 
@@ -245,7 +259,7 @@ the literature is inconsistent, we define some important concepts here.
    :arg base: An array of degrees for the whole graph, should be called by :proc:`Graph.flow()` beforehand
     
 
-.. function:: proc buildGraphFromPGTables(con: Connection, nameTable: string, nameField: string, idField: string, edgeTable: string, toField: string, fromField: string, wField: string, directed: bool, graphName: string)
+.. function:: proc buildGraphFromPGTables(con: Connection, nameTable: string, nameField: string, idField: string, edgeTable: string, toField: string, fromField: string, wField: string, directed: bool, graphName: string, weights = true)
 
    
    Builds a Graph object using `NumSuch <https://github.com/buddha314/numsuch>`_ MatrixOps module
@@ -260,6 +274,7 @@ the literature is inconsistent, we define some important concepts here.
    :arg wField: The field of edgeTable containing the weight of the edge
    :arg directed: Boolean indicating whether graph is directed
    :arg graphName: A name for the graph
+   :arg weights: Boolean on whether to use the weights in the table or a 1 (indicator)
    
    
 

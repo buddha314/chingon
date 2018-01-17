@@ -422,7 +422,7 @@ in the subgraph <code class="xref chpl chpl-param docutils literal"><span class=
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
-<li><strong>vs</strong> &#8211; Array of vertices to calculate</li>
+<li><strong>vs</strong> &#8211; Array of vertex ids to calculate</li>
 <li><strong>interior</strong> &#8211; Bool to indicate if weights should be restricted to vertices in <code class="xref chpl chpl-param docutils literal"><span class="pre">vs</span></code></li>
 </ul>
 </td>
@@ -430,7 +430,33 @@ in the subgraph <code class="xref chpl chpl-param docutils literal"><span class=
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Sum of the weights adjacent to vertex set <code class="docutils literal"><span class="pre">vs</span></code> given subgraph <code class="docutils literal"><span class="pre">interior</span></code></p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int []</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">flow</code><span class="sig-paren">(</span><em>vs: domain(string)</em>, <em>interior: bool</em><span class="sig-paren">)</span></dt>
+<dd><blockquote>
+<div>By default, this calculates the sum of the weights for all vertices with edges against the vertices
+in the subgraph <code class="xref chpl chpl-param docutils literal"><span class="pre">vs</span></code>.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
+<li><strong>vs</strong> &#8211; Array of vertex names to calculate</li>
+<li><strong>interior</strong> &#8211; Bool to indicate if weights should be restricted to vertices in <code class="xref chpl chpl-param docutils literal"><span class="pre">vs</span></code></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Sum of the weights adjacent to vertex set <code class="docutils literal"><span class="pre">vs</span></code> given subgraph <code class="docutils literal"><span class="pre">interior</span></code></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int []</p>
 </td>
 </tr>
 </tbody>
@@ -457,7 +483,7 @@ in the subgraph <code class="xref chpl chpl-param docutils literal"><span class=
 
 <dl class="function">
 <dt id="Chingon.buildGraphFromPGTables">
-<em class="property">proc </em><code class="descname">buildGraphFromPGTables</code><span class="sig-paren">(</span><em>con: Connection</em>, <em>nameTable: string</em>, <em>nameField: string</em>, <em>idField: string</em>, <em>edgeTable: string</em>, <em>toField: string</em>, <em>fromField: string</em>, <em>wField: string</em>, <em>directed: bool</em>, <em>graphName: string</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.buildGraphFromPGTables" title="Permalink to this definition">¶</a></dt>
+<em class="property">proc </em><code class="descname">buildGraphFromPGTables</code><span class="sig-paren">(</span><em>con: Connection</em>, <em>nameTable: string</em>, <em>nameField: string</em>, <em>idField: string</em>, <em>edgeTable: string</em>, <em>toField: string</em>, <em>fromField: string</em>, <em>wField: string</em>, <em>directed: bool</em>, <em>graphName: string</em>, <em>weights = true</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.buildGraphFromPGTables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Builds a Graph object using <a class="reference external" href="https://github.com/buddha314/numsuch">NumSuch</a> MatrixOps module</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -474,6 +500,7 @@ in the subgraph <code class="xref chpl chpl-param docutils literal"><span class=
 <li><strong>wField</strong> &#8211; The field of edgeTable containing the weight of the edge</li>
 <li><strong>directed</strong> &#8211; Boolean indicating whether graph is directed</li>
 <li><strong>graphName</strong> &#8211; A name for the graph</li>
+<li><strong>weights</strong> &#8211; Boolean on whether to use the weights in the table or a 1 (indicator)</li>
 </ul>
 </td>
 </tr>
