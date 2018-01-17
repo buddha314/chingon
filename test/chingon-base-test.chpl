@@ -58,8 +58,14 @@ writeln("\ndegrees:\n", dgs);
 var ws = g3.flow();
 writeln("\nFlow:\n", ws);
 
-var wsi = g3.flow(vs={1,2,4});
+// Get the flow of vertices by vertex id
+var wsi = g3.flow(vs={1,2,4}, interior=false);
 writeln("\nFlow (1,2,4):\n", wsi);
+
+// Get the flow of vertices by name
+var wsin = g3.flow(vs={"star lord", "gamora", "drax"}, interior=false);
+writeln("\nFlow (star lord, gamora, drax):\n", wsin);
+
 var wsii = g3.flow(vs={1,2,4}, interior=true);
 writeln("\nFlow (1,2,4) interior:\n", wsii);
 

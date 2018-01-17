@@ -300,11 +300,11 @@ example::
   By default, this calculates the sum of the weights for all vertices with edges against the vertices
   in the subgraph :param:`vs`.
 
-:arg vs: Array of vertices to calculate
+:arg vs: Array of vertex ids to calculate
 :arg interior: Bool to indicate if weights should be restricted to vertices in :param:`vs`
 
 :returns: Sum of the weights adjacent to vertex set ``vs`` given subgraph ``interior``
-:rtype: int
+:rtype: int []
   */
   proc Graph.flow(vs: domain(int), interior: bool) {
     var o: [this.W.domain.dim(1)] this.W.eltType = 0;
@@ -329,6 +329,22 @@ example::
       }
     }
     return r;
+  }
+
+  /*
+  By default, this calculates the sum of the weights for all vertices with edges against the vertices
+  in the subgraph :param:`vs`.
+
+:arg vs: Array of vertex names to calculate
+:arg interior: Bool to indicate if weights should be restricted to vertices in :param:`vs`
+
+:returns: Sum of the weights adjacent to vertex set ``vs`` given subgraph ``interior``
+:rtype: int []
+
+   */
+  proc Graph.flow(vs: domain(string), interior: bool) {
+    const vids: domain(int) = for n in vs do this.vids(n);
+    return this.flow(vids, interior);
   }
 
   /*
