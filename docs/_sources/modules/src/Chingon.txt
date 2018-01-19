@@ -25,6 +25,8 @@ the literature is inconsistent, we define some important concepts here.
 *  W: The weight matrix, W(i,j) is the weight between vertices i and j and may have non-zero diagonal
 *  Laplacian Matrix L = D - A for simple graphs: https://en.wikipedia.org/wiki/Laplacian_matrix#Laplacian_matrix_for_simple_graphs
 
+An "edge" exists between two vertices, the terminology being "from the tail to the head".
+
 
 .. class:: Graph
 
@@ -131,11 +133,18 @@ the literature is inconsistent, we define some important concepts here.
 
 .. method:: proc Graph.loadW(W: [])
 
+   
+   
+
 .. method:: proc Graph.addEdge(fromId: int, toId: int, w: real)
 
    
    Creates an edge between vertices fromId and toId, adds both entries
    if graph is not directed
+   
+   :arg fromId: vertex id for the tail vertex
+   :arg toId: vertex id for the head vertex
+   :arg w: Weight of the edges
    
 
 .. method:: proc Graph.addEdge(fromId: int, toId: int)
@@ -157,7 +166,7 @@ the literature is inconsistent, we define some important concepts here.
    
    returns an array of vertex ids (row/col numbers) for a given vertex id
    
-   well, I don't know about that::
+   ::
    
        for n in g3.neighbors(1).sorted() {
          writeln("neighbor of 1: ", n, ": ", g3.nameIndex[n]);
@@ -203,6 +212,16 @@ the literature is inconsistent, we define some important concepts here.
    :rtype: int []
       
 
+.. method:: proc Graph.degree(v: int)
+
+   
+   Returns the number of edges adjacent to vertex `v`
+   
+   :arg v: integer
+   
+   :rtype: int []
+   
+
 .. method:: proc Graph.flow()
 
    
@@ -226,8 +245,9 @@ the literature is inconsistent, we define some important concepts here.
 .. method:: proc Graph.flow(vs: domain(int), interior: bool)
 
    
-     By default, this calculates the sum of the weights for all vertices with edges against the vertices
-     in the subgraph :param:`vs`.
+   By default, this calculates the sum of the weights for all vertices with edges against the vertices
+   in the subgraph :param:`vs`.  The return is an array with length nodes(G) with the value of the flow in
+   each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
    
    :arg vs: Array of vertex ids to calculate
    :arg interior: Bool to indicate if weights should be restricted to vertices in :param:`vs`

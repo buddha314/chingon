@@ -148,6 +148,7 @@ In the case of directed matrices, the edge represents the weight or indicator of
 <li>W: The weight matrix, W(i,j) is the weight between vertices i and j and may have non-zero diagonal</li>
 <li>Laplacian Matrix L = D - A for simple graphs: <a class="reference external" href="https://en.wikipedia.org/wiki/Laplacian_matrix#Laplacian_matrix_for_simple_graphs">https://en.wikipedia.org/wiki/Laplacian_matrix#Laplacian_matrix_for_simple_graphs</a></li>
 </ul>
+<p>An &#8220;edge&#8221; exists between two vertices, the terminology being &#8220;from the tail to the head&#8221;.</p>
 <dl class="class">
 <dt id="Chingon.Graph">
 <em class="property">class </em><code class="descname">Graph</code><a class="headerlink" href="#Chingon.Graph" title="Permalink to this definition">¶</a></dt>
@@ -290,6 +291,19 @@ values on the lower tri are ignored</p>
 <em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">addEdge</code><span class="sig-paren">(</span><em>fromId: int</em>, <em>toId: int</em>, <em>w: real</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.addEdge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an edge between vertices fromId and toId, adds both entries
 if graph is not directed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fromId</strong> &#8211; vertex id for the tail vertex</li>
+<li><strong>toId</strong> &#8211; vertex id for the head vertex</li>
+<li><strong>w</strong> &#8211; Weight of the edges</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -309,7 +323,6 @@ If the edge does not exist, it is added with weight w.</p>
 <dt id="Chingon.Graph.neighbors">
 <em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">neighbors</code><span class="sig-paren">(</span><em>vid: int</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.neighbors" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns an array of vertex ids (row/col numbers) for a given vertex id</p>
-<p>well, I don&#8217;t know about that:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span>for n in g3.neighbors(1).sorted() {
   writeln(&quot;neighbor of 1: &quot;, n, &quot;: &quot;, g3.nameIndex[n]);
 }
@@ -378,6 +391,22 @@ neighbor of 1: 4: drax
 </dd></dl>
 
 <dl class="method">
+<dt>
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">degree</code><span class="sig-paren">(</span><em>v: int</em><span class="sig-paren">)</span></dt>
+<dd><p>Returns the number of edges adjacent to vertex <cite>v</cite></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><strong>v</strong> &#8211; integer</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int []</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="Chingon.Graph.flow">
 <em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">flow</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.flow" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
@@ -414,9 +443,9 @@ a vector of ones[interior] and do W.dot(o)</p>
 <dl class="method">
 <dt>
 <em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">flow</code><span class="sig-paren">(</span><em>vs: domain(int)</em>, <em>interior: bool</em><span class="sig-paren">)</span></dt>
-<dd><blockquote>
-<div>By default, this calculates the sum of the weights for all vertices with edges against the vertices
-in the subgraph <code class="xref chpl chpl-param docutils literal"><span class="pre">vs</span></code>.</div></blockquote>
+<dd><p>By default, this calculates the sum of the weights for all vertices with edges against the vertices
+in the subgraph <code class="xref chpl chpl-param docutils literal"><span class="pre">vs</span></code>.  The return is an array with length nodes(G) with the value of the flow in
+each element.  If &#8216;interior=true&#8217; then the elements outside <cite>vs</cite> are zeroed out.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

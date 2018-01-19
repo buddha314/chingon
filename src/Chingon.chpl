@@ -12,6 +12,8 @@ the literature is inconsistent, we define some important concepts here.
 *  W: The weight matrix, W(i,j) is the weight between vertices i and j and may have non-zero diagonal
 *  Laplacian Matrix L = D - A for simple graphs: https://en.wikipedia.org/wiki/Laplacian_matrix#Laplacian_matrix_for_simple_graphs
 
+An "edge" exists between two vertices, the terminology being "from the tail to the head".
+
 */
 module Chingon {
   use Sort,
@@ -142,6 +144,8 @@ With symmetric version
     }
   }
 
+  /*
+   */
   proc Graph.loadW(W: []) {
     for (i,j) in W.domain {
       if !this.directed {  // Only persist the upper triangle
@@ -164,6 +168,10 @@ With symmetric version
   /*
    Creates an edge between vertices fromId and toId, adds both entries
    if graph is not directed
+
+   :arg fromId: vertex id for the tail vertex
+   :arg toId: vertex id for the head vertex
+   :arg w: Weight of the edges
    */
   proc Graph.addEdge(fromId: int, toId: int, w: real) {
     if !this.SD.member(fromId, toId) {
@@ -208,7 +216,7 @@ With symmetric version
   /*
 returns an array of vertex ids (row/col numbers) for a given vertex id
 
-well, I don't know about that::
+::
 
     for n in g3.neighbors(1).sorted() {
       writeln("neighbor of 1: ", n, ": ", g3.nameIndex[n]);
@@ -274,6 +282,17 @@ example::
   }
 
   /*
+  Returns the number of edges adjacent to vertex `v`
+
+  :arg v: integer
+
+  :rtype: int []
+  */
+  proc Graph.degree(v: int) {
+    return neighbors(v).size;
+  }
+
+  /*
   Returns the Adjacency matrix A * 1 to give the total sum of weights, indicating the flow
   around the vertex
 
@@ -297,8 +316,9 @@ example::
   }
 
   /*
-  By default, this calculates the sum of the weights for all vertices with edges against the vertices
-  in the subgraph :param:`vs`.
+By default, this calculates the sum of the weights for all vertices with edges against the vertices
+in the subgraph :param:`vs`.  The return is an array with length nodes(G) with the value of the flow in
+each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
 
 :arg vs: Array of vertex ids to calculate
 :arg interior: Bool to indicate if weights should be restricted to vertices in :param:`vs`
