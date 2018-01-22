@@ -281,7 +281,7 @@ You could add the full paths like (1,4,8) or partial paths like (4,7) and in any
 
 
 :arg pathIds int []: Ordered array of vertex Ids
-:arg directed bool: Is the graph directed?
+:arg directed bool: ``default=true`` Is the path directed?
    */
   proc Graph.addPath(pathIds: [] int, directed=true) {
     var fid = pathIds[1];
@@ -299,6 +299,40 @@ You could add the full paths like (1,4,8) or partial paths like (4,7) and in any
       }
       fid = tid;
     }
+  }
+
+  /*
+As above, but using vertex names.
+
+::
+
+  star lord - gamora
+              - rocket
+              - mantis
+            - groot
+            - drax
+              - yondu
+              - nebula
+              - taserface
+
+Allowing us to build the same graph but using
+
+::
+
+  G.addPath(["star lord", "gamora", "rocket"]);
+  G.addPath(["gamora", "mantis"]);
+  G.addPath(["star lord", "groot"]);
+  G.addPath(["star lord", "drax", "yondu"]);
+  G.addPath(["star lord", "drax", "nebula"]);
+  G.addPath(["drax", "taserface"]);
+
+:arg pathNames string []: Vertex names of the path
+:arg directed bool: ``default=true`` Is the path directed?
+
+   */
+  proc Graph.addPath(pathNames: [] string, directed=true) {
+    const pathIds = for n in pathNames do this.vids[n];
+    this.addPath(pathIds, directed);
   }
 
 

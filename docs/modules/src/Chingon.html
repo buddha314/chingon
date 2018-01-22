@@ -413,7 +413,44 @@ G.addPath([4,7]);
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
 <li><strong>int []</strong> : <em>pathIds</em> &#8211; Ordered array of vertex Ids</li>
-<li><strong>bool</strong> : <em>directed</em> &#8211; Is the graph directed?</li>
+<li><strong>bool</strong> : <em>directed</em> &#8211; <code class="docutils literal"><span class="pre">default=true</span></code> Is the path directed?</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">addPath</code><span class="sig-paren">(</span><em>pathNames: [] string</em>, <em>directed = true</em><span class="sig-paren">)</span></dt>
+<dd><p>As above, but using vertex names.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>star lord - gamora
+            - rocket
+            - mantis
+          - groot
+          - drax
+            - yondu
+            - nebula
+            - taserface
+</pre></div>
+</div>
+<p>Allowing us to build the same graph but using</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">G</span><span class="o">.</span><span class="n">addPath</span><span class="p">([</span><span class="s2">&quot;star lord&quot;</span><span class="p">,</span> <span class="s2">&quot;gamora&quot;</span><span class="p">,</span> <span class="s2">&quot;rocket&quot;</span><span class="p">]);</span>
+<span class="n">G</span><span class="o">.</span><span class="n">addPath</span><span class="p">([</span><span class="s2">&quot;gamora&quot;</span><span class="p">,</span> <span class="s2">&quot;mantis&quot;</span><span class="p">]);</span>
+<span class="n">G</span><span class="o">.</span><span class="n">addPath</span><span class="p">([</span><span class="s2">&quot;star lord&quot;</span><span class="p">,</span> <span class="s2">&quot;groot&quot;</span><span class="p">]);</span>
+<span class="n">G</span><span class="o">.</span><span class="n">addPath</span><span class="p">([</span><span class="s2">&quot;star lord&quot;</span><span class="p">,</span> <span class="s2">&quot;drax&quot;</span><span class="p">,</span> <span class="s2">&quot;yondu&quot;</span><span class="p">]);</span>
+<span class="n">G</span><span class="o">.</span><span class="n">addPath</span><span class="p">([</span><span class="s2">&quot;star lord&quot;</span><span class="p">,</span> <span class="s2">&quot;drax&quot;</span><span class="p">,</span> <span class="s2">&quot;nebula&quot;</span><span class="p">]);</span>
+<span class="n">G</span><span class="o">.</span><span class="n">addPath</span><span class="p">([</span><span class="s2">&quot;drax&quot;</span><span class="p">,</span> <span class="s2">&quot;taserface&quot;</span><span class="p">]);</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>string []</strong> : <em>pathNames</em> &#8211; Vertex names of the path</li>
+<li><strong>bool</strong> : <em>directed</em> &#8211; <code class="docutils literal"><span class="pre">default=true</span></code> Is the path directed?</li>
 </ul>
 </td>
 </tr>

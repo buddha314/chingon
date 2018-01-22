@@ -226,7 +226,39 @@ An "edge" exists between two vertices, the terminology being "from the tail to t
    
    
    :arg pathIds int []: Ordered array of vertex Ids
-   :arg directed bool: Is the graph directed?
+   :arg directed bool: ``default=true`` Is the path directed?
+      
+
+.. method:: proc Graph.addPath(pathNames: [] string, directed = true)
+
+   
+   As above, but using vertex names.
+   
+   ::
+   
+     star lord - gamora
+                 - rocket
+                 - mantis
+               - groot
+               - drax
+                 - yondu
+                 - nebula
+                 - taserface
+   
+   Allowing us to build the same graph but using
+   
+   ::
+   
+     G.addPath(["star lord", "gamora", "rocket"]);
+     G.addPath(["gamora", "mantis"]);
+     G.addPath(["star lord", "groot"]);
+     G.addPath(["star lord", "drax", "yondu"]);
+     G.addPath(["star lord", "drax", "nebula"]);
+     G.addPath(["drax", "taserface"]);
+   
+   :arg pathNames string []: Vertex names of the path
+   :arg directed bool: ``default=true`` Is the path directed?
+   
       
 
 .. method:: proc Graph.neighbors(vid: int)

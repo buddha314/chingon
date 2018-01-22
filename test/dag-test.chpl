@@ -21,3 +21,12 @@ G.addPath([1,4,8]);
 G.addPath([1,4,9]);
 G.addPath([4,7]);
 writeln("G.SD\n", G.SD);
+var H = new Graph(vnames=vn);
+H.addPath(["star lord", "gamora", "rocket"]);
+H.addPath(["gamora", "mantis"]);
+H.addPath(["star lord", "groot"]);
+H.addPath(["star lord", "drax", "yondu"]);
+H.addPath(["star lord", "drax", "nebula"]);
+H.addPath(["drax", "taserface"]);
+
+writeln("H.SD\n", H.SD);
