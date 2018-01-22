@@ -106,6 +106,18 @@ With symmetric version
      }
 
      /*
+     Constructor using just vertex names.  Good for things like `DAGS <https://en.wikipedia.org/wiki/Directed_acyclic_graph>`_
+      */
+     proc init(vnames: [] string) {
+       super.init();
+       for j in 1..vnames.size {
+         this.vnames.add(vnames[j]);
+         this.vids[vnames[j]] = j;
+         this.nameIndex.push_back(vnames[j]);
+       }
+     }
+
+     /*
      :arg W: matrix of reals
      :rtype: Graph
       */
