@@ -148,6 +148,7 @@ In the case of directed matrices, the edge represents the weight or indicator of
 <li>W: The weight matrix, W(i,j) is the weight between vertices i and j and may have non-zero diagonal</li>
 <li>Laplacian Matrix L = D - A for simple graphs: <a class="reference external" href="https://en.wikipedia.org/wiki/Laplacian_matrix#Laplacian_matrix_for_simple_graphs">https://en.wikipedia.org/wiki/Laplacian_matrix#Laplacian_matrix_for_simple_graphs</a></li>
 </ul>
+<p>An &#8220;edge&#8221; exists between two vertices, the terminology being &#8220;from the tail to the head&#8221;.</p>
 <dl class="class">
 <dt id="Chingon.Graph">
 <em class="property">class </em><code class="descname">Graph</code><a class="headerlink" href="#Chingon.Graph" title="Permalink to this definition">¶</a></dt>
@@ -247,8 +248,25 @@ var g3 = new Graph(M=M, name=&quot;Vato&quot;, vnames = vn);
 6)    mantis: 0 0 0 0 1 0 1 1
 7)     yondu: 0 0 0 0 0 1 0 1
 8)    nebula: 0 0 0 0 0 1 1 0
+
+:arg W real []: Array or Matrix representing edges in the graph
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">proc </em><code class="descname">init</code><span class="sig-paren">(</span><em>vnames: [] string</em><span class="sig-paren">)</span></dt>
+<dd><blockquote>
+<div>Constructor using just vertex names.  Good for things like <a class="reference external" href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">DAGS</a></div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><strong>string []</strong> : <em>vnames</em> &#8211; Array of string names</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -258,7 +276,7 @@ var g3 = new Graph(M=M, name=&quot;Vato&quot;, vnames = vn);
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><strong>W</strong> &#8211; matrix of reals</td>
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><strong>real []</strong> : <em>W</em> &#8211; Array or Matrix representing edges in the graph</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Graph</td>
 </tr>
@@ -275,7 +293,7 @@ values on the lower tri are ignored</p>
 
 <dl class="method">
 <dt>
-<em class="property">proc </em><code class="descname">init</code><span class="sig-paren">(</span><em>W: []</em>, <em>directed = bool</em>, <em>name: string</em>, <em>vnames: []</em><span class="sig-paren">)</span></dt>
+<em class="property">proc </em><code class="descname">init</code><span class="sig-paren">(</span><em>W: []</em>, <em>directed = bool</em>, <em>name: string</em>, <em>vnames: [] string</em><span class="sig-paren">)</span></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -283,33 +301,167 @@ values on the lower tri are ignored</p>
 <dl class="method">
 <dt id="Chingon.Graph.loadW">
 <em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">loadW</code><span class="sig-paren">(</span><em>W: []</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.loadW" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><strong>real []</strong> : <em>W</em> &#8211; Array or Matrix representing edges in the graph</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="Chingon.Graph.addEdge">
 <em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">addEdge</code><span class="sig-paren">(</span><em>fromId: int</em>, <em>toId: int</em>, <em>w: real</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.addEdge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an edge between vertices fromId and toId, adds both entries
 if graph is not directed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>int</strong> : <em>toId</em> &#8211; vertex id for the tail vertex</li>
+<li><strong>int</strong> &#8211; vertex id for the head vertex</li>
+<li><strong>real</strong> : <em>w</em> &#8211; Weight of the edges</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt>
 <em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">addEdge</code><span class="sig-paren">(</span><em>fromId: int</em>, <em>toId: int</em><span class="sig-paren">)</span></dt>
 <dd><p>Adds an edge and sets the weight to 1.0</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>int</strong> : <em>toId</em> &#8211; vertex id for the tail vertex</li>
+<li><strong>int</strong> &#8211; vertex id for the head vertex</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="Chingon.Graph.updateEdge">
 <em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">updateEdge</code><span class="sig-paren">(</span><em>fromId: int</em>, <em>toId: int</em>, <em>w: real</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.updateEdge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds w to the edge between fromId and toId, also the reverse if not directed.
-If the edge does not exist, it is added with weight w.</p>
+<dd><blockquote>
+<div>Adds w to the edge between fromId and toId, also the reverse if not directed.
+If the edge does not exist, it is added with weight w.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>int</strong> : <em>toId</em> &#8211; Head vertex id</li>
+<li><strong>int</strong> &#8211; Tail vertex id</li>
+<li><strong>real</strong> : <em>w</em> &#8211; Weight of the edge</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Chingon.Graph.addPath">
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">addPath</code><span class="sig-paren">(</span><em>pathIds: [] int</em>, <em>directed = true</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.addPath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a path between multiple nodes with a default edge weight of 1.  Passing in
+<cite>[1, 2, 5, 9]</cite> will create three edges between (1,2), (2,5) and (5,9). For larger trees,
+it is probably more convenient to build the graph from <cite>W</cite> directly.</p>
+<p>For example, to build the following tree</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>1 - 2
+    - 5
+    - 6
+  - 3
+  - 4
+    - 7
+    - 8
+    - 9
+</pre></div>
+</div>
+<p>You could add the full paths like (1,4,8) or partial paths like (4,7) and in any order</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>var vn: [1..0] string;
+vn.push_back(&quot;star lord&quot;);
+vn.push_back(&quot;gamora&quot;);
+vn.push_back(&quot;groot&quot;);
+vn.push_back(&quot;drax&quot;);
+vn.push_back(&quot;rocket&quot;);
+vn.push_back(&quot;mantis&quot;);
+vn.push_back(&quot;yondu&quot;);
+vn.push_back(&quot;nebula&quot;);
+vn.push_back(&quot;taserface&quot;);
+
+G.addPath([1,2,5]);
+G.addPath([2,6]);
+G.addPath([1,3]);
+G.addPath([1,4,8]);
+G.addPath([1,4,9]);
+G.addPath([4,7]);
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>int []</strong> : <em>pathIds</em> &#8211; Ordered array of vertex Ids</li>
+<li><strong>bool</strong> : <em>directed</em> &#8211; <code class="docutils literal"><span class="pre">default=true</span></code> Is the path directed?</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">addPath</code><span class="sig-paren">(</span><em>pathNames: [] string</em>, <em>directed = true</em><span class="sig-paren">)</span></dt>
+<dd><p>As above, but using vertex names.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>star lord - gamora
+            - rocket
+            - mantis
+          - groot
+          - drax
+            - yondu
+            - nebula
+            - taserface
+</pre></div>
+</div>
+<p>Allowing us to build the same graph but using</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">G</span><span class="o">.</span><span class="n">addPath</span><span class="p">([</span><span class="s2">&quot;star lord&quot;</span><span class="p">,</span> <span class="s2">&quot;gamora&quot;</span><span class="p">,</span> <span class="s2">&quot;rocket&quot;</span><span class="p">]);</span>
+<span class="n">G</span><span class="o">.</span><span class="n">addPath</span><span class="p">([</span><span class="s2">&quot;gamora&quot;</span><span class="p">,</span> <span class="s2">&quot;mantis&quot;</span><span class="p">]);</span>
+<span class="n">G</span><span class="o">.</span><span class="n">addPath</span><span class="p">([</span><span class="s2">&quot;star lord&quot;</span><span class="p">,</span> <span class="s2">&quot;groot&quot;</span><span class="p">]);</span>
+<span class="n">G</span><span class="o">.</span><span class="n">addPath</span><span class="p">([</span><span class="s2">&quot;star lord&quot;</span><span class="p">,</span> <span class="s2">&quot;drax&quot;</span><span class="p">,</span> <span class="s2">&quot;yondu&quot;</span><span class="p">]);</span>
+<span class="n">G</span><span class="o">.</span><span class="n">addPath</span><span class="p">([</span><span class="s2">&quot;star lord&quot;</span><span class="p">,</span> <span class="s2">&quot;drax&quot;</span><span class="p">,</span> <span class="s2">&quot;nebula&quot;</span><span class="p">]);</span>
+<span class="n">G</span><span class="o">.</span><span class="n">addPath</span><span class="p">([</span><span class="s2">&quot;drax&quot;</span><span class="p">,</span> <span class="s2">&quot;taserface&quot;</span><span class="p">]);</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>string []</strong> : <em>pathNames</em> &#8211; Vertex names of the path</li>
+<li><strong>bool</strong> : <em>directed</em> &#8211; <code class="docutils literal"><span class="pre">default=true</span></code> Is the path directed?</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="Chingon.Graph.neighbors">
 <em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">neighbors</code><span class="sig-paren">(</span><em>vid: int</em><span class="sig-paren">)</span><a class="headerlink" href="#Chingon.Graph.neighbors" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns an array of vertex ids (row/col numbers) for a given vertex id</p>
-<p>well, I don&#8217;t know about that:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span>for n in g3.neighbors(1).sorted() {
   writeln(&quot;neighbor of 1: &quot;, n, &quot;: &quot;, g3.nameIndex[n]);
 }
@@ -323,7 +475,9 @@ neighbor of 1: 4: drax
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int []</td>
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><strong>int</strong> : <em>vid</em> &#8211; Vertex Id of interest</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int []</td>
 </tr>
 </tbody>
 </table>
@@ -344,6 +498,14 @@ neighbor of 1: 3: groot
 neighbor of 1: 4: drax
 </pre></div>
 </div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><strong>string</strong> : <em>vname</em> &#8211; Vertex name of interest</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -354,9 +516,11 @@ neighbor of 1: 4: drax
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a set of vertex ids not in <cite>vs</cite> but having an edge to a vertex in <cite>vs</cite></td>
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><strong>domain(int)</strong> : <em>vs</em> &#8211; Domain of ints forming the subgraph</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">domain(int)</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a set of vertex ids not in <cite>vs</cite> but having an edge to a vertex in <cite>vs</cite></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">domain(int)</td>
 </tr>
 </tbody>
 </table>
@@ -372,6 +536,22 @@ neighbor of 1: 4: drax
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int []</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">degree</code><span class="sig-paren">(</span><em>v: int</em><span class="sig-paren">)</span></dt>
+<dd><p>Returns the number of edges adjacent to vertex <cite>v</cite></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><strong>int</strong> : <em>v</em> &#8211; Vertex ID of interest</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int []</td>
 </tr>
 </tbody>
 </table>
@@ -405,7 +585,9 @@ a vector of ones[interior] and do W.dot(o)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">real []</td>
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><strong>domain(int)</strong> : <em>vs</em> &#8211; Domains of ints forming the subgraph</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">real []</td>
 </tr>
 </tbody>
 </table>
@@ -414,16 +596,16 @@ a vector of ones[interior] and do W.dot(o)</p>
 <dl class="method">
 <dt>
 <em class="property">proc </em><code class="descclassname">Graph.</code><code class="descname">flow</code><span class="sig-paren">(</span><em>vs: domain(int)</em>, <em>interior: bool</em><span class="sig-paren">)</span></dt>
-<dd><blockquote>
-<div>By default, this calculates the sum of the weights for all vertices with edges against the vertices
-in the subgraph <code class="xref chpl chpl-param docutils literal"><span class="pre">vs</span></code>.</div></blockquote>
+<dd><p>By default, this calculates the sum of the weights for all vertices with edges against the vertices
+in the subgraph <code class="xref chpl chpl-param docutils literal"><span class="pre">vs</span></code>.  The return is an array with length nodes(G) with the value of the flow in
+each element.  If &#8216;interior=true&#8217; then the elements outside <cite>vs</cite> are zeroed out.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
-<li><strong>vs</strong> &#8211; Array of vertex ids to calculate</li>
-<li><strong>interior</strong> &#8211; Bool to indicate if weights should be restricted to vertices in <code class="xref chpl chpl-param docutils literal"><span class="pre">vs</span></code></li>
+<li><strong>domain(int)</strong> : <em>vs</em> &#8211; Vertex ids to calculate</li>
+<li><strong>bool</strong> : <em>interior</em> &#8211; Indicate if weights should be restricted to vertices in <code class="xref chpl chpl-param docutils literal"><span class="pre">vs</span></code></li>
 </ul>
 </td>
 </tr>
@@ -448,8 +630,8 @@ in the subgraph <code class="xref chpl chpl-param docutils literal"><span class=
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
-<li><strong>vs</strong> &#8211; Array of vertex names to calculate</li>
-<li><strong>interior</strong> &#8211; Bool to indicate if weights should be restricted to vertices in <code class="xref chpl chpl-param docutils literal"><span class="pre">vs</span></code></li>
+<li><strong>domain(string)</strong> : <em>vs</em> &#8211; Vertex names to calculate</li>
+<li><strong>bool</strong> : <em>interior</em> &#8211; Bool to indicate if weights should be restricted to vertices in <code class="xref chpl chpl-param docutils literal"><span class="pre">vs</span></code></li>
 </ul>
 </td>
 </tr>
@@ -472,8 +654,8 @@ in the subgraph <code class="xref chpl chpl-param docutils literal"><span class=
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>interior</strong> &#8211; A set of vertex string names representing a sub-graph.</li>
-<li><strong>base</strong> &#8211; An array of degrees for the whole graph, should be called by <a class="reference internal" href="#Chingon.Graph.flow" title="Chingon.Graph.flow"><code class="xref chpl chpl-proc docutils literal"><span class="pre">Graph.flow()</span></code></a> beforehand</li>
+<li><strong>domain(int)</strong> : <em>subgraph</em> &#8211; A set of vertex string names representing a sub-graph.</li>
+<li><strong>real []</strong> : <em>base</em> &#8211; An array of degrees for the whole graph, should be called by <a class="reference internal" href="#Chingon.Graph.flow" title="Chingon.Graph.flow"><code class="xref chpl chpl-proc docutils literal"><span class="pre">Graph.flow()</span></code></a> beforehand</li>
 </ul>
 </td>
 </tr>
@@ -490,17 +672,17 @@ in the subgraph <code class="xref chpl chpl-param docutils literal"><span class=
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>nameTable</strong> &#8211; The name of the Postgres table containing the pairs</li>
-<li><strong>nameField</strong> &#8211; The name of the field in the nameTable containing the names</li>
-<li><strong>idField</strong> &#8211; The name of the field in the nameTable containing the feature ids</li>
-<li><strong>con</strong> &#8211; A CDO Connection to Postgres</li>
-<li><strong>edgeTable</strong> &#8211; The table in PG of edges</li>
-<li><strong>fromField</strong> &#8211; The field of edgeTable containing the id of the head vertex</li>
-<li><strong>toField</strong> &#8211; the field of edgeTable containing the id of the tail vertex</li>
-<li><strong>wField</strong> &#8211; The field of edgeTable containing the weight of the edge</li>
-<li><strong>directed</strong> &#8211; Boolean indicating whether graph is directed</li>
-<li><strong>graphName</strong> &#8211; A name for the graph</li>
-<li><strong>weights</strong> &#8211; Boolean on whether to use the weights in the table or a 1 (indicator)</li>
+<li><strong>string</strong> : <em>graphName</em> &#8211; The name of the Postgres table containing the pairs</li>
+<li><strong>string</strong> &#8211; The name of the field in the nameTable containing the names</li>
+<li><strong>string</strong> &#8211; The name of the field in the nameTable containing the feature ids</li>
+<li><strong>CDO.Connection</strong> : <em>con</em> &#8211; A <a class="reference external" href="https://github.com/marcoscleison/cdo">CDO Connection</a> to Postgres</li>
+<li><strong>string</strong> &#8211; The table in PG of edges</li>
+<li><strong>string</strong> &#8211; The field of edgeTable containing the id of the head vertex</li>
+<li><strong>string</strong> &#8211; the field of edgeTable containing the id of the tail vertex</li>
+<li><strong>string</strong> &#8211; The field of edgeTable containing the weight of the edge</li>
+<li><strong>bool</strong> : <em>weights</em> &#8211; Indicating whether graph is directed</li>
+<li><strong>string</strong> &#8211; A name for the graph</li>
+<li><strong>bool</strong> &#8211; Boolean on whether to use the weights in the table or a 1 (indicator)</li>
 </ul>
 </td>
 </tr>
@@ -549,8 +731,8 @@ derived minimum entropy is in <a class="reference internal" href="#Chingon.Cryst
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>id</strong> &#8211; Any string identifier for this crystal.</li>
-<li><strong>ftrIds</strong> &#8211; The set of vertex ids that compose the untempered crystal stored as <code class="docutils literal"><span class="pre">domain(int)</span></code></li>
+<li><strong>string</strong> : <em>id</em> &#8211; Any string identifier for this crystal.</li>
+<li><strong>int []</strong> : <em>ftrIds</em> &#8211; The set of vertex ids that compose the untempered crystal stored as <code class="docutils literal"><span class="pre">domain(int)</span></code></li>
 </ul>
 </td>
 </tr>
@@ -570,9 +752,9 @@ Requires data within Postgres as in test/data/entropy_base_graph_schema.sql</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
-<li><strong>constituentTable</strong> &#8211; Postgres table with the crystal and their constituent ids</li>
-<li><strong>constituentIdField</strong> &#8211; The field in the constituentTable with the constituent id</li>
-<li><strong>idField</strong> &#8211; The field in the constituentTable that has the crystal id</li>
+<li><strong>string</strong> : <em>idField</em> &#8211; Postgres table with the crystal and their constituent ids</li>
+<li><strong>string</strong> &#8211; The field in the constituentTable with the constituent id</li>
+<li><strong>string</strong> &#8211; The field in the constituentTable that has the crystal id</li>
 </ul>
 </td>
 </tr>
