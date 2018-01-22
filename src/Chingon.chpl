@@ -98,6 +98,7 @@ With symmetric version
   7)     yondu: 0 0 0 0 0 1 0 1
   8)    nebula: 0 0 0 0 0 1 1 0
 
+  :arg W real []: Array or Matrix representing edges in the graph
      */
      proc init(W: []) {
        this.vdom = {W.domain.dim(1), W.domain.dim(2)};
@@ -107,8 +108,11 @@ With symmetric version
 
      /*
      Constructor using just vertex names.  Good for things like `DAGS <https://en.wikipedia.org/wiki/Directed_acyclic_graph>`_
+
+:arg vnames string []: Array of string names
       */
      proc init(vnames: [] string) {
+       this.vdom = {1..vnames.size, 1..vnames.size};
        super.init();
        for j in 1..vnames.size {
          this.vnames.add(vnames[j]);
@@ -118,7 +122,7 @@ With symmetric version
      }
 
      /*
-     :arg W: matrix of reals
+     :arg W real []: Array or Matrix representing edges in the graph
      :rtype: Graph
       */
      proc init(W:[], name: string) {
@@ -139,7 +143,9 @@ With symmetric version
        this.loadW(W);
      }
 
-    proc init(W:[], directed=bool, name: string, vnames: []) {
+    /*
+     */
+    proc init(W:[], directed=bool, name: string, vnames: [] string) {
       this.vdom = {W.domain.dim(1), W.domain.dim(2)};
       this.name = name;
       this.directed=directed;
@@ -157,6 +163,7 @@ With symmetric version
   }
 
   /*
+  :arg W real []: Array or Matrix representing edges in the graph
    */
   proc Graph.loadW(W: []) {
     for (i,j) in W.domain {
@@ -181,9 +188,9 @@ With symmetric version
    Creates an edge between vertices fromId and toId, adds both entries
    if graph is not directed
 
-   :arg fromId: vertex id for the tail vertex
-   :arg toId: vertex id for the head vertex
-   :arg w: Weight of the edges
+   :arg fromId int: vertex id for the tail vertex
+   :arg toId int: vertex id for the head vertex
+   :arg w real: Weight of the edges
    */
   proc Graph.addEdge(fromId: int, toId: int, w: real) {
     if !this.SD.member(fromId, toId) {
@@ -198,6 +205,10 @@ With symmetric version
 
   /*
   Adds an edge and sets the weight to 1.0
+
+  :arg fromId int: vertex id for the tail vertex
+  :arg toId int: vertex id for the head vertex
+
    */
   proc Graph.addEdge(fromId: int, toId: int) {
     addEdge(fromId, toId, 1.0);
@@ -207,6 +218,9 @@ With symmetric version
   Adds w to the edge between fromId and toId, also the reverse if not directed.
   If the edge does not exist, it is added with weight w.
 
+:arg fromId int: Head vertex id
+:arg toId int: Tail vertex id
+:arg w real: Weight of the edge
    */
   proc Graph.updateEdge(fromId: int, toId: int, w: real) {
     if this.SD.member(fromId, toId) {
@@ -224,6 +238,69 @@ With symmetric version
     }
   }
 
+  /*
+Adds a path between multiple nodes with a default edge weight of 1.  Passing in
+`[1, 2, 5, 9]` will create three edges between (1,2), (2,5) and (5,9). For larger trees,
+it is probably more convenient to build the graph from `W` directly.
+
+For example, to build the following tree
+
+::
+
+  1 - 2
+      - 5
+      - 6
+    - 3
+    - 4
+      - 7
+      - 8
+      - 9
+
+You could add the full paths like (1,4,8) or partial paths like (4,7) and in any order
+
+::
+
+  var vn: [1..0] string;
+  vn.push_back("star lord");
+  vn.push_back("gamora");
+  vn.push_back("groot");
+  vn.push_back("drax");
+  vn.push_back("rocket");
+  vn.push_back("mantis");
+  vn.push_back("yondu");
+  vn.push_back("nebula");
+  vn.push_back("taserface");
+
+  G.addPath([1,2,5]);
+  G.addPath([2,6]);
+  G.addPath([1,3]);
+  G.addPath([1,4,8]);
+  G.addPath([1,4,9]);
+  G.addPath([4,7]);
+
+
+
+:arg pathIds int []: Ordered array of vertex Ids
+:arg directed bool: Is the graph directed?
+   */
+  proc Graph.addPath(pathIds: [] int, directed=true) {
+    var fid = pathIds[1];
+    for j in 2..pathIds.size {
+      var tid = pathIds[j];
+      if !this.SD.member(fid, tid) {
+        this.SD += (fid, tid);
+        if !directed {
+          this.SD += (tid,fid);
+        }
+      }
+      this.W[fid,tid] = 1;
+      if !directed {
+        this.W[tid, fid] = 1;
+      }
+      fid = tid;
+    }
+  }
+
 
   /*
 returns an array of vertex ids (row/col numbers) for a given vertex id
@@ -238,6 +315,7 @@ returns an array of vertex ids (row/col numbers) for a given vertex id
     neighbor of 1: 3: groot
     neighbor of 1: 4: drax
 
+:arg vid int: Vertex Id of interest
 :rtype: int []
 */
   proc Graph.neighbors(vid: int) {
@@ -261,6 +339,8 @@ example::
   neighbor of 1: 2: gamora
   neighbor of 1: 3: groot
   neighbor of 1: 4: drax
+
+:arg  vname string: Vertex name of interest
    */
   proc Graph.neighbors(vname: string) {
     var vid = this.vids[vname];
@@ -270,6 +350,7 @@ example::
   /*
   Looks for the boundary of a subgraph in G and returns an integer domain of vertex ids.
 
+  :arg vs domain(int): Domain of ints forming the subgraph
   :returns: a set of vertex ids not in `vs` but having an edge to a vertex in `vs`
   :rtype: domain(int)
 
@@ -296,7 +377,7 @@ example::
   /*
   Returns the number of edges adjacent to vertex `v`
 
-  :arg v: integer
+  :arg v int: Vertex ID of interest
 
   :rtype: int []
   */
@@ -321,6 +402,7 @@ example::
 
   Calls flow(vs, interior=false)
 
+:arg vs domain(int): Domains of ints forming the subgraph
 :rtype: real []
    */
   proc Graph.flow(vs: domain(int)) {
@@ -332,8 +414,8 @@ By default, this calculates the sum of the weights for all vertices with edges a
 in the subgraph :param:`vs`.  The return is an array with length nodes(G) with the value of the flow in
 each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
 
-:arg vs: Array of vertex ids to calculate
-:arg interior: Bool to indicate if weights should be restricted to vertices in :param:`vs`
+:arg vs domain(int): Vertex ids to calculate
+:arg interior bool: Indicate if weights should be restricted to vertices in :param:`vs`
 
 :returns: Sum of the weights adjacent to vertex set ``vs`` given subgraph ``interior``
 :rtype: int []
@@ -367,8 +449,8 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
   By default, this calculates the sum of the weights for all vertices with edges against the vertices
   in the subgraph :param:`vs`.
 
-:arg vs: Array of vertex names to calculate
-:arg interior: Bool to indicate if weights should be restricted to vertices in :param:`vs`
+:arg vs domain(string): Vertex names to calculate
+:arg interior bool: Bool to indicate if weights should be restricted to vertices in :param:`vs`
 
 :returns: Sum of the weights adjacent to vertex set ``vs`` given subgraph ``interior``
 :rtype: int []
@@ -382,8 +464,8 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
   /*
   The vertexEntropy calculates the ratio of edge strength to the interior and exterior of a given subgraph
 
-  :arg interior: A set of vertex string names representing a sub-graph.
-  :arg base: An array of degrees for the whole graph, should be called by :proc:`Graph.flow()` beforehand
+  :arg subgraph domain(int): A set of vertex string names representing a sub-graph.
+  :arg base real []: An array of degrees for the whole graph, should be called by :proc:`Graph.flow()` beforehand
    */
   proc Graph.subgraphEntropy(subgraph: domain(int), base: []) {
     const ws = flow(vs=subgraph, interior=false);
@@ -402,17 +484,17 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
   /*
    Builds a Graph object using `NumSuch <https://github.com/buddha314/numsuch>`_ MatrixOps module
 
-   :arg nameTable: The name of the Postgres table containing the pairs
-   :arg nameField: The name of the field in the nameTable containing the names
-   :arg idField: The name of the field in the nameTable containing the feature ids
-   :arg con: A CDO Connection to Postgres
-   :arg edgeTable: The table in PG of edges
-   :arg fromField: The field of edgeTable containing the id of the head vertex
-   :arg toField: the field of edgeTable containing the id of the tail vertex
-   :arg wField: The field of edgeTable containing the weight of the edge
-   :arg directed: Boolean indicating whether graph is directed
-   :arg graphName: A name for the graph
-   :arg weights: Boolean on whether to use the weights in the table or a 1 (indicator)
+   :arg nameTable string: The name of the Postgres table containing the pairs
+   :arg nameField string: The name of the field in the nameTable containing the names
+   :arg idField string: The name of the field in the nameTable containing the feature ids
+   :arg con CDO.Connection: A `CDO Connection <https://github.com/marcoscleison/cdo>`_ to Postgres
+   :arg edgeTable string: The table in PG of edges
+   :arg fromField string: The field of edgeTable containing the id of the head vertex
+   :arg toField string: the field of edgeTable containing the id of the tail vertex
+   :arg wField string: The field of edgeTable containing the weight of the edge
+   :arg directed bool: Indicating whether graph is directed
+   :arg graphName string: A name for the graph
+   :arg weights bool: Boolean on whether to use the weights in the table or a 1 (indicator)
 
    */
   proc buildGraphFromPGTables(con:Connection
@@ -443,8 +525,8 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
     /*
     Constructor
 
-    :arg id: Any string identifier for this crystal.
-    :arg ftrIds: The set of vertex ids that compose the untempered crystal stored as ``domain(int)``
+    :arg id string: Any string identifier for this crystal.
+    :arg ftrIds int []: The set of vertex ids that compose the untempered crystal stored as ``domain(int)``
      */
     proc init(id: string, ftrIds: []) {
       this.id = id;
@@ -462,9 +544,9 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
   Creates a set of untempered crystals from a Postgres table.
   Requires data within Postgres as in test/data/entropy_base_graph_schema.sql
 
-  :arg constituentTable: Postgres table with the crystal and their constituent ids
-  :arg constituentIdField: The field in the constituentTable with the constituent id
-  :arg idField: The field in the constituentTable that has the crystal id
+  :arg constituentTable string: Postgres table with the crystal and their constituent ids
+  :arg constituentIdField string: The field in the constituentTable with the constituent id
+  :arg idField string: The field in the constituentTable that has the crystal id
 
   :returns: An array of crystals from a given Postgres table
   :rtype: :class:`Crystal`

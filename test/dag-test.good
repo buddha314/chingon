@@ -1,1 +1,8 @@
-G.vnames	{yondu, star lord, rocket, drax, nebula, groot, gamora, mantis}
+G.vnames	{yondu, star lord, taserface, rocket, drax, nebula, groot, gamora, mantis}
+G.SD
+{
+ (1, 2) (1, 3) (1, 4)
+ (2, 5) (2, 6)
+ (4, 7) (4, 8) (4, 9)
+}
+
