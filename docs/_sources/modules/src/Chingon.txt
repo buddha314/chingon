@@ -115,6 +115,12 @@ An "edge" exists between two vertices, the terminology being "from the tail to t
       
            
 
+   .. method:: proc init(vnames: [] string)
+
+      
+      Constructor using just vertex names.  Good for things like `DAGS <https://en.wikipedia.org/wiki/Directed_acyclic_graph>`_
+       
+
    .. method:: proc init(W: [], name: string)
 
       
