@@ -1,6 +1,8 @@
 /*
-Documentation for Chingon v 0.1.1
+Documentation for Chingon v 0.1.5
 =================================
+
+View [Chingon on Github](https://github.com/buddha314/chingon)
 
 Much of this library is motivated by the book `Graph Algorithms in the Language of Linear Algebra by Kepner and Gilbert <http://bookstore.siam.org/se22/>`_
 
