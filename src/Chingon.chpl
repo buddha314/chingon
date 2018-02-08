@@ -518,6 +518,32 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
   }
 
   /*
+   Gives the topological ordering of a graph
+   :returns: The array providing the topological sorting of the Graph
+   :rtype: int []
+   */
+  proc Graph.topologicalSort() {
+    if !this.directed then halt('The graph must be a Digraph');
+    var A: [1..0] int;
+    var visi: [vdom.dim(1)] bool;
+    for i in this.vdom.dim(1).low..this.vdom.dim(1).high {
+      if visi[i] == false then _topologicalUtil(i, visi, A);
+    }
+    A.reverse();
+    return A;
+  }
+
+  proc Graph._topologicalUtil(x: int, ref visi: [?D1] bool, ref A: [?D2] int) {
+    visi[x] = true;
+    var N = neighbors(x);
+    for i in N {
+      if visi[i] == false then _topologicalUtil(i, visi, A);
+    }
+    A.push_back(x);
+  }
+}
+
+  /*
    Builds a Graph object using `NumSuch <https://github.com/buddha314/numsuch>`_ MatrixOps module
 
    :arg nameTable string: The name of the Postgres table containing the pairs
