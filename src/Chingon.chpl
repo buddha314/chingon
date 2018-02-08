@@ -541,7 +541,6 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
     }
     A.push_back(x);
   }
-}
 
   /*
    Builds a Graph object using `NumSuch <https://github.com/buddha314/numsuch>`_ MatrixOps module
