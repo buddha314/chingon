@@ -26,6 +26,9 @@ module Chingon {
   /*
     A Graph object is a (sparse) matrix with some meta-data attached to it.  The underlying
     matrix
+
+    Notes that uVerts and vVerts are popullated in the case that we have `digraph=true`
+    and represent the left (row) and right (col) vertex names
    */
   class Graph {
     var vdom: domain(2),
@@ -34,10 +37,14 @@ module Chingon {
         //SD = CSRDomain(1..0),
         //A = CSRMatrix(SD),
         name: string,
+        verts: BiMap = new BiMap(),
+        uVerts: BiMap = new BiMap(),
+        vVerts: BiMap = new BiMap(),
         vnames: domain(string),
         vids: [vnames] int,
         nameIndex: [1..0] string,
-        directed: bool = false;
+        directed: bool = false,
+        bipartite: bool = false;
 
 
 
@@ -127,7 +134,7 @@ With symmetric version
      :arg W real []: Array or Matrix representing edges in the graph
      :rtype: Graph
       */
-     proc init(W:[], name: string) {
+     proc init(W:[], name: string, directed: bool = false, bipartite: bool = false) {
        this.vdom = {W.domain.dim(1), W.domain.dim(2)};
        this.name = name;
        super.init();
@@ -162,6 +169,28 @@ With symmetric version
       }
       this.loadW(W);
     }
+
+    proc init(N: NamedMatrix) {
+      super.init();
+      this.loadW(N.X);
+    }
+  }
+
+  /*
+   Factory Method.
+
+   Bipartite Graphs are described here: https://en.wikipedia.org/wiki/Bipartite_graph
+
+   Uses the NamedMatrix class from Chingon to build a graph.
+   :arg bool bipartite: Is this a bipartite graph where there are two sets of nodes
+   */
+  proc Graph.fromNamedEdges(con:Connection
+    , edgeTable: string, fromField: string, toField: string
+    , bipartite=false) {
+    const N = NamedMatrixFromPG(con, edgeTable=edgeTable
+      , fromField=fromField, toField=toField, square=bipartite);
+    var g = new Graph(NamedMatrix=N);
+    return g;
   }
 
   /*
@@ -543,6 +572,19 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
   }
 
   /*
+   Returns the number of vertices in the graph.  For a bipartite graph, this is the number of
+   rows + number of columns.  Otherwise, it is the number of rows = number of columns in
+   the underlying matrix
+   */
+  proc Graph.vcount() {
+    if this.bipartite {
+      return this.W.shape[1] + this.W.shape[2];
+    } else {
+      return this.W.shape[1];
+    }
+  }
+
+  /*
    Builds a Graph object using `NumSuch <https://github.com/buddha314/numsuch>`_ MatrixOps module
 
    :arg nameTable string: The name of the Postgres table containing the pairs
@@ -567,6 +609,8 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
     var g = new Graph(W=W, directed=false, name=graphName, vnames = vertexNames);
     return g;
   }
+
+
 
 
 
