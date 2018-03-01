@@ -30,7 +30,8 @@ module Chingon {
     Notes that uVerts and vVerts are popullated in the case that we have `digraph=true`
     and represent the left (row) and right (col) vertex names
    */
-  class Graph {
+  class Graph: NamedMatrix {
+    /*
     var vdom: domain(2),
         SD: sparse subdomain(vdom) dmapped  CS(compressRows=true),
         W: [SD] real,
@@ -45,6 +46,15 @@ module Chingon {
         nameIndex: [1..0] string,
         directed: bool = false,
         bipartite: bool = false;
+    */
+    var name: string,
+        directed: bool = false,
+        bipartite: bool = false,
+        nameIndex: [1..0] string,
+        verts: BiMap = this.rows.union(this.cols);
+        //vnames: domain(string) = verts.keys,
+        //vids: [vnames] int = verts.ids;
+
 
 
 
@@ -108,12 +118,12 @@ With symmetric version
   8)    nebula: 0 0 0 0 0 1 1 0
 
   :arg W real []: Array or Matrix representing edges in the graph
-     */
-     proc init(W: []) {
-       this.vdom = {W.domain.dim(1), W.domain.dim(2)};
+     */ /*
+     proc init(X: []) {
+       this.vdom = {X.domain.dim(1), X.domain.dim(2)};
        super.init();
-       this.loadW(W);
-     }
+       this.loadX(X);
+     }  */
 
      /*
      Constructor using just vertex names.  Good for things like `DAGS <https://en.wikipedia.org/wiki/Directed_acyclic_graph>`_
@@ -121,12 +131,13 @@ With symmetric version
 :arg vnames string []: Array of string names
       */
      proc init(vnames: [] string) {
-       this.vdom = {1..vnames.size, 1..vnames.size};
+       this.D = {1..vnames.size, 1..vnames.size};
+       this.SD = CSRDomain(D);
+       this.X = [SD] real;
        super.init();
        for j in 1..vnames.size {
-         this.vnames.add(vnames[j]);
-         this.vids[vnames[j]] = j;
-         this.nameIndex.push_back(vnames[j]);
+         this.verts.add(vnames[j]);
+         //this.nameIndex.push_back(verts.ids[vnames[j]]);
        }
      }
 
@@ -134,45 +145,44 @@ With symmetric version
      :arg W real []: Array or Matrix representing edges in the graph
      :rtype: Graph
       */
-     proc init(W:[], name: string, directed: bool = false, bipartite: bool = false) {
-       this.vdom = {W.domain.dim(1), W.domain.dim(2)};
+     proc init(X:[], name: string, directed: bool = false, bipartite: bool = false) {
+       this.D = {X.domain.dim(1), X.domain.dim(2)};
        this.name = name;
        super.init();
-       this.loadW(W);
+       this.loadX(X);
      }
 
      /*
      In an undirected graph, the lower tri is populated from the upper tri, so given
      values on the lower tri are ignored
       */
-     proc init(W:[], directed: bool) {
-       this.vdom = {W.domain.dim(1), W.domain.dim(2)};
+     proc init(X:[], directed: bool) {
+       this.D = {X.domain.dim(1), X.domain.dim(2)};
        this.directed = directed;
        super.init();
-       this.loadW(W);
+       this.loadX(X);
      }
 
     /*
      */
-    proc init(W:[], directed=bool, name: string, vnames: [] string) {
-      this.vdom = {W.domain.dim(1), W.domain.dim(2)};
+    proc init(X:[], directed=bool, name: string, vnames: [] string) {
+      this.D = {X.domain.dim(1), X.domain.dim(2)};
       this.name = name;
       this.directed=directed;
       super.init();
       for j in 1..vnames.size {
-        this.vnames.add(vnames[j]);
-        this.vids[vnames[j]] = j;
-        this.nameIndex.push_back(vnames[j]);
+        this.verts.add(vnames[j]);
+        //this.nameIndex.push_back(vnames[j]);
       }
-      if vnames.size != W.domain.dim(1).size {
+      if vnames.size != X.domain.dim(1).size {
         halt();
       }
-      this.loadW(W);
+      this.loadX(X);
     }
 
     proc init(N: NamedMatrix) {
       super.init();
-      this.loadW(N.X);
+      this.loadX(N.X);
     }
   }
 
@@ -197,7 +207,7 @@ With symmetric version
   :arg W real []: Array or Matrix representing edges in the graph
    */
   proc Graph.loadW(W: []) {
-    for (i,j) in W.domain {
+  /*  for (i,j) in W.domain {
       if !this.directed {  // Only persist the upper triangle
         if (i <= j) {
           this.SD += (i,j);
@@ -212,7 +222,8 @@ With symmetric version
         this.SD += (i,j);
         this.W(i,j) = W(i,j);
       }
-    }
+    }*/
+    this.loadX(X:[], shape: 2*int = (-1,-1));
   }
 
   /*
@@ -224,14 +235,23 @@ With symmetric version
    :arg w real: Weight of the edges
    */
   proc Graph.addEdge(fromId: int, toId: int, w: real) {
-    if !this.SD.member(fromId, toId) {
+    /*if !this.SD.member(fromId, toId) {
         this.SD += (fromId, toId);
         this.W[fromId, toId] = w;
         if !this.directed {
           this.SD += (toId, fromId);
           this.W[toId, fromId] = w;
         }
-    }
+    }*/
+    this.set(fromId, toId, w);
+  }
+
+  proc Graph.addEdge(from: string, to: string, w: real) {
+    this.set(from, to, w);
+  }
+
+  proc Graph.addEdge(from: string, to: string) {
+    this.set(from, to, 1.0);
   }
 
   /*
@@ -242,7 +262,8 @@ With symmetric version
 
    */
   proc Graph.addEdge(fromId: int, toId: int) {
-    addEdge(fromId, toId, 1.0);
+    //addEdge(fromId, toId, 1.0);
+    this.set(fromId, toId, 1.0);
   }
 
   /*
@@ -254,7 +275,7 @@ With symmetric version
 :arg w real: Weight of the edge
    */
   proc Graph.updateEdge(fromId: int, toId: int, w: real) {
-    if this.SD.member(fromId, toId) {
+    /*if this.SD.member(fromId, toId) {
       this.W[fromId, toId] += w;
       if !this.directed {
         this.W[toId, fromId] += w;
@@ -266,7 +287,12 @@ With symmetric version
         this.SD += (toId, fromId);
         this.W[toId, fromId] = w;
       }
-    }
+    }*/
+    this.update(fromId, toId, w);
+  }
+
+  proc Graph.update(from: string, to: string, w:real) {
+    this.update(from, to, w);
   }
 
   /*
@@ -318,17 +344,23 @@ You could add the full paths like (1,4,8) or partial paths like (4,7) and in any
     var fid = pathIds[1];
     for j in 2..pathIds.size {
       var tid = pathIds[j];
-      if !this.SD.member(fid, tid) {
-        this.SD += (fid, tid);
-        if !directed {
-          this.SD += (tid,fid);
-        }
-      }
-      this.W[fid,tid] = 1;
+      this.set(fid, tid, 1.0);
       if !directed {
-        this.W[tid, fid] = 1;
+        this.set(tid, fid, 1.0);
       }
       fid = tid;
+    }
+  }
+
+  proc Graph.addPath(pathNames: [] string, directed = true) {
+    var fin = pathNames[1];
+    for j in 2..pathNames.size {
+      var tin = pathNames[j];
+      this.set(fin, tin, 1.0);
+      if !directed {
+        this.set(tin, fin, 1.0);
+      }
+      fin = tin;
     }
   }
 
@@ -361,10 +393,6 @@ Allowing us to build the same graph but using
 :arg directed bool: ``default=true`` Is the path directed?
 
    */
-  proc Graph.addPath(pathNames: [] string, directed=true) {
-    const pathIds = for n in pathNames do this.vids[n];
-    this.addPath(pathIds, directed);
-  }
 
 
   /*
@@ -408,7 +436,7 @@ example::
 :arg  vname string: Vertex name of interest
    */
   proc Graph.neighbors(vname: string) {
-    var vid = this.vids[vname];
+    var vid = this.verts.ids[vname];
     return neighbors(vid);
   }
 
@@ -450,6 +478,10 @@ example::
     return neighbors(v).size;
   }
 
+  proc Graph.degree(vname: string) {
+    return neighbors(vname).size;
+  }
+
   /*
   Returns the Adjacency matrix A * 1 to give the total sum of weights, indicating the flow
   around the vertex
@@ -457,7 +489,7 @@ example::
 :rtype: real []
    */
   proc Graph.flow() {
-    const vs: domain(int) = for i in 1..this.W.domain.dim(1).last do i;
+    const vs: domain(int) = for i in 1..this.X.domain.dim(1).last do i;
     return flow(vs=vs, interior=false);
   }
 
@@ -486,24 +518,24 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
 :rtype: int []
   */
   proc Graph.flow(vs: domain(int), interior: bool) {
-    var o: [this.W.domain.dim(1)] this.W.eltType = 0;
+    var o: [this.X.domain.dim(1)] this.X.eltType = 0;
     forall i in vs {
       o[i] = 1;
     }
-    var r: [o.domain] this.W.eltType = this.W.dot(o);
+    var r: [o.domain] this.X.eltType = this.X.dot(o);
 
     if interior {
       forall i in 1..o.size {
         if o[i] == 0 {
           r[i] = 0;
         } else if SD.member((i,i)) {
-          r[i] -= this.W[i,i];
+          r[i] -= this.get(i,i);
         }
       }
     } else {
       forall i in 1..o.size {
         if SD.member((i,i)) {
-          r[i] -= this.W[i,i];
+          r[i] -= this.get(i,i);
         }
       }
     }
@@ -522,7 +554,7 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
 
    */
   proc Graph.flow(vs: domain(string), interior: bool) {
-    const vids: domain(int) = for n in vs do this.vids(n);
+    const vids: domain(int) = for n in vs do this.verts.ids[n];
     return this.flow(vids, interior);
   }
 
@@ -578,9 +610,9 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
    */
   proc Graph.vcount() {
     if this.bipartite {
-      return this.W.shape[1] + this.W.shape[2];
+      return this.X.shape[1] + this.X.shape[2];
     } else {
-      return this.W.shape[1];
+      return this.X.shape[1];
     }
   }
 
@@ -599,14 +631,14 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
    :arg graphName string: A name for the graph
    :arg weights bool: Boolean on whether to use the weights in the table or a 1 (indicator)
 
-   */
+   */ // Deprecated in favor of Graph.fromNamedPG() ?
   proc buildGraphFromPGTables(con:Connection
       , nameTable:string, nameField:string, idField:string
       , edgeTable:string, toField:string, fromField:string, wField:string
       , directed:bool, graphName:string, weights=true) {
     const vertexNames = vNamesFromPG(con=con, nameTable=nameTable, nameField=nameField, idField=idField);
-    const W = wFromPG(con=con, edgeTable=edgeTable, fromField, toField, wField, n=vertexNames.size, weights=weights);
-    var g = new Graph(W=W, directed=false, name=graphName, vnames = vertexNames);
+    const X = wFromPG(con=con, edgeTable=edgeTable, fromField, toField, wField, n=vertexNames.size, weights=weights);
+    var g = new Graph(X=X, directed=false, name=graphName, vnames = vertexNames);
     return g;
   }
 
