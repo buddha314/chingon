@@ -1,6 +1,7 @@
 use Postgres,
     LinearAlgebra,
-    Chingon;
+    Chingon,
+    Assert;
 
 var graphName = "Vato";
 var vn: [1..0] string;
@@ -31,18 +32,24 @@ SD += (6,8); W[6,8] = 1;
 SD += (7,8); W[7,8] = 1;
 var g = new Graph(W=W);
 writeln(g.W);
-writeln("g.directed: ", g.directed);
+assert(g.directed == false, "g.directed is ", g.directed, " expected false");
 var gd = new Graph(W=W, directed=false);
-writeln("\ngd.directed: ", gd.directed);
-writeln("\ngd.W\n", gd.W);
+assert(gd.directed == false, "gd.directed is ", gd.directed, " expected false");
+assert(gd.vcount() == 8, "gd.vcount() is ", gd.vcount(), " expected 8");
 var g2 = new Graph(W=W, name="Vato");
-writeln("g2 name: ", g2.name);
+assert(g2.name == "Vato", "g2.name is ", g2.name, " expected 'Vato'");
 var g3 = new Graph(W=W, directed=false, name="Vato", vnames = vn);
-writeln("g3 name: ", g3.name);
+assert(g3.name == "Vato", "g3.name is ", g3.name, " expected 'Vato'");
 
+const g3nvs = g3.vnames.sorted();
+assert(g3nvs[1] == 'drax', "g3nvs[1] is ", g3nvs[1] , " expected 'drax'");
+assert(g3nvs[3] == 'groot', "g3nvs[3] is ", g3nvs[3] , " expected 'groot'");
+assert(g3nvs[4] == 'mantis', "g3nvs[4] is ", g3nvs[4] , " expected 'mantis'");
+assert(g3nvs[8] == 'yondu', "g3nvs[8] is ", g3nvs[8] , " expected 'yondu'");
+/*
 for v in g3.vnames.sorted() {
   writeln("g3 vids[", v, "]: ", g3.vids[v]);
-}
+} */
 const p:int = 4;
 // Check for list of vertex IDs adjacent to p
 for n in g3.neighbors(p).sorted() {
