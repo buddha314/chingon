@@ -1,1 +1,1 @@
--M../src -M/Users/buddha/github/cdo/src -M/Users/buddha/github/buddha314/numsuch/src -L/usr/local/Cellar/openblas/0.2.20/ -lblas -I/usr/local/Cellar/openblas/0.2.20/include
+-M../src -M/projects/numsuch/src -M/projects/cdo/src -L/usr/local/Cellar/openblas/0.2.20/lib -lblas -I/usr/local/Cellar/openblas/0.2.20/include -I/usr/include/postgresql
