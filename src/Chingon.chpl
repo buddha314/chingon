@@ -31,30 +31,12 @@ module Chingon {
     and represent the left (row) and right (col) vertex names
    */
   class Graph: NamedMatrix {
-    /*
-    var vdom: domain(2),
-        SD: sparse subdomain(vdom) dmapped  CS(compressRows=true),
-        W: [SD] real,
-        //SD = CSRDomain(1..0),
-        //A = CSRMatrix(SD),
-        name: string,
-        verts: BiMap = new BiMap(),
-        uVerts: BiMap = new BiMap(),
-        vVerts: BiMap = new BiMap(),
-        vnames: domain(string),
-        vids: [vnames] int,
-        nameIndex: [1..0] string,
-        directed: bool = false,
-        bipartite: bool = false;
-    */
     var name: string,
         directed: bool = false,
         bipartite: bool = false,
         verts: BiMap = super.rows.uni(super.cols),
         uVerts: BiMap = super.rows,
         vVerts: BiMap = super.cols;
-        //vnames: domain(string) = verts.keys,
-        //vids: [vnames] int = verts.ids;
 
 
 
@@ -119,12 +101,12 @@ With symmetric version
   8)    nebula: 0 0 0 0 0 1 1 0
 
   :arg W real []: Array or Matrix representing edges in the graph
-     */ /*
+     */
      proc init(X: []) {
-       this.vdom = {X.domain.dim(1), X.domain.dim(2)};
        super.init();
+       this.D = {X.domain.dim(1), X.domain.dim(2)};
        this.loadX(X);
-     }  */
+     }
 
      /*
      Constructor using just vertex names.  Good for things like `DAGS <https://en.wikipedia.org/wiki/Directed_acyclic_graph>`_
@@ -138,7 +120,6 @@ With symmetric version
        this.X = [SD] real;
        for j in 1..vnames.size {
          this.verts.add(vnames[j]);
-         //this.nameIndex.push_back(verts.ids[vnames[j]]);
        }
      }
 
@@ -173,7 +154,6 @@ With symmetric version
       this.directed=directed;
       for j in 1..vnames.size {
         this.verts.add(vnames[j]);
-        //this.nameIndex.push_back(vnames[j]);
       }
       if vnames.size != X.domain.dim(1).size {
         halt();
@@ -206,28 +186,9 @@ With symmetric version
 
   /*
   :arg W real []: Array or Matrix representing edges in the graph
-   */ /*
-  proc Graph.loadW(W: []) {
-   for (i,j) in W.domain {
-      if !this.directed {  // Only persist the upper triangle
-        if (i <= j) {
-          this.SD += (i,j);
-          this.W(i,j) = W(i,j);
-          // Create the lower triangular
-          if (i != j) {
-            this.SD += (j,i);
-            this.W(j,i) = W(i,j);
-          }
-        }
-      } else {
-        this.SD += (i,j);
-        this.W(i,j) = W(i,j);
-      }
-    }
-      this.loadX(X:[], shape: 2*int = (-1,-1));
-  }*/
+   */
 
-  /*
+/*
    Creates an edge between vertices fromId and toId, adds both entries
    if graph is not directed
 
@@ -236,14 +197,6 @@ With symmetric version
    :arg w real: Weight of the edges
    */
   proc Graph.addEdge(fromId: int, toId: int, w: real) {
-    /*if !this.SD.member(fromId, toId) {
-        this.SD += (fromId, toId);
-        this.W[fromId, toId] = w;
-        if !this.directed {
-          this.SD += (toId, fromId);
-          this.W[toId, fromId] = w;
-        }
-    }*/
     this.set(fromId, toId, w);
   }
 
@@ -263,7 +216,6 @@ With symmetric version
 
    */
   proc Graph.addEdge(fromId: int, toId: int) {
-    //addEdge(fromId, toId, 1.0);
     this.set(fromId, toId, 1.0);
   }
 
@@ -276,19 +228,6 @@ With symmetric version
 :arg w real: Weight of the edge
    */
   proc Graph.updateEdge(fromId: int, toId: int, w: real) {
-    /*if this.SD.member(fromId, toId) {
-      this.W[fromId, toId] += w;
-      if !this.directed {
-        this.W[toId, fromId] += w;
-      }
-    } else {
-      this.SD += (fromId, toId);
-      this.W[fromId, toId] = w;
-      if !this.directed {
-        this.SD += (toId, fromId);
-        this.W[toId, fromId] = w;
-      }
-    }*/
     this.update(fromId, toId, w);
   }
 
@@ -632,16 +571,7 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
    :arg graphName string: A name for the graph
    :arg weights bool: Boolean on whether to use the weights in the table or a 1 (indicator)
 
-   */ // Deprecated in favor of Graph.fromNamedPG() ?
-  proc buildGraphFromPGTables(con:Connection
-      , nameTable:string, nameField:string, idField:string
-      , edgeTable:string, toField:string, fromField:string, wField:string
-      , directed:bool, graphName:string, weights=true) {
-    const vertexNames = vNamesFromPG(con=con, nameTable=nameTable, nameField=nameField, idField=idField);
-    const X = wFromPG(con=con, edgeTable=edgeTable, fromField, toField, wField, n=vertexNames.size, weights=weights);
-    var g = new Graph(X=X, directed=false, name=graphName, vnames = vertexNames);
-    return g;
-  }
+   */
 
 
 
@@ -709,3 +639,25 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
     return crystals;
   }
 }
+
+
+/*
+proc Graph.loadW(W: []) {
+ for (i,j) in W.domain {
+    if !this.directed {  // Only persist the upper triangle
+      if (i <= j) {
+        this.SD += (i,j);
+        this.W(i,j) = W(i,j);
+        // Create the lower triangular
+        if (i != j) {
+          this.SD += (j,i);
+          this.W(j,i) = W(i,j);
+        }
+      }
+    } else {
+      this.SD += (i,j);
+      this.W(i,j) = W(i,j);
+    }
+  }
+    this.loadX(X:[], shape: 2*int = (-1,-1));
+}*/

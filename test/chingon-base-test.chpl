@@ -30,7 +30,7 @@ SD += (5,6); X[5,6] = 1;
 SD += (6,7); X[6,7] = 1;
 SD += (6,8); X[6,8] = 1;
 SD += (7,8); X[7,8] = 1;
-var g = new Graph(X=X);
+var g = new Graph(X=X, directed = false);
 writeln(g.X);
 assert(g.directed == false, "g.directed is ", g.directed, " expected false");
 var gd = new Graph(X=X, directed=false);
