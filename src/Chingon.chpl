@@ -518,6 +518,19 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
     return (+ reduce e);
   }
 
+
+
+
+
+
+  proc buildGraphFromPGTables(con:Connection
+      , nameTable:string, nameField:string, idField:string
+      , edgeTable:string, toField:string, fromField:string, wField:string
+      , directed:bool, graphName:string, weights=true) {
+    const nm = NamedMatrixFromPG(con=con, edgeTable=edgeTable, fromField=fromField, toField=toField, wField=wField, square=false);
+    var g = new Graph(N=nm);
+    return g;
+}
   /*
    Gives the topological ordering of a graph
    :returns: The array providing the topological sorting of the Graph
