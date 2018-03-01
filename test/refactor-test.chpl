@@ -32,5 +32,5 @@ use Postgres,
 
     var nm = new NamedMatrix(X=X);
 
-    var g = new Graph(X=X);
+    var g = new Graph(X=X, directed = false);
     writeln(g.X);

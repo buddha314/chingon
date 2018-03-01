@@ -41,7 +41,7 @@ assert(g2.name == "Vato", "g2.name is ", g2.name, " expected 'Vato'");
 var g3 = new Graph(X=X, directed=false, name="Vato", vnames = vn);
 assert(g3.name == "Vato", "g3.name is ", g3.name, " expected 'Vato'");
 
-const g3nvs = g3.vnames.sorted();
+const g3nvs = g3.verts.keys.sorted();
 assert(g3nvs[1] == 'drax', "g3nvs[1] is ", g3nvs[1] , " expected 'drax'");
 assert(g3nvs[3] == 'groot', "g3nvs[3] is ", g3nvs[3] , " expected 'groot'");
 assert(g3nvs[4] == 'mantis', "g3nvs[4] is ", g3nvs[4] , " expected 'mantis'");
@@ -53,11 +53,11 @@ for v in g3.vnames.sorted() {
 const p:int = 4;
 // Check for list of vertex IDs adjacent to p
 for n in g3.neighbors(p).sorted() {
-  writeln("neighbor of ", g3.nameIndex[p], ": ", n, ": ", g3.nameIndex[n]);
+  writeln("neighbor of ", g3.verts.idx[p], ": ", n, ": ", g3.verts.idx[n]);
 }
 // Check for list of vertex IDs adjacent to vertex with name "drax"
 for n in g3.neighbors("drax").sorted() {
-  writeln("neighbor of drax: ", n, ": ", g3.nameIndex[n]);
+  writeln("neighbor of drax: ", n, ": ", g3.verts.idx[n]);
 }
 var dgs = g3.degree();
 writeln("\ndegrees:\n", dgs);
