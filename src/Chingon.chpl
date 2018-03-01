@@ -50,8 +50,9 @@ module Chingon {
     var name: string,
         directed: bool = false,
         bipartite: bool = false,
-        nameIndex: [1..0] string,
-        verts: BiMap = this.rows.union(this.cols);
+        verts: BiMap = super.rows.uni(super.cols),
+        uVerts: BiMap = super.rows,
+        vVerts: BiMap = super.cols;
         //vnames: domain(string) = verts.keys,
         //vids: [vnames] int = verts.ids;
 
@@ -131,10 +132,10 @@ With symmetric version
 :arg vnames string []: Array of string names
       */
      proc init(vnames: [] string) {
+       super.init();
        this.D = {1..vnames.size, 1..vnames.size};
        this.SD = CSRDomain(D);
        this.X = [SD] real;
-       super.init();
        for j in 1..vnames.size {
          this.verts.add(vnames[j]);
          //this.nameIndex.push_back(verts.ids[vnames[j]]);
@@ -146,9 +147,9 @@ With symmetric version
      :rtype: Graph
       */
      proc init(X:[], name: string, directed: bool = false, bipartite: bool = false) {
+       super.init();
        this.D = {X.domain.dim(1), X.domain.dim(2)};
        this.name = name;
-       super.init();
        this.loadX(X);
      }
 
@@ -157,19 +158,19 @@ With symmetric version
      values on the lower tri are ignored
       */
      proc init(X:[], directed: bool) {
+       super.init();
        this.D = {X.domain.dim(1), X.domain.dim(2)};
        this.directed = directed;
-       super.init();
        this.loadX(X);
      }
 
     /*
      */
     proc init(X:[], directed=bool, name: string, vnames: [] string) {
+      super.init();
       this.D = {X.domain.dim(1), X.domain.dim(2)};
       this.name = name;
       this.directed=directed;
-      super.init();
       for j in 1..vnames.size {
         this.verts.add(vnames[j]);
         //this.nameIndex.push_back(vnames[j]);
@@ -205,9 +206,9 @@ With symmetric version
 
   /*
   :arg W real []: Array or Matrix representing edges in the graph
-   */
+   */ /*
   proc Graph.loadW(W: []) {
-  /*  for (i,j) in W.domain {
+   for (i,j) in W.domain {
       if !this.directed {  // Only persist the upper triangle
         if (i <= j) {
           this.SD += (i,j);
@@ -222,9 +223,9 @@ With symmetric version
         this.SD += (i,j);
         this.W(i,j) = W(i,j);
       }
-    }*/
-    this.loadX(X:[], shape: 2*int = (-1,-1));
-  }
+    }
+      this.loadX(X:[], shape: 2*int = (-1,-1));
+  }*/
 
   /*
    Creates an edge between vertices fromId and toId, adds both entries
@@ -586,8 +587,8 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
   proc Graph.topologicalSort() {
     if !this.directed then halt('The graph must be a Digraph');
     var A: [1..0] int;
-    var visi: [vdom.dim(1)] bool;
-    for i in this.vdom.dim(1).low..this.vdom.dim(1).high {
+    var visi: [D.dim(1)] bool;
+    for i in this.D.dim(1).low..this.D.dim(1).high {
       if visi[i] == false then _topologicalUtil(i, visi, A);
     }
     A.reverse();
