@@ -107,7 +107,6 @@ const nameTable = "r.cho_names",
 var con = PgConnectionFactory(host=DB_HOST, user=DB_USER, database=DB_NAME, passwd=DB_PWD);
 
 var g4 = buildGraphFromPGTables(con=con
-  , nameTable=nameTable, nameField=nameField, idField=idField
   , edgeTable=edgeTable, toField=toField, fromField=fromField, wField=wField
   , directed=false, graphName=graphName);
 writeln("g4.name: ", g4.name);

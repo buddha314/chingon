@@ -524,11 +524,10 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
 
 
   proc buildGraphFromPGTables(con:Connection
-      , nameTable:string, nameField:string, idField:string
       , edgeTable:string, toField:string, fromField:string, wField:string
-      , directed:bool, graphName:string, weights=true) {
+      , directed:bool, graphName:string) {
     const nm = NamedMatrixFromPG(con=con, edgeTable=edgeTable, fromField=fromField, toField=toField, wField=wField, square=false);
-    var g = new Graph(N=nm);
+    var g = new Graph(N=nm, name = graphName);
     return g;
 }
   /*
