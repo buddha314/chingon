@@ -34,9 +34,9 @@ module Chingon {
     var name: string,
         directed: bool = false,
         bipartite: bool = false,
-        verts: BiMap = super.rows.uni(super.cols),
-        uVerts: BiMap = super.rows,
-        vVerts: BiMap = super.cols;
+        verts: BiMap,
+        uVerts: BiMap,
+        vVerts: BiMap;
 
 
 
@@ -163,6 +163,9 @@ With symmetric version
 
     proc init(N: NamedMatrix) {
       super.init();
+      this.verts = super.rows.uni(super.cols);
+      this.uVerts = super.rows;
+      this.vVerts = super.cols;
       this.loadX(N.X);
     }
   }
