@@ -104,7 +104,8 @@ With symmetric version
      */
      proc init(X: []) {
        super.init(X);
-       this.D = {X.domain.dim(1), X.domain.dim(2)};
+       this.initDone();
+//       this.D = {X.domain.dim(1), X.domain.dim(2)}; //NOT NECESSARY BECAUSE OF super.init(X)
   //     this.loadX(X);
      }
 
@@ -112,16 +113,16 @@ With symmetric version
      Constructor using just vertex names.  Good for things like `DAGS <https://en.wikipedia.org/wiki/Directed_acyclic_graph>`_
 
 :arg vnames string []: Array of string names
-      */
+      */ /*
      proc init(vnames: [] string) {
-       super.init();
-       this.D = {1..vnames.size, 1..vnames.size};
-       this.SD = CSRDomain(D);
-       this.X = [SD] real;
+       var D = {1..vnames.size, 1..vnames.size};
+       var SD = CSRDomain(D);
+       var X = [SD] real;
+       super.init(X,vnames);
        for j in 1..vnames.size {
          this.verts.add(vnames[j]);
        }
-     }
+     }*/
 
      /*
      :arg W real []: Array or Matrix representing edges in the graph
@@ -129,9 +130,10 @@ With symmetric version
       */
      proc init(X:[], name: string, directed: bool = false, bipartite: bool = false) {
        super.init(X);
-       this.D = {X.domain.dim(1), X.domain.dim(2)};
+       this.initDone();
+  //     this.D = {X.domain.dim(1), X.domain.dim(2)};
        this.name = name;
-  //     this.loadX(X);
+  //     this.loadX(X);  //NOT NECESSARY IF YOU INITIALIZE THE PARENT CLASS
      }
 
      /*
@@ -140,21 +142,28 @@ With symmetric version
       */
      proc init(X:[], directed: bool) {
        super.init(X);
-       this.D = {X.domain.dim(1), X.domain.dim(2)};
+       this.initDone();
+  //     this.D = {X.domain.dim(1), X.domain.dim(2)};
        this.directed = directed;
   //     this.loadX(X);
      }
 
     /*
      */
+    proc init(X:[], vnames) {
+      super.init(X, vnames);
+      this.initDone();
+      this.verts = this.rows.uni(this.cols);
+    }
+
     proc init(X:[], directed=bool, name: string, vnames: [] string) {
-      super.init(X);
-      this.D = {X.domain.dim(1), X.domain.dim(2)};
+      this.init(X, vnames);
+  //    this.D = {X.domain.dim(1), X.domain.dim(2)};
       this.name = name;
       this.directed=directed;
-      try! this.setRowNames(vnames);
-      try! this.setColNames(vnames);
-      this.verts = this.rows.uni(this.cols);
+//      try! this.setRowNames(vnames);
+  //    try! this.setColNames(vnames);
+    //  this.verts = this.rows.uni(this.cols);
       /*
       for j in 1..vnames.size {
         this.verts.add(vnames[j]);
@@ -167,10 +176,10 @@ With symmetric version
     }
 
     proc init(N: NamedMatrix) {
-      super.init(N.X);
-      this.verts = super.rows.uni(super.cols);
-      this.uVerts = super.rows;
-      this.vVerts = super.cols;
+      super.init(N);
+      this.verts = this.rows.uni(this.cols);
+      this.uVerts = this.rows;
+      this.vVerts = this.cols;
 //      this.loadX(N.X);
     }
   }
@@ -361,9 +370,12 @@ returns an array of vertex ids (row/col numbers) for a given vertex id
 */
   proc Graph.neighbors(vid: int) {
     var D = {1..0};
-    var result: [D] int;
-
-    for col in this.SD.dimIter(2,vid) do if col != vid then result.push_back(col);
+    var ids: [D] int;
+    var result: BiMap = new BiMap;
+    for col in this.SD.dimIter(2,vid) do if col != vid then ids.push_back(col);
+    for id in ids {
+      result.add(k = verts.idx[id], id);
+    }
     return result;
   }
 
@@ -398,7 +410,7 @@ example::
    */
    proc Graph.boundary(vs: domain(int)) {
      var boundary: domain(int);
-     for v in vs do boundary += this.neighbors(v): domain(int);
+     for v in vs do boundary += this.neighbors(v).idxkey: domain(int);
      return boundary - vs;
    }
 
@@ -412,7 +424,7 @@ example::
   proc Graph.degree() {
     var ds: [SD.dim(1)] real;
     forall i in SD.dim(1) {
-      ds[i] = neighbors(i).size;
+      ds[i] = neighbors(i).size();
     }
     return ds;
   }
@@ -425,11 +437,11 @@ example::
   :rtype: int []
   */
   proc Graph.degree(v: int) {
-    return neighbors(v).size;
+    return neighbors(v).size();
   }
 
   proc Graph.degree(vname: string) {
-    return neighbors(vname).size;
+    return neighbors(vname).size();
   }
 
   /*
