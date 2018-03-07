@@ -104,7 +104,7 @@ With symmetric version
      */
      proc init(X: []) {
        super.init(X);
-       this.D = {X.domain.dim(1), X.domain.dim(2)};
+//       this.D = {X.domain.dim(1), X.domain.dim(2)}; //NOT NECESSARY BECAUSE OF super.init(X)
   //     this.loadX(X);
      }
 
@@ -129,9 +129,9 @@ With symmetric version
       */
      proc init(X:[], name: string, directed: bool = false, bipartite: bool = false) {
        super.init(X);
-       this.D = {X.domain.dim(1), X.domain.dim(2)};
+  //     this.D = {X.domain.dim(1), X.domain.dim(2)};
        this.name = name;
-  //     this.loadX(X);
+  //     this.loadX(X);  //NOT NECESSARY IF YOU INITIALIZE THE PARENT CLASS
      }
 
      /*
@@ -140,21 +140,26 @@ With symmetric version
       */
      proc init(X:[], directed: bool) {
        super.init(X);
-       this.D = {X.domain.dim(1), X.domain.dim(2)};
+  //     this.D = {X.domain.dim(1), X.domain.dim(2)};
        this.directed = directed;
   //     this.loadX(X);
      }
 
     /*
      */
+    proc init(X:[], vnames) {
+      super.init(X, vnames);
+      this.verts = this.rows.uni(this.cols);
+    }
+
     proc init(X:[], directed=bool, name: string, vnames: [] string) {
-      super.init(X);
-      this.D = {X.domain.dim(1), X.domain.dim(2)};
+      this.init(X, vnames);
+  //    this.D = {X.domain.dim(1), X.domain.dim(2)};
       this.name = name;
       this.directed=directed;
-      try! this.setRowNames(vnames);
-      try! this.setColNames(vnames);
-      this.verts = this.rows.uni(this.cols);
+//      try! this.setRowNames(vnames);
+  //    try! this.setColNames(vnames);
+    //  this.verts = this.rows.uni(this.cols);
       /*
       for j in 1..vnames.size {
         this.verts.add(vnames[j]);
@@ -167,10 +172,10 @@ With symmetric version
     }
 
     proc init(N: NamedMatrix) {
-      super.init(N.X);
-      this.verts = super.rows.uni(super.cols);
-      this.uVerts = super.rows;
-      this.vVerts = super.cols;
+      super.init(N);
+      this.verts = this.rows.uni(this.cols);
+      this.uVerts = this.rows;
+      this.vVerts = this.cols;
 //      this.loadX(N.X);
     }
   }
