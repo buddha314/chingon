@@ -34,9 +34,9 @@ module Chingon {
     var name: string,
         directed: bool = false,
         bipartite: bool = false,
-        verts: BiMap,
-        uVerts: BiMap,
-        vVerts: BiMap;
+        verts: BiMap = new BiMap(),
+        uVerts: BiMap = new BiMap(),
+        vVerts: BiMap = new BiMap();
 
 
 
@@ -103,9 +103,9 @@ With symmetric version
   :arg W real []: Array or Matrix representing edges in the graph
      */
      proc init(X: []) {
-       super.init();
+       super.init(X);
        this.D = {X.domain.dim(1), X.domain.dim(2)};
-       this.loadX(X);
+  //     this.loadX(X);
      }
 
      /*
@@ -128,10 +128,10 @@ With symmetric version
      :rtype: Graph
       */
      proc init(X:[], name: string, directed: bool = false, bipartite: bool = false) {
-       super.init();
+       super.init(X);
        this.D = {X.domain.dim(1), X.domain.dim(2)};
        this.name = name;
-       this.loadX(X);
+  //     this.loadX(X);
      }
 
      /*
@@ -139,34 +139,39 @@ With symmetric version
      values on the lower tri are ignored
       */
      proc init(X:[], directed: bool) {
-       super.init();
+       super.init(X);
        this.D = {X.domain.dim(1), X.domain.dim(2)};
        this.directed = directed;
-       this.loadX(X);
+  //     this.loadX(X);
      }
 
     /*
      */
     proc init(X:[], directed=bool, name: string, vnames: [] string) {
-      super.init();
+      super.init(X);
       this.D = {X.domain.dim(1), X.domain.dim(2)};
       this.name = name;
       this.directed=directed;
+      try! this.setRowNames(vnames);
+      try! this.setColNames(vnames);
+      this.verts = this.rows.uni(this.cols);
+      /*
       for j in 1..vnames.size {
         this.verts.add(vnames[j]);
       }
       if vnames.size != X.domain.dim(1).size {
         halt();
       }
-      this.loadX(X);
+//      this.loadX(X);
+*/
     }
 
     proc init(N: NamedMatrix) {
-      super.init();
+      super.init(N.X);
       this.verts = super.rows.uni(super.cols);
       this.uVerts = super.rows;
       this.vVerts = super.cols;
-      this.loadX(N.X);
+//      this.loadX(N.X);
     }
   }
 
@@ -234,7 +239,7 @@ With symmetric version
     this.update(fromId, toId, w);
   }
 
-  proc Graph.update(from: string, to: string, w:real) {
+  proc Graph.updateEdge(from: string, to: string, w:real) {
     this.update(from, to, w);
   }
 
@@ -391,11 +396,13 @@ example::
   :rtype: domain(int)
 
    */
-  proc Graph.boundary(vs: domain(int)) {
-    var boundary: domain(int);
-    for v in vs do boundary += this.neighbors(v): domain(int);
-    return boundary - vs;
-  }
+   proc Graph.boundary(vs: domain(int)) {
+     var boundary: domain(int);
+     for v in vs do boundary += this.neighbors(v): domain(int);
+     return boundary - vs;
+   }
+
+
 
   /*
    returns: Array of degrees for each vertex.  This the count of edges, not the sum of weights.
@@ -530,7 +537,7 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
       , edgeTable:string, toField:string, fromField:string, wField:string
       , directed:bool, graphName:string) {
     const nm = NamedMatrixFromPG(con=con, edgeTable=edgeTable, fromField=fromField, toField=toField, wField=wField, square=false);
-    var g = new Graph(N=nm, name = graphName);
+    var g = new Graph(N=nm);
     return g;
 }
   /*

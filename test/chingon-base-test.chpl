@@ -61,7 +61,7 @@ for n in g3.neighbors("drax").sorted() {
 }
 var dgs = g3.degree();
 writeln("\ndegrees:\n", dgs);
-
+/*
 var ws = g3.flow();
 writeln("\nFlow:\n", ws);
 
@@ -102,8 +102,8 @@ const nameTable = "r.cho_names",
       edgeTable = "r.cho_edges",
       fromField = "from_fid",
       toField = "to_fid",
-      wField = "w";
-
+      wField = "w";  */
+/*
 var con = PgConnectionFactory(host=DB_HOST, user=DB_USER, database=DB_NAME, passwd=DB_PWD);
 
 var g4 = buildGraphFromPGTables(con=con
@@ -126,3 +126,4 @@ for c in crystals {
 
 // Check boundary function
 writeln("Boundary of vs: ", g4.boundary({1,3,4}));
+*/
