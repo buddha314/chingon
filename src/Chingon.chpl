@@ -104,24 +104,9 @@ With symmetric version
      */
      proc init(X: []) {
        super.init(X);
-       this.D = {X.domain.dim(1), X.domain.dim(2)};
-  //     this.loadX(X);
+       this.initDone();
      }
 
-     /*
-     Constructor using just vertex names.  Good for things like `DAGS <https://en.wikipedia.org/wiki/Directed_acyclic_graph>`_
-
-:arg vnames string []: Array of string names
-      */
-     proc init(vnames: [] string) {
-       super.init();
-       this.D = {1..vnames.size, 1..vnames.size};
-       this.SD = CSRDomain(D);
-       this.X = [SD] real;
-       for j in 1..vnames.size {
-         this.verts.add(vnames[j]);
-       }
-     }
 
      /*
      :arg W real []: Array or Matrix representing edges in the graph
@@ -129,9 +114,8 @@ With symmetric version
       */
      proc init(X:[], name: string, directed: bool = false, bipartite: bool = false) {
        super.init(X);
-       this.D = {X.domain.dim(1), X.domain.dim(2)};
+       this.initDone();
        this.name = name;
-  //     this.loadX(X);
      }
 
      /*
@@ -140,38 +124,29 @@ With symmetric version
       */
      proc init(X:[], directed: bool) {
        super.init(X);
-       this.D = {X.domain.dim(1), X.domain.dim(2)};
+       this.initDone();
        this.directed = directed;
-  //     this.loadX(X);
      }
 
     /*
      */
+    proc init(X:[], vnames) {
+      super.init(X, vnames);
+      this.initDone();
+      this.verts = this.rows.uni(this.cols);
+    }
+
     proc init(X:[], directed=bool, name: string, vnames: [] string) {
-      super.init(X);
-      this.D = {X.domain.dim(1), X.domain.dim(2)};
+      this.init(X, vnames);
       this.name = name;
       this.directed=directed;
-      try! this.setRowNames(vnames);
-      try! this.setColNames(vnames);
-      this.verts = this.rows.uni(this.cols);
-      /*
-      for j in 1..vnames.size {
-        this.verts.add(vnames[j]);
-      }
-      if vnames.size != X.domain.dim(1).size {
-        halt();
-      }
-//      this.loadX(X);
-*/
     }
 
     proc init(N: NamedMatrix) {
-      super.init(N.X);
-      this.verts = super.rows.uni(super.cols);
-      this.uVerts = super.rows;
-      this.vVerts = super.cols;
-//      this.loadX(N.X);
+      super.init(N);
+      this.verts = this.rows.uni(this.cols);
+      this.uVerts = this.rows;
+      this.vVerts = this.cols;
     }
   }
 
@@ -361,9 +336,12 @@ returns an array of vertex ids (row/col numbers) for a given vertex id
 */
   proc Graph.neighbors(vid: int) {
     var D = {1..0};
-    var result: [D] int;
-
-    for col in this.SD.dimIter(2,vid) do if col != vid then result.push_back(col);
+    var ids: [D] int;
+    var result: BiMap = new BiMap;
+    for col in this.SD.dimIter(2,vid) do if col != vid then ids.push_back(col);
+    for id in ids {
+      result.add(k = verts.idx[id], id);
+    }
     return result;
   }
 
@@ -398,7 +376,7 @@ example::
    */
    proc Graph.boundary(vs: domain(int)) {
      var boundary: domain(int);
-     for v in vs do boundary += this.neighbors(v): domain(int);
+     for v in vs do boundary += this.neighbors(v).idxkey: domain(int);
      return boundary - vs;
    }
 
@@ -412,7 +390,7 @@ example::
   proc Graph.degree() {
     var ds: [SD.dim(1)] real;
     forall i in SD.dim(1) {
-      ds[i] = neighbors(i).size;
+      ds[i] = neighbors(i).size();
     }
     return ds;
   }
@@ -425,11 +403,11 @@ example::
   :rtype: int []
   */
   proc Graph.degree(v: int) {
-    return neighbors(v).size;
+    return neighbors(v).size();
   }
 
   proc Graph.degree(vname: string) {
-    return neighbors(vname).size;
+    return neighbors(vname).size();
   }
 
   /*
@@ -661,25 +639,3 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
     return crystals;
   }
 }
-
-
-/*
-proc Graph.loadW(W: []) {
- for (i,j) in W.domain {
-    if !this.directed {  // Only persist the upper triangle
-      if (i <= j) {
-        this.SD += (i,j);
-        this.W(i,j) = W(i,j);
-        // Create the lower triangular
-        if (i != j) {
-          this.SD += (j,i);
-          this.W(j,i) = W(i,j);
-        }
-      }
-    } else {
-      this.SD += (i,j);
-      this.W(i,j) = W(i,j);
-    }
-  }
-    this.loadX(X:[], shape: 2*int = (-1,-1));
-}*/

@@ -32,6 +32,7 @@ SD += (6,8); X[6,8] = 1;
 SD += (7,8); X[7,8] = 1;
 var g = new Graph(X=X, directed = false);
 writeln(g.X);
+
 assert(g.directed == false, "g.directed is ", g.directed, " expected false");
 var gd = new Graph(X=X, directed=false);
 assert(gd.directed == false, "gd.directed is ", gd.directed, " expected false");
@@ -40,28 +41,28 @@ var g2 = new Graph(X=X, name="Vato");
 assert(g2.name == "Vato", "g2.name is ", g2.name, " expected 'Vato'");
 var g3 = new Graph(X=X, directed=false, name="Vato", vnames = vn);
 assert(g3.name == "Vato", "g3.name is ", g3.name, " expected 'Vato'");
-
+assert(1 == 1, "Yay!");
 const g3nvs = g3.verts.keys.sorted();
 assert(g3nvs[1] == 'drax', "g3nvs[1] is ", g3nvs[1] , " expected 'drax'");
 assert(g3nvs[3] == 'groot', "g3nvs[3] is ", g3nvs[3] , " expected 'groot'");
 assert(g3nvs[4] == 'mantis', "g3nvs[4] is ", g3nvs[4] , " expected 'mantis'");
 assert(g3nvs[8] == 'yondu', "g3nvs[8] is ", g3nvs[8] , " expected 'yondu'");
-/*
-for v in g3.vnames.sorted() {
-  writeln("g3 vids[", v, "]: ", g3.vids[v]);
-} */
+
+for v in g3.verts.idxkey.sorted() {
+  writeln("g3 vids[", v, "]: ", g3.verts.idx[v]);
+}
 const p:int = 4;
 // Check for list of vertex IDs adjacent to p
-for n in g3.neighbors(p).sorted() {
+for n in g3.neighbors(p).idxkey.sorted() {
   writeln("neighbor of ", g3.verts.idx[p], ": ", n, ": ", g3.verts.idx[n]);
 }
 // Check for list of vertex IDs adjacent to vertex with name "drax"
-for n in g3.neighbors("drax").sorted() {
+for n in g3.neighbors("drax").idxkey.sorted() {
   writeln("neighbor of drax: ", n, ": ", g3.verts.idx[n]);
 }
 var dgs = g3.degree();
 writeln("\ndegrees:\n", dgs);
-/*
+
 var ws = g3.flow();
 writeln("\nFlow:\n", ws);
 
@@ -89,6 +90,8 @@ writeln("g3.W with (3,6) += -4.24\n", g3.X);
 g3.updateEdge(3,6, 1.10);
 writeln("g3.W with (3,6) += 1.10\n", g3.X);
 
+
+/*
 // Start to test against Postgres using NumSuch
 // Data must be loaded as in data/entropy_base_graph_schema.sql
 // This only needs to be done once, if you have tested with NumSuch, the data should exist already.
