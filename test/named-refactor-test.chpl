@@ -59,8 +59,8 @@ use LinearAlgebra,
     writeln("Added a 4-path from gamora to drax");
     writeln(w.X);
     writeln("Neighbors of Nebula and Gamora");
-    writeln(w.neighbors("nebula"));
-    writeln(w.neighbors(2));
+    writeln(w.neighbors("nebula").keys);
+    writeln(w.neighbors(2).keys);
     writeln("Boundary of Gamora -> Nebula");
     writeln(w.boundary({2,8}));
 //    writeln(w.boundary({"gamora","nebula"}));
@@ -69,4 +69,4 @@ use LinearAlgebra,
     writeln("Degrees");
     writeln(w.degree());
     writeln("Flow");
-//    writeln(w.flow());  // testing breaks down here like before
+    writeln(w.flow());  // testing breaks down here like before

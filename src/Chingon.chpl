@@ -370,9 +370,12 @@ returns an array of vertex ids (row/col numbers) for a given vertex id
 */
   proc Graph.neighbors(vid: int) {
     var D = {1..0};
-    var result: [D] int;
-
-    for col in this.SD.dimIter(2,vid) do if col != vid then result.push_back(col);
+    var ids: [D] int;
+    var result: BiMap = new BiMap;
+    for col in this.SD.dimIter(2,vid) do if col != vid then ids.push_back(col);
+    for id in ids {
+      result.add(k = verts.idx[id], id);
+    }
     return result;
   }
 
@@ -407,7 +410,7 @@ example::
    */
    proc Graph.boundary(vs: domain(int)) {
      var boundary: domain(int);
-     for v in vs do boundary += this.neighbors(v): domain(int);
+     for v in vs do boundary += this.neighbors(v).idxkey: domain(int);
      return boundary - vs;
    }
 
@@ -421,7 +424,7 @@ example::
   proc Graph.degree() {
     var ds: [SD.dim(1)] real;
     forall i in SD.dim(1) {
-      ds[i] = neighbors(i).size;
+      ds[i] = neighbors(i).size();
     }
     return ds;
   }
@@ -434,11 +437,11 @@ example::
   :rtype: int []
   */
   proc Graph.degree(v: int) {
-    return neighbors(v).size;
+    return neighbors(v).size();
   }
 
   proc Graph.degree(vname: string) {
-    return neighbors(vname).size;
+    return neighbors(vname).size();
   }
 
   /*
