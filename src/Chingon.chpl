@@ -104,6 +104,7 @@ With symmetric version
      */
      proc init(X: []) {
        super.init(X);
+       this.initDone();
 //       this.D = {X.domain.dim(1), X.domain.dim(2)}; //NOT NECESSARY BECAUSE OF super.init(X)
   //     this.loadX(X);
      }
@@ -112,16 +113,16 @@ With symmetric version
      Constructor using just vertex names.  Good for things like `DAGS <https://en.wikipedia.org/wiki/Directed_acyclic_graph>`_
 
 :arg vnames string []: Array of string names
-      */
+      */ /*
      proc init(vnames: [] string) {
-       super.init();
-       this.D = {1..vnames.size, 1..vnames.size};
-       this.SD = CSRDomain(D);
-       this.X = [SD] real;
+       var D = {1..vnames.size, 1..vnames.size};
+       var SD = CSRDomain(D);
+       var X = [SD] real;
+       super.init(X,vnames);
        for j in 1..vnames.size {
          this.verts.add(vnames[j]);
        }
-     }
+     }*/
 
      /*
      :arg W real []: Array or Matrix representing edges in the graph
@@ -129,6 +130,7 @@ With symmetric version
       */
      proc init(X:[], name: string, directed: bool = false, bipartite: bool = false) {
        super.init(X);
+       this.initDone();
   //     this.D = {X.domain.dim(1), X.domain.dim(2)};
        this.name = name;
   //     this.loadX(X);  //NOT NECESSARY IF YOU INITIALIZE THE PARENT CLASS
@@ -140,6 +142,7 @@ With symmetric version
       */
      proc init(X:[], directed: bool) {
        super.init(X);
+       this.initDone();
   //     this.D = {X.domain.dim(1), X.domain.dim(2)};
        this.directed = directed;
   //     this.loadX(X);
@@ -149,6 +152,7 @@ With symmetric version
      */
     proc init(X:[], vnames) {
       super.init(X, vnames);
+      this.initDone();
       this.verts = this.rows.uni(this.cols);
     }
 
