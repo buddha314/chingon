@@ -105,24 +105,8 @@ With symmetric version
      proc init(X: []) {
        super.init(X);
        this.initDone();
-//       this.D = {X.domain.dim(1), X.domain.dim(2)}; //NOT NECESSARY BECAUSE OF super.init(X)
-  //     this.loadX(X);
      }
 
-     /*
-     Constructor using just vertex names.  Good for things like `DAGS <https://en.wikipedia.org/wiki/Directed_acyclic_graph>`_
-
-:arg vnames string []: Array of string names
-      */ /*
-     proc init(vnames: [] string) {
-       var D = {1..vnames.size, 1..vnames.size};
-       var SD = CSRDomain(D);
-       var X = [SD] real;
-       super.init(X,vnames);
-       for j in 1..vnames.size {
-         this.verts.add(vnames[j]);
-       }
-     }*/
 
      /*
      :arg W real []: Array or Matrix representing edges in the graph
@@ -131,9 +115,7 @@ With symmetric version
      proc init(X:[], name: string, directed: bool = false, bipartite: bool = false) {
        super.init(X);
        this.initDone();
-  //     this.D = {X.domain.dim(1), X.domain.dim(2)};
        this.name = name;
-  //     this.loadX(X);  //NOT NECESSARY IF YOU INITIALIZE THE PARENT CLASS
      }
 
      /*
@@ -143,9 +125,7 @@ With symmetric version
      proc init(X:[], directed: bool) {
        super.init(X);
        this.initDone();
-  //     this.D = {X.domain.dim(1), X.domain.dim(2)};
        this.directed = directed;
-  //     this.loadX(X);
      }
 
     /*
@@ -158,21 +138,8 @@ With symmetric version
 
     proc init(X:[], directed=bool, name: string, vnames: [] string) {
       this.init(X, vnames);
-  //    this.D = {X.domain.dim(1), X.domain.dim(2)};
       this.name = name;
       this.directed=directed;
-//      try! this.setRowNames(vnames);
-  //    try! this.setColNames(vnames);
-    //  this.verts = this.rows.uni(this.cols);
-      /*
-      for j in 1..vnames.size {
-        this.verts.add(vnames[j]);
-      }
-      if vnames.size != X.domain.dim(1).size {
-        halt();
-      }
-//      this.loadX(X);
-*/
     }
 
     proc init(N: NamedMatrix) {
@@ -180,7 +147,6 @@ With symmetric version
       this.verts = this.rows.uni(this.cols);
       this.uVerts = this.rows;
       this.vVerts = this.cols;
-//      this.loadX(N.X);
     }
   }
 
@@ -673,25 +639,3 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
     return crystals;
   }
 }
-
-
-/*
-proc Graph.loadW(W: []) {
- for (i,j) in W.domain {
-    if !this.directed {  // Only persist the upper triangle
-      if (i <= j) {
-        this.SD += (i,j);
-        this.W(i,j) = W(i,j);
-        // Create the lower triangular
-        if (i != j) {
-          this.SD += (j,i);
-          this.W(j,i) = W(i,j);
-        }
-      }
-    } else {
-      this.SD += (i,j);
-      this.W(i,j) = W(i,j);
-    }
-  }
-    this.loadX(X:[], shape: 2*int = (-1,-1));
-}*/
