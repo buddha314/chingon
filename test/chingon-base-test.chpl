@@ -17,31 +17,31 @@ vn.push_back("nebula");
 var nv: int = 8,
     D: domain(2) = {1..nv, 1..nv},
     SD: sparse subdomain(D),
-    W: [SD] real;
+    X: [SD] real;
 
-SD += (1,2); W[1,2] = 1;
-SD += (1,3); W[1,3] = 1;
-SD += (1,4); W[1,4] = 1;
-SD += (2,2); W[2,2] = 1;
-SD += (2,4); W[2,4] = 1;
-SD += (3,4); W[3,4] = 1;
-SD += (4,5); W[4,5] = 1;
-SD += (5,6); W[5,6] = 1;
-SD += (6,7); W[6,7] = 1;
-SD += (6,8); W[6,8] = 1;
-SD += (7,8); W[7,8] = 1;
-var g = new Graph(W=W);
-writeln(g.W);
+SD += (1,2); X[1,2] = 1;
+SD += (1,3); X[1,3] = 1;
+SD += (1,4); X[1,4] = 1;
+SD += (2,2); X[2,2] = 1;
+SD += (2,4); X[2,4] = 1;
+SD += (3,4); X[3,4] = 1;
+SD += (4,5); X[4,5] = 1;
+SD += (5,6); X[5,6] = 1;
+SD += (6,7); X[6,7] = 1;
+SD += (6,8); X[6,8] = 1;
+SD += (7,8); X[7,8] = 1;
+var g = new Graph(X=X, directed = false);
+writeln(g.X);
 assert(g.directed == false, "g.directed is ", g.directed, " expected false");
-var gd = new Graph(W=W, directed=false);
+var gd = new Graph(X=X, directed=false);
 assert(gd.directed == false, "gd.directed is ", gd.directed, " expected false");
 assert(gd.vcount() == 8, "gd.vcount() is ", gd.vcount(), " expected 8");
-var g2 = new Graph(W=W, name="Vato");
+var g2 = new Graph(X=X, name="Vato");
 assert(g2.name == "Vato", "g2.name is ", g2.name, " expected 'Vato'");
-var g3 = new Graph(W=W, directed=false, name="Vato", vnames = vn);
+var g3 = new Graph(X=X, directed=false, name="Vato", vnames = vn);
 assert(g3.name == "Vato", "g3.name is ", g3.name, " expected 'Vato'");
 
-const g3nvs = g3.vnames.sorted();
+const g3nvs = g3.verts.keys.sorted();
 assert(g3nvs[1] == 'drax', "g3nvs[1] is ", g3nvs[1] , " expected 'drax'");
 assert(g3nvs[3] == 'groot', "g3nvs[3] is ", g3nvs[3] , " expected 'groot'");
 assert(g3nvs[4] == 'mantis', "g3nvs[4] is ", g3nvs[4] , " expected 'mantis'");
@@ -53,15 +53,15 @@ for v in g3.vnames.sorted() {
 const p:int = 4;
 // Check for list of vertex IDs adjacent to p
 for n in g3.neighbors(p).sorted() {
-  writeln("neighbor of ", g3.nameIndex[p], ": ", n, ": ", g3.nameIndex[n]);
+  writeln("neighbor of ", g3.verts.idx[p], ": ", n, ": ", g3.verts.idx[n]);
 }
 // Check for list of vertex IDs adjacent to vertex with name "drax"
 for n in g3.neighbors("drax").sorted() {
-  writeln("neighbor of drax: ", n, ": ", g3.nameIndex[n]);
+  writeln("neighbor of drax: ", n, ": ", g3.verts.idx[n]);
 }
 var dgs = g3.degree();
 writeln("\ndegrees:\n", dgs);
-
+/*
 var ws = g3.flow();
 writeln("\nFlow:\n", ws);
 
@@ -81,13 +81,13 @@ writeln("graph entropy [1,2,3,4]: ", ve);
 var vf = g3.subgraphEntropy(subgraph={1,2,3,4,5}, base=g3.flow());
 writeln("graph entropy [1,2,3,4,5]: ", vf);
 
-writeln("g3.W:\n", g3.W);
+writeln("g3.W:\n", g3.X);
 g3.addEdge(3,5, 2.71);
-writeln("g3.W with (3,5) = 2.71\n", g3.W);
+writeln("g3.W with (3,5) = 2.71\n", g3.X);
 g3.updateEdge(3,6, -4.24);
-writeln("g3.W with (3,6) += -4.24\n", g3.W);
+writeln("g3.W with (3,6) += -4.24\n", g3.X);
 g3.updateEdge(3,6, 1.10);
-writeln("g3.W with (3,6) += 1.10\n", g3.W);
+writeln("g3.W with (3,6) += 1.10\n", g3.X);
 
 // Start to test against Postgres using NumSuch
 // Data must be loaded as in data/entropy_base_graph_schema.sql
@@ -102,12 +102,11 @@ const nameTable = "r.cho_names",
       edgeTable = "r.cho_edges",
       fromField = "from_fid",
       toField = "to_fid",
-      wField = "w";
-
+      wField = "w";  */
+/*
 var con = PgConnectionFactory(host=DB_HOST, user=DB_USER, database=DB_NAME, passwd=DB_PWD);
 
 var g4 = buildGraphFromPGTables(con=con
-  , nameTable=nameTable, nameField=nameField, idField=idField
   , edgeTable=edgeTable, toField=toField, fromField=fromField, wField=wField
   , directed=false, graphName=graphName);
 writeln("g4.name: ", g4.name);
@@ -127,3 +126,4 @@ for c in crystals {
 
 // Check boundary function
 writeln("Boundary of vs: ", g4.boundary({1,3,4}));
+*/
