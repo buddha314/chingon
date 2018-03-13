@@ -21,7 +21,8 @@ module Chingon {
   use Sort,
       NumSuch,
       LinearAlgebra.Sparse,
-      LinearAlgebra;
+      LinearAlgebra,
+      CdoExtras;
 
   /*
     A Graph object is a (sparse) matrix with some meta-data attached to it.  The underlying
