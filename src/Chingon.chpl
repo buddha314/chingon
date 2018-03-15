@@ -21,8 +21,13 @@ module Chingon {
   use Sort,
       NumSuch,
       LinearAlgebra.Sparse,
+<<<<<<< HEAD
       LinearAlgebra,
       CdoExtras;
+=======
+      Cdo,
+      LinearAlgebra;
+>>>>>>> d806d44f8590365c72e2f6f0fb0d9d3239e1f292
 
   /*
     A Graph object is a (sparse) matrix with some meta-data attached to it.  The underlying
@@ -601,10 +606,10 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
       this.id = id;
       this.initialEntropy = 0.0;
       this.minEntropy = 0.0;
-      super.init();
       for f in ftrIds {
         this.ftrIds += f;
       }
+      this.initDone();
     }
   }
 
