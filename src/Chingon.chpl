@@ -21,6 +21,7 @@ module Chingon {
   use Sort,
       NumSuch,
       LinearAlgebra.Sparse,
+      Cdo,
       LinearAlgebra;
 
   /*
@@ -600,10 +601,10 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
       this.id = id;
       this.initialEntropy = 0.0;
       this.minEntropy = 0.0;
-      super.init();
       for f in ftrIds {
         this.ftrIds += f;
       }
+      this.initDone();
     }
   }
 

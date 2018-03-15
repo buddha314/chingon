@@ -6,7 +6,13 @@ LIBS=-L$(BLAS_HOME)/lib -lblas
 FLAGS=--fast --print-callstack-on-error --print-commands
 SRCDIR=src
 BINDIR=bin
+TESTDIR=test
 CHINGON_EXEC=chingon
 
 default: $(SRCDIR)/Chingon.chpl
 	$(CC) $(MODULES) $(FLAGS) ${INCLUDES} ${LIBS} -o $(BINDIR)/$(CHINGON_EXEC) $<
+
+run-test: $(TESTDIR)/ChingonTest.chpl
+	$(CC) -M$(SRCDIR) $(MODULES) $(FLAGS) ${INCLUDES} ${LIBS} -o $(TESTDIR)/test $< ; \
+	./$(TESTDIR)/test; \
+	rm $(TESTDIR)/test
