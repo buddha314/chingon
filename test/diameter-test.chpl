@@ -24,24 +24,32 @@ use LinearAlgebra,
     writeln(vn);
 
     SD += (1,2); X[1,2] = 1;
-    SD += (1,3); X[1,3] = 1;
-    SD += (1,4); X[1,4] = 1;
-    SD += (2,2); X[2,2] = 1;
-    SD += (2,4); X[2,4] = 1;
+    SD += (2,3); X[2,3] = 1;
+    SD += (3,1); X[3,1] = 1;
     SD += (3,4); X[3,4] = 1;
     SD += (4,5); X[4,5] = 1;
-    SD += (5,6); X[5,6] = 1;
-    SD += (6,7); X[6,7] = 1;
+    SD += (3,6); X[3,6] = 1;
     SD += (6,8); X[6,8] = 1;
-    SD += (7,8); X[7,8] = 1;
+//    SD += (1,4); X[1,4] = 1;
+//    SD += (1,5); X[1,5] = 1;
+//    SD += (2,6); X[2,6] = 1;
+//    SD += (2,7); X[2,7] = 1;
 
     var nm = new NamedMatrix(X=X, names = vn);
-    writeln(nm.rows.keys);
-
+    writeln("NamedMatrix");
+    writeln(nm.X);
+    writeln("NamedMatrix Powers");
+    var nmp = nm;
+    for i in 2..nv+1 {
+      nmp = nmp.ndot(nm);
+      writeln("%n th power is".format(i));
+      writeln(nmp.X);
+    }
 
   //  var g = new Graph(X = X, vnames = vn);
 //    var g = new Graph(X = X, directed = false, name = "test graph", vnames = vn);
     var g = new Graph(N = nm);
+    writeln("Graph from NamedMatrix");
     writeln(g.name);
     writeln(g.verts.keys);
     writeln(g.verts.ids);
