@@ -1,6 +1,6 @@
 include local.mk
 CC=chpl
-MODULES=-M$(CDO_HOME)/src -M$(NUMSUCH_HOME)/src -M$(CHREST_HOME)/src
+MODULES=-M$(CDO_HOME)/src -M$(NUMSUCH_HOME)/src -M$(CHREST_HOME)/src -M$(CHARCOAL_HOME)/src
 INCLUDES = -I/usr/include -I$(BLAS_HOME)/include -I$(POSTGRES_HOME)
 LIBS=-L$(BLAS_HOME)/lib -lblas
 FLAGS=--fast --print-callstack-on-error --print-commands
