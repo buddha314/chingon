@@ -62,14 +62,24 @@ class ChingonTest : UnitTest {
 
     const sef: [1..nv] real = [2.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0];
     const seft: [1..nv] real = [2.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
-    const v = g.flow(vs={"star lord", "gamora", "drax"}, interior=true);
-    writeln(sef);
-    writeln(v);
     assertArrayEquals("Subgraph {'star lord', 'gamora', 'drax'}' has correct flow (interior false)"
       , expected=sef, actual=g.flow(vs={"star lord", "gamora", "drax"}, interior=false));
 
     assertArrayEquals("Subgraph {'star lord', 'gamora', 'drax'}' has correct flow (interior true)"
       , expected=seft, actual=g.flow(vs={"star lord", "gamora", "drax"}, interior=true));
+
+    assertRealEquals("Subgraph entropy is correct {1,2,3,4}", expected=1.81128
+      , actual=g.subgraphEntropy(subgraph={1,2,3,4}, base=g.flow()));
+
+    assertRealEquals("Subgraph entropy is correct {1,2,3,4,5}", expected=1.9183
+      , actual=g.subgraphEntropy(subgraph={1,2,3,4,5}, base=g.flow()));
+
+    g.addEdge(3,5, 2.71);
+    assertRealEquals("Graph can add edge", expected=2.71, actual=g.get(3,5));
+    g.updateEdge(3,6, -4.24);
+    assertRealEquals("Graph can update edge on null", expected=-4.24, actual=g.get(3,6));
+    g.updateEdge(3,6, 1.10);
+    assertRealEquals("Graph can update edge on value", expected=-3.14, actual=g.get(3,6));
   }
 
   proc run() {
