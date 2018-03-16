@@ -2,8 +2,9 @@ use Chingon,
     Charcoal;
 
 class ChingonTest : UnitTest {
-  proc init() {
-    super.init();
+  proc init(verbose=false) {
+    super.init(verbose=verbose);
+    this.initDone();
   }
 
   proc setUp(){}
@@ -89,6 +90,7 @@ class ChingonTest : UnitTest {
 
     var g = new Graph(X=X, name=graphName, directed = false, vnames=vn);
     assertRealEquals("Graph rowMax(1)", expected=23.0, actual=g.rowMax(1));
+    assertIntEquals("Graph rowArgMax(1)", expected=3, actual=g.rowArgMax(1)(2));
 
     g.addEdge(3,5, 2.71);
     assertRealEquals("Graph can add edge", expected=2.71, actual=g.get(3,5));
@@ -156,7 +158,7 @@ class ChingonTest : UnitTest {
 }
 
 proc main(args: [] string) : int {
-  var t = new ChingonTest();
+  var t = new ChingonTest(verbose=false);
   var ret = t.run();
   t.report();
   return ret;
