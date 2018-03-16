@@ -56,6 +56,78 @@ class ChingonTest : UnitTest {
     const dgs: [1..nv] real = [3.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 0.0];
     assertArrayEquals("Graph has correct degrees", expected=dgs, actual=g.degree());
     assertIntEquals("'Star Lord' has correct degree", expected=3, actual=g.degree('star lord'));
+  }
+
+  proc testOperators() {
+    var nv: int = 8,
+        D: domain(2) = {1..nv, 1..nv},
+        SD: sparse subdomain(D),
+        X: [SD] real;
+
+    var graphName = "Vato";
+    var vn: [1..0] string;
+    vn.push_back("star lord");
+    vn.push_back("gamora");
+    vn.push_back("groot");
+    vn.push_back("drax");
+    vn.push_back("rocket");
+    vn.push_back("mantis");
+    vn.push_back("yondu");
+    vn.push_back("nebula");
+
+    SD += (1,2); X[1,2] = 5;
+    SD += (1,3); X[1,3] = 23.0;
+    SD += (1,4); X[1,4] = 17;
+    SD += (2,2); X[2,2] = 1;
+    SD += (2,4); X[2,4] = 71;
+    SD += (3,4); X[3,4] = 15.0;
+    SD += (4,5); X[4,5] = 1;
+    SD += (5,6); X[5,6] = 66.6;
+    SD += (6,7); X[6,7] = 1;
+    SD += (6,8); X[6,8] = 1;
+    SD += (7,8); X[7,8] = 1;
+
+    var g = new Graph(X=X, name=graphName, directed = false, vnames=vn);
+    assertRealEquals("Graph rowMax(1)", expected=23.0, actual=g.rowMax(1));
+
+    g.addEdge(3,5, 2.71);
+    assertRealEquals("Graph can add edge", expected=2.71, actual=g.get(3,5));
+    g.updateEdge(3,6, -4.24);
+    assertRealEquals("Graph can update edge on null", expected=-4.24, actual=g.get(3,6));
+    g.updateEdge(3,6, 1.10);
+    assertRealEquals("Graph can update edge on value", expected=-3.14, actual=g.get(3,6));
+
+  }
+
+  proc testEntropyMethods() {
+    var nv: int = 8,
+        D: domain(2) = {1..nv, 1..nv},
+        SD: sparse subdomain(D),
+        X: [SD] real;
+
+    var graphName = "Vato";
+    var vn: [1..0] string;
+    vn.push_back("star lord");
+    vn.push_back("gamora");
+    vn.push_back("groot");
+    vn.push_back("drax");
+    vn.push_back("rocket");
+    vn.push_back("mantis");
+    vn.push_back("yondu");
+    vn.push_back("nebula");
+
+    SD += (1,2); X[1,2] = 1;
+    SD += (1,3); X[1,3] = 1;
+    SD += (1,4); X[1,4] = 1;
+    SD += (2,2); X[2,2] = 1;
+    SD += (2,4); X[2,4] = 1;
+    SD += (3,4); X[3,4] = 1;
+    SD += (4,5); X[4,5] = 1;
+    SD += (5,6); X[5,6] = 1;
+    SD += (6,7); X[6,7] = 1;
+    SD += (6,8); X[6,8] = 1;
+    SD += (7,8); X[7,8] = 1;
+    var g = new Graph(X=X, name=graphName, directed = false, vnames=vn);
 
     const ef: [1..nv] real = [3.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 0.0];
     assertArrayEquals("Graph has correct flow", expected=ef, actual=g.flow());
@@ -73,17 +145,12 @@ class ChingonTest : UnitTest {
 
     assertRealEquals("Subgraph entropy is correct {1,2,3,4,5}", expected=1.9183
       , actual=g.subgraphEntropy(subgraph={1,2,3,4,5}, base=g.flow()));
-
-    g.addEdge(3,5, 2.71);
-    assertRealEquals("Graph can add edge", expected=2.71, actual=g.get(3,5));
-    g.updateEdge(3,6, -4.24);
-    assertRealEquals("Graph can update edge on null", expected=-4.24, actual=g.get(3,6));
-    g.updateEdge(3,6, 1.10);
-    assertRealEquals("Graph can update edge on value", expected=-3.14, actual=g.get(3,6));
   }
 
   proc run() {
     testConstructors();
+    testOperators();
+    testEntropyMethods();
     return 0;
   }
 }
