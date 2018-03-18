@@ -639,4 +639,46 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
     }
     return crystals;
   }
+
+
+  /*
+  Creates a lattice graph where neighbors are NEWS
+   */
+  class GameBoard : Graph {
+    proc init(r: int) {
+      super.init(vnames=gridNames(r));
+      this.initDone();
+    }
+  }
+
+  proc buildGameGrid(r: int, c: int=0) {
+    var D: domain(2) = {1..r, 1..c},
+        SD: sparse subdomain(D),
+        X: [SD] real,
+        d: int,
+        m: int = 1,
+        n: int = 1;
+    if c == 0 {
+      d=r;
+    } else {
+      d = c;
+    }
+
+    var k = 1;
+    for 1..r*d {
+      if !(k % d == 0){
+        SD += (k, k+1);
+        SD += (k+1, k);
+      }
+      if !((k+c) > r*d) {
+        SD += (k, k+d);
+        SD += (k+d, k);
+      }
+      k += 1;
+    }
+    for a in SD {
+      X[a] = 1;
+    }
+    return X;
+  }
 }

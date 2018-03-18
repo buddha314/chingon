@@ -149,10 +149,29 @@ class ChingonTest : UnitTest {
       , actual=g.subgraphEntropy(subgraph={1,2,3,4,5}, base=g.flow()));
   }
 
+  proc testGameBoard() {
+    writeln("testing game board");
+    //var b = new GameBoard(7);
+    /*
+      1  2  3  4  5
+      6  7  8  9 10
+     11 12 13 14 15
+     16 17 18 19 20
+     */
+    var gg = buildGameGrid(r=4,c=5);
+    var n:int = 0;
+    for i in gg do n+=1;
+    assertIntEquals("Game Grid has 62 entries", expected=62, actual=n);
+    //writeln(gg);
+  }
+
   proc run() {
+    /*
     testConstructors();
     testOperators();
     testEntropyMethods();
+    */
+    testGameBoard();
     return 0;
   }
 }
