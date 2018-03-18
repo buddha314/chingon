@@ -643,36 +643,42 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
 
   /*
   Creates a lattice graph where neighbors are NEWS
+  Notice that this creates a node for each square on the board, or
+  row x column entries.  Then it creates 2 * {r*c(-1) + (r-1)*c} edges.
    */
   class GameBoard : Graph {
     proc init(r: int) {
-      super.init(vnames=gridNames(r));
+      var n: [1..0] string;
+      for a in gridNames(r,r) do n.push_back(a);
+      var X = buildGameGrid(r,r);
+      super.init(X=X, name="Game Board", directed=false, vnames=n);
       this.initDone();
     }
   }
 
-  proc buildGameGrid(r: int, c: int=0) {
-    var D: domain(2) = {1..r, 1..c},
+  /*
+   Creates a sparse matrix with entries at the edges.
+   */
+  proc buildGameGrid(r: int) {
+    return buildGameGrid(r=r, c=r);
+  }
+
+  proc buildGameGrid(r: int, c:int) {
+    var D: domain(2) = {1..r*c, 1..r*c},
         SD: sparse subdomain(D),
         X: [SD] real,
-        d: int,
         m: int = 1,
         n: int = 1;
-    if c == 0 {
-      d=r;
-    } else {
-      d = c;
-    }
 
     var k = 1;
-    for 1..r*d {
-      if !(k % d == 0){
+    for 1..r*c {
+      if !(k % c == 0){
         SD += (k, k+1);
         SD += (k+1, k);
       }
-      if !((k+c) > r*d) {
-        SD += (k, k+d);
-        SD += (k+d, k);
+      if !((k+c) > r*c) {
+        SD += (k, k+c);
+        SD += (k+c, k);
       }
       k += 1;
     }

@@ -162,7 +162,11 @@ class ChingonTest : UnitTest {
     var n:int = 0;
     for i in gg do n+=1;
     assertIntEquals("Game Grid has 62 entries", expected=62, actual=n);
-    //writeln(gg);
+
+    // Now try the game board
+    var B = new GameBoard(7);
+    assertStringEquals("Game board has a name", expected="Game Board", actual=B.name);
+    assertIntEquals("Game board has 49 entries", expected=168, actual=B.nnz());
   }
 
   proc run() {
