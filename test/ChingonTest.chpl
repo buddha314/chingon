@@ -167,12 +167,16 @@ class ChingonTest : UnitTest {
     var B = new GameBoard(7);
     assertStringEquals("Game board has a name", expected="Game Board", actual=B.name);
     assertIntEquals("Game board has 49 entries", expected=168, actual=B.nnz());
+    assertIntEquals("Only 2 neighbors of A1", expected=2, actual=B.neighbors("A1").size());
+    assertIntEquals("Neighbors of A1 include A2", expected=2, actual=B.neighbors("A1").get("A2"));
+    assertIntEquals("Neighbors of A1 include B1", expected=8, actual=B.neighbors("A1").get("B1"));
+    assertIntEquals("There are 4 neighbors of C3", expected=4, actual=B.neighbors("C3").size());
   }
 
   proc run() {
-    testConstructors();
-    testOperators();
-    testEntropyMethods();
+    //testConstructors();
+    //testOperators();
+    //testEntropyMethods();
     testGameBoard();
     return 0;
   }
