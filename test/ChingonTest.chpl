@@ -130,22 +130,25 @@ class ChingonTest : UnitTest {
     SD += (6,8); X[6,8] = 1;
     SD += (7,8); X[7,8] = 1;
     var g = new Graph(X=X, name=graphName, directed = false, vnames=vn);
+    g.intoxicate();  // g needs to be undirected
 
-    const ef: [1..nv] real = [3.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 0.0];
+
+    const ef: [1..nv] real = [3.0, 2.0, 2.0, 4.0, 2.0, 3.0, 2.0, 2.0];
     assertArrayEquals("Graph has correct flow", expected=ef, actual=g.flow());
 
-    const sef: [1..nv] real = [2.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0];
-    const seft: [1..nv] real = [2.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+    const sef: [1..nv] real = [2.0, 2.0, 2.0, 2.0, 1.0, 0.0, 0.0, 0.0];
+    const seft: [1..nv] real = [2.0, 2.0, 0.0, 2.0, 0.0, 0.0, 0.0, 0.0];
     assertArrayEquals("Subgraph {'star lord', 'gamora', 'drax'}' has correct flow (interior false)"
       , expected=sef, actual=g.flow(vs={"star lord", "gamora", "drax"}, interior=false));
+
 
     assertArrayEquals("Subgraph {'star lord', 'gamora', 'drax'}' has correct flow (interior true)"
       , expected=seft, actual=g.flow(vs={"star lord", "gamora", "drax"}, interior=true));
 
-    assertRealEquals("Subgraph entropy is correct {1,2,3,4}", expected=1.81128
+    assertRealApproximates("Subgraph entropy is correct {1,2,3,4}", expected=1.81128
       , actual=g.subgraphEntropy(subgraph={1,2,3,4}, base=g.flow()));
 
-    assertRealEquals("Subgraph entropy is correct {1,2,3,4,5}", expected=1.9183
+    assertRealApproximates("Subgraph entropy is correct {1,2,3,4,5}", expected=1.9183
       , actual=g.subgraphEntropy(subgraph={1,2,3,4,5}, base=g.flow()));
   }
 

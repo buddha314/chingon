@@ -149,6 +149,10 @@ With symmetric version
       this.uVerts = this.rows;
       this.vVerts = this.cols;
     }
+
+    proc init(g:Graph) {
+      super.init(g);
+    }
   }
 
   /*
@@ -495,20 +499,31 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
    */
   proc Graph.subgraphEntropy(subgraph: domain(int), base: []) {
     const ws = flow(vs=subgraph, interior=false);
+    writeln(ws);
+    writeln(base);
     var e: [base.domain] real;
-    forall i in e.domain {
+    for i in e.domain {
       if base[i] ==0 || ws[i] == 0 {
         e[i] = 0;
       } else {
         const x = ws[i] / base[i];
+        writeln(x);
         e[i] = -(xlog2x(x) + xlog2x(1-x));
       }
     }
+    writeln(e);
     return (+ reduce e);
   }
 
-
-
+  proc Graph.intoxicate() {
+    var dom = this.X.domain;
+    forall (i,j) in dom {
+      if ! this.X.domain.member((j,i)) {
+        this.addEdge(j,i);
+      }
+    }
+    return this;
+  }
 
 
 
