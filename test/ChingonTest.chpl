@@ -4,7 +4,7 @@ use Chingon,
 class ChingonTest : UnitTest {
   proc init(verbose=false) {
     super.init(verbose=verbose);
-    this.initDone();
+    this.complete();
   }
 
   proc setUp(){}

@@ -105,7 +105,7 @@ With symmetric version
      */
      proc init(X: []) {
        super.init(X);
-       this.initDone();
+       this.complete();
      }
 
 
@@ -115,7 +115,7 @@ With symmetric version
       */
      proc init(X:[], name: string, directed: bool = false, bipartite: bool = false) {
        super.init(X);
-       this.initDone();
+       this.complete();
        this.name = name;
      }
 
@@ -125,7 +125,7 @@ With symmetric version
       */
      proc init(X:[], directed: bool) {
        super.init(X);
-       this.initDone();
+       this.complete();
        this.directed = directed;
      }
 
@@ -133,7 +133,7 @@ With symmetric version
      */
     proc init(X:[], vnames) {
       super.init(X, vnames);
-      this.initDone();
+      this.complete();
       this.verts = this.rows.uni(this.cols);
     }
 
@@ -604,7 +604,7 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
       for f in ftrIds {
         this.ftrIds += f;
       }
-      this.initDone();
+      this.complete();
     }
   }
 
@@ -652,7 +652,7 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
       for a in gridNames(r,r) do n.push_back(a);
       var X = buildGameGrid(r,r);
       super.init(X=X, name="Game Board", directed=false, vnames=n);
-      this.initDone();
+      this.complete();
     }
   }
 
