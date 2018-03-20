@@ -149,6 +149,10 @@ With symmetric version
       this.uVerts = this.rows;
       this.vVerts = this.cols;
     }
+
+    proc init(g:Graph) {
+      super.init(g);
+    }
   }
 
   /*
@@ -494,21 +498,54 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
   :arg base real []: An array of degrees for the whole graph, should be called by :proc:`Graph.flow()` beforehand
    */
   proc Graph.subgraphEntropy(subgraph: domain(int), base: []) {
-    const ws = flow(vs=subgraph, interior=false);
-    var e: [base.domain] real;
-    forall i in e.domain {
-      if base[i] ==0 || ws[i] == 0 {
-        e[i] = 0;
-      } else {
-        const x = ws[i] / base[i];
-        e[i] = -(xlog2x(x) + xlog2x(1-x));
+     const ws = flow(vs=subgraph, interior=false);
+     var e: [base.domain] real;
+     for i in e.domain {
+       if base[i] ==0 || ws[i] == 0 {
+         e[i] = 0;
+       } else {
+         const x = ws[i] / base[i];
+         e[i] = -(xlog2x(x) + xlog2x(1-x));
+       }
+     }
+     return (+ reduce e);
+   }
+
+   proc Graph.subgraphEntropy(subgraph: domain(int)) {
+     const base = this.flow();
+     const ws = flow(vs=subgraph, interior=false);
+     var e: [base.domain] real;
+     for i in e.domain {
+       if base[i] ==0 || ws[i] == 0 {
+         e[i] = 0;
+       } else {
+         const x = ws[i] / base[i];
+         e[i] = -(xlog2x(x) + xlog2x(1-x));
+       }
+     }
+     return (+ reduce e);
+   }
+
+
+  proc Graph.intoxicate() {
+    var dom = this.X.domain;
+    forall (i,j) in dom {
+      if ! this.X.domain.member((j,i)) {
+        this.addEdge(j,i);
       }
     }
-    return (+ reduce e);
+    return this;
   }
 
-
-
+  proc Graph.makeForget() {
+    var w = new Graph(this);
+    forall (i,j) in this.X.domain {
+      if ! this.X.domain.member((j,i)) {
+        w.addEdge(j,i);
+      }
+    }
+    return w;
+  }
 
 
 
