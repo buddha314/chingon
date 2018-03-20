@@ -174,9 +174,9 @@ class ChingonTest : UnitTest {
   }
 
   proc run() {
-    //testConstructors();
-    //testOperators();
-    //testEntropyMethods();
+    testConstructors();
+    testOperators();
+    testEntropyMethods();
     testGameBoard();
     return 0;
   }
