@@ -24,12 +24,12 @@ use LinearAlgebra,
     writeln(vn);
 
     SD += (1,2); X[1,2] = 1;
-    SD += (2,3); X[2,3] = 1;
+//    SD += (2,3); X[2,3] = 1;
     SD += (3,1); X[3,1] = 3;
     SD += (3,4); X[3,4] = 4;
-    SD += (4,5); X[4,5] = 1;
+//    SD += (4,5); X[4,5] = 1;
     SD += (3,6); X[3,6] = 1;
-    SD += (6,8); X[6,8] = 1;
+//    SD += (6,8); X[6,8] = 1;
 //    SD += (1,4); X[1,4] = 1;
 //    SD += (1,5); X[1,5] = 1;
 //    SD += (2,6); X[2,6] = 1;
@@ -40,6 +40,9 @@ use LinearAlgebra,
     writeln(nm.X);
     writeln(nm.rowMax(3));
     writeln(nm.colMax());
+    writeln(nm.colMax().domain);
     writeln(nm.rowArgMax(3));
     writeln(nm.rowArgMax());
-//    writeln(argMax(1, X));
+    writeln(nm.rowArgMax().domain);
+    writeln(nm.colArgMin());
+    writeln(nm.colMin(4));
