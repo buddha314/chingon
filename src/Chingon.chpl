@@ -221,6 +221,9 @@ With symmetric version
    */
   proc Graph.removeEdge(fromId: int, toId: int, directed=false) {
     this.remove(i=fromId, j=toId);
+    if !this.directed {
+      this.remove(i=toId, j=fromId);
+    }
   }
 
   /*
@@ -406,8 +409,7 @@ example::
 :arg  vname string: Vertex name of interest
    */
   proc Graph.neighbors(vname: string) {
-    var vid = this.verts.ids[vname];
-    return neighbors(vid);
+    return neighbors(this.verts.get(vname));
   }
 
   /*
@@ -745,7 +747,10 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
    */
   class GameBoard : Graph {
     var rows: int,
-        cols: int;
+        cols: int,
+        actions: [1..0] string;
+
+
     proc init(r: int) {
       var n: [1..0] string;
       for a in gridNames(r,r) do n.push_back(a);
@@ -754,6 +759,10 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
       this.complete();
       this.rows = r;
       this.cols = r;
+      this.actions.push_back("N");
+      this.actions.push_back("E");
+      this.actions.push_back("W");
+      this.actions.push_back("S");
     }
   }
 
@@ -764,8 +773,7 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
   proc GameBoard.addWall(cell1: string, cell2: string) {
     var x = this.verts.get(cell1);
     var y = this.verts.get(cell2);
-    this.SD -= (x,y);
-    //writeln("Removing ", x, ", ", y);
+    this.removeEdge(x,y, directed=this.directed);
   }
 
   /*
@@ -804,6 +812,35 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
     }
   }
 
+  /*
+  Returns the available actions for a given state, e.g. grid location
+   */
+  proc GameBoard.availableActions(state: int) {
+    var x = this.verts.get(state);
+    writeln(x);
+    var a: [1..0] string;
+    var ns = this.neighbors(state).ids;
+    for n in ns {
+        //write("\n considering: ", n);
+        var r: string;
+        if this.SD.member(state, n) {
+          var d = state - n;
+          if d == this.cols then r = "N";
+          if d == -1 then r = "E";
+          if d == 1 then r = "W";
+          if d == -this.cols then r = "S";
+          a.push_back(r);
+          writeln("considering ", n," d = ", d, " and so the action is ", r);
+        } else {
+          writeln("nah...");
+        }
+    }
+    return a;
+  }
+
+  proc GameBoard.availableActions(state: string) {
+    return this.availableActions(this.verts.get(state));
+  }
 
   /*
    Creates a sparse matrix with entries at the edges.
@@ -812,6 +849,9 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
     return buildGameGrid(r=r, c=r);
   }
 
+  /*
+   Creates a sparse matrix with entries at the edges with defined number of rows/cols
+  */
   proc buildGameGrid(r: int, c:int) {
     var D: domain(2) = {1..r*c, 1..r*c},
         SD: sparse subdomain(D),

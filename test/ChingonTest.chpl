@@ -201,7 +201,8 @@ class ChingonTest : UnitTest {
     assertIntEquals("C6 has 4 neighbors", expected=4, actual=B.neighbors("C6").size());
     B.isolate("C6");
     assertIntEquals("C6 now has no neighbors", expected=0, actual=B.neighbors("C6").size());
-    writeln("");
+
+    assertStringArrayEquals("Can only go S E N from B2", expected=["S","E","N"], actual=B.availableActions("B2"));
     writeln(B);
     writeln("...done");
   }
