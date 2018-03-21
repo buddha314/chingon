@@ -549,8 +549,10 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
 
   proc Graph.intoxicate() {
     var dom = this.X.domain;
-    forall (i,j) in dom {
+    //forall (i,j) in dom {
+    for (i,j) in dom {
       if ! this.X.domain.member((j,i)) {
+        //writeln("adding edge ", j, " ", i);
         this.addEdge(j,i);
       }
     }
