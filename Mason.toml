@@ -1,7 +1,7 @@
 
 [brick]
 name = "Chingon"
-version = "0.1.5"
+version = "0.1.6"
 chplVersion = "1.17.0"
 authors = ['Brian Dolan <buddha_314@protonmail.com>']
 
