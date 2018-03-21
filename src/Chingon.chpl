@@ -243,7 +243,7 @@ With symmetric version
   Removes all edges in/out of this vertex by name
    */
   proc Graph.isolate(from: string, directed=false) {
-    this.isolate(this.verts.get(string));
+    this.isolate(this.verts.get(from));
   }
 
   /*
@@ -793,9 +793,11 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
         }
         if !this.SD.member((i, i+this.cols)) {
           f <~> "---";
+        } else {
+          f <~> "   ";
         }
         if  i < this.rows * this.cols {
-          f <~> "|";
+          f <~> " |";
           f <~> "\n |";
         }
       }

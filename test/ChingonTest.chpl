@@ -198,6 +198,9 @@ class ChingonTest : UnitTest {
     B.addWall("D3", "E3");
     B.addWall("F7", "G7");
     assertBoolEquals("Wall between A1 and A2", expected=false, actual=B.SD.member((1,2)));
+    B.isolate("C6");
+    assertIntEquals("C6 has no neighbors", expected=0, actual=B.neighbors("C6").size());
+    writeln("");
     writeln(B);
     writeln("...done");
   }
