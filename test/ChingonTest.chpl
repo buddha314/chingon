@@ -200,7 +200,7 @@ class ChingonTest : UnitTest {
   proc run() {
     testConstructors();
     testOperators();
-    //testEntropyMethods();
+    testEntropyMethods();
     testGameBoard();
     return 0;
   }

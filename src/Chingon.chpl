@@ -573,17 +573,19 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
   }
 
   proc Graph.tropicLimit(g:Graph) {
+    /*
     if this.X == this.gtropic(g).X {
       var R = this;
     } else {
       this.gtropic(g).tropicLimit(g);
     }
     return R;
+    */
   }
 
   proc diameter(g:Graph) {
     var w = new Graph(g);
-    if w == tropic
+    //if w == tropic;
   }
 
   proc buildGraphFromPGTables(con:Connection
