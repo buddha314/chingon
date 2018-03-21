@@ -1,8 +1,9 @@
 
 [brick]
 name = "Chingon"
-version = "0.1.6"
+version = "0.1.7"
 chplVersion = "1.17.0"
 authors = ['Brian Dolan <buddha_314@protonmail.com>']
 
 [dependencies]
+NumSuch = '0.2.4'
