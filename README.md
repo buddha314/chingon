@@ -1,4 +1,4 @@
-# Chingon v 0.1.6
+# Chingon v 0.1.7
 
 The (Ch) (I)mplementation of (N)umerical (G)raph (O)peratio(n)s is a [GraphBLAS](http://graphblas.org/)-like library written in [Chapel](https://chapel-lang.org/). The docs, such as they are, are [here](https://buddha314.github.io/chingon/)
 
