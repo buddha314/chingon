@@ -105,6 +105,11 @@ class ChingonTest : UnitTest {
     g.updateEdge(3,6, 1.10);
     assertRealEquals("Graph can update edge on value", expected=-3.14, actual=g.get(3,6));
     g.removeEdge(3,5);
+
+    assertIntEquals("Vertex 3 has two neighbors", expected=2, actual=g.neighbors(3).size());
+    g.isolate(3);
+    assertIntEquals("Vertex 3 can be isolated", expected=0, actual=g.neighbors(3).size());
+
     writeln("...done");
   }
 

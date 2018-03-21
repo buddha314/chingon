@@ -223,8 +223,27 @@ With symmetric version
     this.remove(i=fromId, j=toId);
   }
 
+  /*
+  Remove edge by vertex names
+   */
   proc Graph.removeEdge(fromId: string, toId: string, directed=false) {
     this.removeEdge(this.vnames.get(fromId), this.vnames.get(toId));
+  }
+
+  /*
+  Removes all edges in/out of this vertex id
+   */
+  proc Graph.isolate(fromId: int, directed=false) {
+      for j in this.neighbors(fromId).ids {
+        this.removeEdge(fromId = fromId, toId=j, directed=directed);
+      }
+  }
+
+  /*
+  Removes all edges in/out of this vertex by name
+   */
+  proc Graph.isolate(from: string, directed=false) {
+    this.isolate(this.verts.get(string));
   }
 
   /*
@@ -738,17 +757,20 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
     }
   }
 
+  /*
+  Builds a wall between the two cells.  Essentially, this removes an entry in the
+  underlying matrix.
+   */
   proc GameBoard.addWall(cell1: string, cell2: string) {
     var x = this.verts.get(cell1);
     var y = this.verts.get(cell2);
     this.SD -= (x,y);
-    writeln("Removing ", x, ", ", y);
+    //writeln("Removing ", x, ", ", y);
   }
 
-
-    /*
-     Intends to print an ascii representation of the world.  Don't use it on large boards
-     */
+  /*
+   Intends to print an ascii representation of the world.  Don't use it on large boards
+   */
   proc GameBoard.writeThis(f) {
     f <~> " |";
     for i in 1..this.rows * this.cols {
