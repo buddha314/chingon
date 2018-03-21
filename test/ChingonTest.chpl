@@ -171,16 +171,26 @@ class ChingonTest : UnitTest {
     var B = new GameBoard(7);
     assertStringEquals("Game board has a name", expected="Game Board", actual=B.name);
     assertIntEquals("Game board has 49 entries", expected=168, actual=B.nnz());
+    assertIntEquals("Game board has 7 rows", expected=7, actual=B.rows);
+    assertIntEquals("Game board has 7 cols", expected=7, actual=B.cols);
     assertIntEquals("Only 2 neighbors of A1", expected=2, actual=B.neighbors("A1").size());
     assertIntEquals("Neighbors of A1 include A2", expected=2, actual=B.neighbors("A1").get("A2"));
     assertIntEquals("Neighbors of A1 include B1", expected=8, actual=B.neighbors("A1").get("B1"));
     assertIntEquals("There are 4 neighbors of C3", expected=4, actual=B.neighbors("C3").size());
+    assertBoolEquals("No wall between A1 and A2", expected=true, actual=B.SD.member((1,2)));
+    B.addWall("A1", "A2");
+    B.addWall("A1", "B1");
+    B.addWall("B1", "B2");
+    B.addWall("D3", "E3");
+    B.addWall("F7", "G7");
+    assertBoolEquals("Wall between A1 and A2", expected=false, actual=B.SD.member((1,2)));
+    writeln(B);
   }
 
   proc run() {
-    testConstructors();
-    testOperators();
-    testEntropyMethods();
+    //testConstructors();
+    //testOperators();
+    //testEntropyMethods();
     testGameBoard();
     return 0;
   }

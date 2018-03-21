@@ -701,14 +701,63 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
   row x column entries.  Then it creates 2 * {r*c(-1) + (r-1)*c} edges.
    */
   class GameBoard : Graph {
+    var rows: int,
+        cols: int;
     proc init(r: int) {
       var n: [1..0] string;
       for a in gridNames(r,r) do n.push_back(a);
       var X = buildGameGrid(r,r);
       super.init(X=X, name="Game Board", directed=false, vnames=n);
       this.complete();
+      this.rows = r;
+      this.cols = r;
     }
   }
+
+  proc GameBoard.addWall(cell1: string, cell2: string) {
+    var x = this.verts.get(cell1);
+    var y = this.verts.get(cell2);
+    this.SD -= (x,y);
+    writeln("Removing ", x, ", ", y);
+  }
+
+
+    /*
+     Intends to print an ascii representation of the world.  Don't use it on large boards
+     */
+  proc GameBoard.writeThis(f) {
+    f <~> " |";
+    for i in 1..this.rows * this.cols {
+      f <~> " . ";
+      if !this.SD.member((i, i+1)) {
+        f <~> " | ";
+      } else {
+        f <~> "   ";
+      }
+      // Now write the row separators
+      if i % this.rows == 0 {
+        f <~> "\n |";
+        for j in 0..this.cols-2 {
+          if !this.SD.member((i + j - this.cols +1 , i + j + 1)) {
+            f <~> "---";
+          } else {
+            f <~> "   ";
+          }
+          f <~> "   ";
+        }
+        if !this.SD.member((i, i+this.cols)) {
+          f <~> "---";
+        } else {
+          f <~> "   ";
+        }
+        if  i < this.rows * this.cols {
+          f <~> " |";
+          f <~> "\n |";
+        }
+      }
+    }
+  }
+
 
   /*
    Creates a sparse matrix with entries at the edges.
