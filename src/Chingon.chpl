@@ -739,28 +739,6 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
         }
       }
     }
-
-  /*
-    for i in 1..this.rows {
-      var m = 1 + (i-1) * this.rows;
-      for j in 1..this.cols {
-        var n = m + j;
-        f <~> "(" + m + "," + n + ")";
-        if !this.SD.member((m,n)) {
-          f <~> "|";
-        } else {
-          f <~> " ";
-        }
-        if this.SD.member((m,n)) {
-          f <~> ".";
-          //write(".");
-        } else {
-          f <~> "-";
-          //write(" ");
-        }
-      }
-      f <~> "\n";
-    } */
   }
 
 
