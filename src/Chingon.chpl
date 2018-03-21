@@ -547,7 +547,24 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
     return w;
   }
 
+  proc Graph.gtropic(g:Graph) {
+    var T = new Graph(N = this.N.ntropic(g.N));
+    return T;
+  }
 
+  proc Graph.tropicLimit(g:Graph) {
+    if this.X == this.gtropic(g).X {
+      var R = this;
+    } else {
+      this.gtropic(g).tropicLimit(g);
+    }
+    return R;
+  }
+
+  proc diameter(g:Graph) {
+    var w = new Graph(g);
+    if w == tropic
+  }
 
   proc buildGraphFromPGTables(con:Connection
       , edgeTable:string, toField:string, fromField:string, wField:string
