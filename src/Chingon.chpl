@@ -176,14 +176,7 @@ With symmetric version
   :arg W real []: Array or Matrix representing edges in the graph
    */
 
-/*
-   Creates an edge between vertices fromId and toId, adds both entries
-   if graph is not directed
-
-   :arg fromId int: vertex id for the tail vertex
-   :arg toId int: vertex id for the head vertex
-   :arg w real: Weight of the edges
-   */
+  /*
   proc Graph.addEdge(fromId: int, toId: int, w: real) {
     this.set(fromId, toId, w);
   }
@@ -194,17 +187,44 @@ With symmetric version
 
   proc Graph.addEdge(from: string, to: string) {
     this.set(from, to, 1.0);
+  }*/
+
+  /*
+     Creates an edge between vertices fromId and toId, adds both entries
+     if graph is not directed
+
+     :arg fromId int: vertex id for the tail vertex
+     :arg toId int: vertex id for the head vertex
+     :arg w real: Weight of the edges.  Default = 1.0
+   */
+  proc Graph.addEdge(fromId: int, toId: int, w: real = 1.0) {
+    this.set(fromId, toId, w);
   }
 
   /*
-  Adds an edge and sets the weight to 1.0
+     Creates an edge between vertices fromId and toId, adds both entries
+     if graph is not directed
 
-  :arg fromId int: vertex id for the tail vertex
-  :arg toId int: vertex id for the head vertex
-
+     :arg from string: vertex name for the tail vertex
+     :arg to string: vertex name for the head vertex
+     :arg w real: Weight of the edges.  Default = 1.0
    */
-  proc Graph.addEdge(fromId: int, toId: int) {
-    this.set(fromId, toId, 1.0);
+  proc Graph.addEdge(from: string, to: string, w: real = 1.0) {
+    this.addEdge(fromId=this.vnames.get(from), toId=this.vnames.get(to), w=w);
+  }
+
+
+
+  /*
+  Removes the edge between vertices `fromId` and `toId`.  If `directed=false` (default) it will
+  remove both the incoming and outgoing edges.
+   */
+  proc Graph.removeEdge(fromId: int, toId: int, directed=false) {
+    this.remove(i=fromId, j=toId);
+  }
+
+  proc Graph.removeEdge(fromId: string, toId: string, directed=false) {
+    this.removeEdge(this.vnames.get(fromId), this.vnames.get(toId));
   }
 
   /*
@@ -730,11 +750,9 @@ each element.  If 'interior=true' then the elements outside `vs` are zeroed out.
         }
         if !this.SD.member((i, i+this.cols)) {
           f <~> "---";
-        } else {
-          f <~> "   ";
         }
         if  i < this.rows * this.cols {
-          f <~> " |";
+          f <~> "|";
           f <~> "\n |";
         }
       }

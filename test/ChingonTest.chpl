@@ -7,10 +7,15 @@ class ChingonTest : UnitTest {
     this.complete();
   }
 
-  proc setUp(){}
-  proc tearDown() {}
+  proc setUp(){
+    writeln("setUp");
+  }
+  proc tearDown() {
+    writeln("tearDown");
+  }
 
   proc testConstructors() {
+    writeln("testConstructors");
     var nv: int = 8,
         D: domain(2) = {1..nv, 1..nv},
         SD: sparse subdomain(D),
@@ -60,6 +65,7 @@ class ChingonTest : UnitTest {
   }
 
   proc testOperators() {
+    write("testOperators...");
     var nv: int = 8,
         D: domain(2) = {1..nv, 1..nv},
         SD: sparse subdomain(D),
@@ -98,10 +104,12 @@ class ChingonTest : UnitTest {
     assertRealEquals("Graph can update edge on null", expected=-4.24, actual=g.get(3,6));
     g.updateEdge(3,6, 1.10);
     assertRealEquals("Graph can update edge on value", expected=-3.14, actual=g.get(3,6));
-
+    g.removeEdge(3,5);
+    writeln("...done");
   }
 
   proc testEntropyMethods() {
+    write("testEntropyMethods...");
     var nv: int = 8,
         D: domain(2) = {1..nv, 1..nv},
         SD: sparse subdomain(D),
@@ -151,10 +159,11 @@ class ChingonTest : UnitTest {
 
     assertRealApproximates("Subgraph entropy is correct {1,2,3,4,5}", expected=1.9183
       , actual=g.subgraphEntropy(subgraph={1,2,3,4,5}, base=g.flow()));
+    writeln("...done");
   }
 
   proc testGameBoard() {
-    writeln("testing game board");
+    write("testing game board...");
     //var b = new GameBoard(7);
     /*
       1  2  3  4  5
@@ -185,11 +194,12 @@ class ChingonTest : UnitTest {
     B.addWall("F7", "G7");
     assertBoolEquals("Wall between A1 and A2", expected=false, actual=B.SD.member((1,2)));
     writeln(B);
+    writeln("...done");
   }
 
   proc run() {
-    //testConstructors();
-    //testOperators();
+    testConstructors();
+    testOperators();
     //testEntropyMethods();
     testGameBoard();
     return 0;
