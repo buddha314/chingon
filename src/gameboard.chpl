@@ -9,7 +9,7 @@ use graph;
 class GameBoard : Graph {
   var rows: int,
       cols: int,
-      actions: [1..0] string;
+      actions: BiMap = new BiMap();
 
 
   proc init(r: int) {
@@ -20,10 +20,17 @@ class GameBoard : Graph {
     this.complete();
     this.rows = r;
     this.cols = r;
+    //this.actions = new Bimap();
+    actions.add("N", -this.cols);
+    actions.add("E", 1);
+    actions.add("W", -1);
+    actions.add("S", this.cols);
+    /*
     this.actions.push_back("N");
     this.actions.push_back("E");
     this.actions.push_back("W");
     this.actions.push_back("S");
+    */
   }
 }
 
