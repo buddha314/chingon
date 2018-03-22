@@ -7,8 +7,8 @@ row x column entries.  Then it creates 2 * {r*c(-1) + (r-1)*c} edges.
 use graph;
 
 class GameBoard : Graph {
-  var rows: int,
-      cols: int,
+  var nrows: int,
+      ncols: int,
       actions: BiMap = new BiMap();
 
 
@@ -18,13 +18,13 @@ class GameBoard : Graph {
     var X = buildGameGrid(r,r);
     super.init(X=X, name="Game Board", directed=false, vnames=n);
     this.complete();
-    this.rows = r;
-    this.cols = r;
+    this.nrows = r;
+    this.ncols = r;
     //this.actions = new Bimap();
-    actions.add("N", -this.cols);
+    actions.add("N", -this.ncols);
     actions.add("E", 1);
     actions.add("W", -1);
-    actions.add("S", this.cols);
+    actions.add("S", this.ncols);
     /*
     this.actions.push_back("N");
     this.actions.push_back("E");
@@ -50,7 +50,7 @@ proc GameBoard.addWall(cell1: string, cell2: string) {
    */
   proc GameBoard.writeThis(f) {
     f <~> " |";
-    for i in 1..this.rows * this.cols {
+    for i in 1..this.nrows * this.ncols {
       f <~> " . ";
       if !this.SD.member((i, i+1)) {
         f <~> " | ";
@@ -58,22 +58,22 @@ proc GameBoard.addWall(cell1: string, cell2: string) {
         f <~> "   ";
       }
       // Now write the row separators
-      if i % this.rows == 0 {
+      if i % this.nrows == 0 {
         f <~> "\n |";
-        for j in 0..this.cols-2 {
-          if !this.SD.member((i + j - this.cols +1 , i + j + 1)) {
+        for j in 0..this.ncols-2 {
+          if !this.SD.member((i + j - this.ncols +1 , i + j + 1)) {
             f <~> "---";
           } else {
             f <~> "   ";
           }
           f <~> "   ";
         }
-        if !this.SD.member((i, i+this.cols)) {
+        if !this.SD.member((i, i+this.ncols)) {
           f <~> "---";
         } else {
           f <~> "   ";
         }
-        if  i < this.rows * this.cols {
+        if  i < this.nrows * this.ncols {
           f <~> " |";
           f <~> "\n |";
         }
@@ -94,10 +94,10 @@ proc GameBoard.availableActions(state: int) {
       var r: string;
       if this.SD.member(state, n) {
         var d = state - n;
-        if d == this.cols then r = "N";
+        if d == this.ncols then r = "N";
         if d == -1 then r = "E";
         if d == 1 then r = "W";
-        if d == -this.cols then r = "S";
+        if d == -this.ncols then r = "S";
         //a.push_back(r);
         a += r;
       }
@@ -120,7 +120,7 @@ proc buildGameGrid(r: int) {
 }
 
 /*
- Creates a sparse matrix with entries at the edges with defined number of rows/cols
+ Creates a sparse matrix with entries at the edges with defined number of nrows/ncols
 */
 proc buildGameGrid(r: int, c:int) {
   var D: domain(2) = {1..r*c, 1..r*c},
