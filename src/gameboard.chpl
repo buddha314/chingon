@@ -137,7 +137,3 @@ proc buildGameGrid(r: int, c:int) {
   }
   return X;
 }
-
-proc yermama(n: int) {
-  writeln(n);
-}
