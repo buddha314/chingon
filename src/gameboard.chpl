@@ -20,17 +20,10 @@ class GameBoard : Graph {
     this.complete();
     this.nrows = r;
     this.ncols = r;
-    //this.actions = new Bimap();
     actions.add("N", -this.ncols);
     actions.add("E", 1);
     actions.add("W", -1);
     actions.add("S", this.ncols);
-    /*
-    this.actions.push_back("N");
-    this.actions.push_back("E");
-    this.actions.push_back("W");
-    this.actions.push_back("S");
-    */
   }
 }
 
