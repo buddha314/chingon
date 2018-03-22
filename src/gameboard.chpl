@@ -79,7 +79,8 @@ Returns the available actions for a given state, e.g. grid location
  */
 proc GameBoard.availableActions(state: int) {
   var x = this.verts.get(state);
-  var a: [1..0] string;
+  //var a: [1..0] string;
+  var a: domain(string);
   var ns = this.neighbors(state).ids;
   for n in ns {
       //write("\n considering: ", n);
@@ -90,7 +91,8 @@ proc GameBoard.availableActions(state: int) {
         if d == -1 then r = "E";
         if d == 1 then r = "W";
         if d == -this.cols then r = "S";
-        a.push_back(r);
+        //a.push_back(r);
+        a += r;
       }
   }
   return a;

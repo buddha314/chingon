@@ -203,11 +203,11 @@ class ChingonTest : UnitTest {
     B.isolate("C6");
     assertIntEquals("C6 now has no neighbors", expected=0, actual=B.neighbors("C6").size());
 
-    assertStringArrayEquals("Can only go S E N from B2", expected=["S","E","N"], actual=B.availableActions("B2"));
+    var expectedActions: domain(string);
+    expectedActions += "S"; expectedActions += "E"; expectedActions += "N";
+    assertBoolEquals("Can only go S E N from B2", expected=true, actual=(expectedActions == B.availableActions("B2")));
     writeln("\n",B);
     writeln("...done");
-
-    yermama(5);
   }
 
   proc run() {
