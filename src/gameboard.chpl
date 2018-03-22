@@ -7,24 +7,40 @@ row x column entries.  Then it creates 2 * {r*c(-1) + (r-1)*c} edges.
 use graph;
 
 class GameBoard : Graph {
-  var nrows: int,
-      ncols: int,
+  var width: int,
+      height: int,
       actions: BiMap = new BiMap();
 
 
-  proc init(r: int) {
+  proc init(w: int) {
+    this.init(w=w, h=w);
+    //this.complete();
+    /*
     var n: [1..0] string;
-    for a in gridNames(r,r) do n.push_back(a);
-    var X = buildGameGrid(r,r);
+    for a in gridNames(w,w) do n.push_back(a);
+    var X = buildGameGrid(w,w);
     super.init(X=X, name="Game Board", directed=false, vnames=n);
-    this.complete();
-    this.nrows = r;
-    this.ncols = r;
-    actions.add("N", -this.ncols);
+    actions.add("N", -this.ncols());
     actions.add("E", 1);
     actions.add("W", -1);
-    actions.add("S", this.ncols);
+    actions.add("S", this.ncols());
+    */
   }
+
+  proc init(w: int, h: int) {
+    var n: [1..0] string;
+    for a in gridNames(w,h) do n.push_back(a);
+    var X = buildGameGrid(w,h);
+    super.init(X=X, name="Game Board", directed=false, vnames=n);
+    this.complete();
+    this.width=w;
+    this.height=h;
+    actions.add("N", -this.width);
+    actions.add("E", 1);
+    actions.add("W", -1);
+    actions.add("S", this.width);
+  }
+
 }
 
 /*
@@ -43,7 +59,7 @@ proc GameBoard.addWall(cell1: string, cell2: string) {
    */
   proc GameBoard.writeThis(f) {
     f <~> " |";
-    for i in 1..this.nrows * this.ncols {
+    for i in 1..this.height * this.width {
       f <~> " . ";
       if !this.SD.member((i, i+1)) {
         f <~> " | ";
@@ -51,22 +67,22 @@ proc GameBoard.addWall(cell1: string, cell2: string) {
         f <~> "   ";
       }
       // Now write the row separators
-      if i % this.nrows == 0 {
+      if i % this.height == 0 {
         f <~> "\n |";
-        for j in 0..this.ncols-2 {
-          if !this.SD.member((i + j - this.ncols +1 , i + j + 1)) {
+        for j in 0..this.width-2 {
+          if !this.SD.member((i + j - this.width +1 , i + j + 1)) {
             f <~> "---";
           } else {
             f <~> "   ";
           }
           f <~> "   ";
         }
-        if !this.SD.member((i, i+this.ncols)) {
+        if !this.SD.member((i, i+this.width)) {
           f <~> "---";
         } else {
           f <~> "   ";
         }
-        if  i < this.nrows * this.ncols {
+        if  i < this.height * this.width {
           f <~> " |";
           f <~> "\n |";
         }
@@ -87,10 +103,10 @@ proc GameBoard.availableActions(state: int) {
       var r: string;
       if this.SD.member(state, n) {
         var d = state - n;
-        if d == this.ncols then r = "N";
+        if d == this.width then r = "N";
         if d == -1 then r = "E";
         if d == 1 then r = "W";
-        if d == -this.ncols then r = "S";
+        if d == -this.width then r = "S";
         //a.push_back(r);
         a += r;
       }

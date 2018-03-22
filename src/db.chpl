@@ -70,4 +70,3 @@ proc buildCrystalsFromPG(
   }
   return crystals;
 }
-}

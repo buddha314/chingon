@@ -183,11 +183,11 @@ class ChingonTest : UnitTest {
     assertIntEquals("Game Grid has 62 entries", expected=62, actual=n);
 
     // Now try the game board
-    var B = new GameBoard(7);
+    var B = new GameBoard(w=7);
     assertStringEquals("Game board has a name", expected="Game Board", actual=B.name);
     assertIntEquals("Game board has 49 entries", expected=168, actual=B.nnz());
-    assertIntEquals("Game board has 7 rows", expected=7, actual=B.nrows);
-    assertIntEquals("Game board has 7 cols", expected=7, actual=B.ncols);
+    assertIntEquals("Game board has width 7 ", expected=7, actual=B.width);
+    assertIntEquals("Game board has heigh 7 ", expected=7, actual=B.height);
     assertIntEquals("Only 2 neighbors of A1", expected=2, actual=B.neighbors("A1").size());
     assertIntEquals("Neighbors of A1 include A2", expected=2, actual=B.neighbors("A1").get("A2"));
     assertIntEquals("Neighbors of A1 include B1", expected=8, actual=B.neighbors("A1").get("B1"));
