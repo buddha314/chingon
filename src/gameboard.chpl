@@ -29,8 +29,8 @@ class GameBoard : Graph {
 
   proc init(w: int, h: int) {
     var n: [1..0] string;
-    for a in gridNames(w,h) do n.push_back(a);
-    var X = buildGameGrid(w,h);
+    for a in gridNames(i=h,j=w) do n.push_back(a);
+    var X = buildGameGrid(c=w,r=h);
     super.init(X=X, name="Game Board", directed=false, vnames=n);
     this.complete();
     this.width=w;
@@ -99,6 +99,7 @@ proc GameBoard.availableActions(state: int) {
   var a: domain(string);
   var ns = this.neighbors(state).ids;
   for n in ns {
+      //writeln("Are these guys neighbors? from/to ", state, " -> ", n);
       //write("\n considering: ", n);
       var r: string;
       if this.SD.member(state, n) {
@@ -108,6 +109,7 @@ proc GameBoard.availableActions(state: int) {
         if d == 1 then r = "W";
         if d == -this.width then r = "S";
         //a.push_back(r);
+        writeln(state, " to ", n, " d = ", d, " writing r = ", r);
         a += r;
       }
   }
