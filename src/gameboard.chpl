@@ -99,8 +99,6 @@ proc GameBoard.availableActions(state: int) {
   var a: domain(string);
   var ns = this.neighbors(state).ids;
   for n in ns {
-      //writeln("Are these guys neighbors? from/to ", state, " -> ", n);
-      //write("\n considering: ", n);
       var r: string;
       if this.SD.member(state, n) {
         var d = state - n;
@@ -108,8 +106,6 @@ proc GameBoard.availableActions(state: int) {
         if d == -1 then r = "E";
         if d == 1 then r = "W";
         if d == -this.width then r = "S";
-        //a.push_back(r);
-        writeln(state, " to ", n, " d = ", d, " writing r = ", r);
         a += r;
       }
   }
