@@ -495,6 +495,25 @@ proc diameter(g:Graph) {
 }
 
 
+proc components(g:Graph) {
+  var dist = distMatrix(g);
+  var dom: domain(1) = dist.domain.dim(1);
+  var comps: [dom] int;
+  var ignore: sparse subdomain(dom);
+  var count = 1;
+  for i in dom {
+    if ! ignore.member(i) {
+      comps[i] = count;
+      for j in dist.domain.dimIter(2,i) {
+        ignore += j;
+        comps[j] = count;
+      }
+      count += 1;
+    }
+  }
+  return comps;
+}
+
 /*
  Gives the topological ordering of a graph
  :returns: The array providing the topological sorting of the Graph
