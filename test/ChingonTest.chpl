@@ -98,6 +98,7 @@ class ChingonTest : UnitTest {
 //    var limit = tropicLimit(g.X,g.X);
 //    writeln(limit);
 //    writeln(aMax(limit, axis = 0));
+    writeln(distMatrix(g));
     writeln(diameter(g));
   }
 

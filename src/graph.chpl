@@ -473,6 +473,11 @@ proc Graph.tropicLimit(g:Graph) {
   */
 }
 
+proc distMatrix(g:Graph) {
+  return tropicLimit(g.X,g.X);
+}
+
+
 proc diameter(g:Graph) {
   return aMax(tropicLimit(g.X,g.X), axis = 0);
 }
