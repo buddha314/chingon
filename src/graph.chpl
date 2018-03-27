@@ -227,6 +227,7 @@ proc Graph.updateEdge(from: string, to: string, w:real) {
   this.update(from, to, w);
 }
 
+
 /*
 Adds a path between multiple nodes with a default edge weight of 1.  Passing in
 `[1, 2, 5, 9]` will create three edges between (1,2), (2,5) and (5,9). For larger trees,
@@ -473,8 +474,7 @@ proc Graph.tropicLimit(g:Graph) {
 }
 
 proc diameter(g:Graph) {
-  var w = new Graph(g);
-  //if w == tropic;
+  return aMax(tropicLimit(g.X,g.X), axis = 0);
 }
 
 
