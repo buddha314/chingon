@@ -65,7 +65,7 @@ class ChingonTest : UnitTest {
     assertIntEquals("'Star Lord' has correct degree", expected=3, actual=g.degree('star lord'));
   }
 
-  proc testDiameter() {
+  proc testConnectedness() {
     var nv: int = 8,
         D: domain(2) = {1..nv, 1..nv},
         SD: sparse subdomain(D),
@@ -100,6 +100,9 @@ class ChingonTest : UnitTest {
 //    writeln(aMax(limit, axis = 0));
     writeln(distMatrix(g));
     writeln(diameter(g));
+    writeln(g.D);
+    writeln(g.SD);
+    writeln(g.connected());
   }
 
   proc testOperators() {

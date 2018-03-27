@@ -478,6 +478,18 @@ proc distMatrix(g:Graph) {
 }
 
 
+proc Graph.connected() {
+  var dom = this.D;
+  var sps = this.SD;
+  var s = true;
+  for (i,j) in dom {
+    s &&= sps.member((i,j));
+    if s == false then break;
+  }
+  return s;
+}
+
+
 proc diameter(g:Graph) {
   return aMax(tropicLimit(g.X,g.X), axis = 0);
 }
