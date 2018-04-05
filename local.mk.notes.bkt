@@ -1,0 +1,8 @@
+CHINGON_HOME=/home/tshimanga/chingon
+NUMSUCH_HOME=/home/tshimanga/numsuch
+CDO_HOME=/home/tshimanga/cdo
+CDOEXTRAS_HOME=/home/tshimanga/cdo-extras
+BLAS_HOME=/opt/OpenBLAS
+POSTGRES_HOME=/usr/include/postgresql
+CHREST_HOME=/home/tshimanga/chrest
+CHARCOAL_HOME=/home/tshimanga/charcoal/
