@@ -24,6 +24,5 @@ module Chingon {
       LinearAlgebra,
       gameboard,
       graph,
-      energy,
-      CdoExtras;
+      energy;
 }

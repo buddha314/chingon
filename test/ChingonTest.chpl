@@ -3,27 +3,28 @@ use Chingon,
     Charcoal;
 
 class ChingonTest : UnitTest {
+  // Globals we use every time
+  var nv: int = 8,
+      D: domain(2) = {1..nv, 1..nv},
+      SD: sparse subdomain(D),
+      X: [SD] real,
+      graphName:string ="vato",
+      vnDom = {1..0},
+      vn:[vnDom] string;
+
+
   proc init(verbose=false) {
     super.init(verbose=verbose);
     this.complete();
   }
 
-  proc setUp(){
-    writeln("setUp");
-  }
-  proc tearDown() {
-    writeln("tearDown");
-  }
 
-  proc testConstructors() {
-    writeln("testConstructors");
-    var nv: int = 8,
-        D: domain(2) = {1..nv, 1..nv},
-        SD: sparse subdomain(D),
-        X: [SD] real;
-
-    var graphName = "Vato";
-    var vn: [1..0] string;
+  proc setUp(name: string = "name") {
+    nv = 8;
+    D.clear();
+    SD.clear();
+    D = {1..nv, 1..nv};
+    vnDom = {1..0};
     vn.push_back("star lord");
     vn.push_back("gamora");
     vn.push_back("groot");
@@ -45,6 +46,15 @@ class ChingonTest : UnitTest {
     SD += (6,8); X[6,8] = 1;
     SD += (7,8); X[7,8] = 1;
 
+    return super.setUp(name);
+  }
+  proc tearDown(ref t: Timer) {
+    return super.tearDown(t);
+  }
+
+  proc testConstructors() {
+    var t = this.setUp("Constructors");
+
     var g = new Graph(X=X, name=graphName, directed = false, vnames=vn);
     assertStringEquals("Graph gets a name", expected=graphName, actual=g.name);
     assertBoolEquals("Graph gets directed", expected=false, actual=g.directed);
@@ -63,9 +73,12 @@ class ChingonTest : UnitTest {
     const dgs: [1..nv] real = [3.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 0.0];
     assertArrayEquals("Graph has correct degrees", expected=dgs, actual=g.degree());
     assertIntEquals("'Star Lord' has correct degree", expected=3, actual=g.degree('star lord'));
+
+    this.tearDown(t);
   }
 
   proc testConnectedness() {
+    var t = this.setUp("Connectedness");
     var nv: int = 8,
         D: domain(2) = {1..nv, 1..nv},
         SD: sparse subdomain(D),
@@ -114,37 +127,24 @@ class ChingonTest : UnitTest {
     writeln(diam);
     writeln(distance.domain.dim(1).last);
     writeln(components(g));
+
+    this.tearDown(t);
   }
 
   proc testOperators() {
-    write("testOperators...");
-    var nv: int = 8,
-        D: domain(2) = {1..nv, 1..nv},
-        SD: sparse subdomain(D),
-        X: [SD] real;
+    var t = this.setUp("Operators");
 
-    var graphName = "Vato";
-    var vn: [1..0] string;
-    vn.push_back("star lord");
-    vn.push_back("gamora");
-    vn.push_back("groot");
-    vn.push_back("drax");
-    vn.push_back("rocket");
-    vn.push_back("mantis");
-    vn.push_back("yondu");
-    vn.push_back("nebula");
-
-    SD += (1,2); X[1,2] = 5;
-    SD += (1,3); X[1,3] = 23.0;
-    SD += (1,4); X[1,4] = 17;
-    SD += (2,2); X[2,2] = 1;
-    SD += (2,4); X[2,4] = 71;
-    SD += (3,4); X[3,4] = 15.0;
-    SD += (4,5); X[4,5] = 1;
-    SD += (5,6); X[5,6] = 66.6;
-    SD += (6,7); X[6,7] = 1;
-    SD += (6,8); X[6,8] = 1;
-    SD += (7,8); X[7,8] = 1;
+    X[1,2] = 5;
+    X[1,3] = 23.0;
+    X[1,4] = 17;
+    X[2,2] = 1;
+    X[2,4] = 71;
+    X[3,4] = 15.0;
+    X[4,5] = 1;
+    X[5,6] = 66.6;
+    X[6,7] = 1;
+    X[6,8] = 1;
+    X[7,8] = 1;
 
     var g = new Graph(X=X, name=graphName, directed = false, vnames=vn);
     assertRealEquals("Graph rowMax(1)", expected=23.0, actual=g.rowMax(1));
@@ -162,38 +162,12 @@ class ChingonTest : UnitTest {
     g.isolate(3);
     assertIntEquals("Vertex 3 can be isolated", expected=0, actual=g.neighbors(3).size());
 
-    writeln("...done");
+    this.tearDown(t);
   }
 
   proc testEntropyMethods() {
-    write("testEntropyMethods...");
-    var nv: int = 8,
-        D: domain(2) = {1..nv, 1..nv},
-        SD: sparse subdomain(D),
-        X: [SD] real;
+    var t = this.setUp("Entropy Methods");
 
-    var graphName = "Vato";
-    var vn: [1..0] string;
-    vn.push_back("star lord");
-    vn.push_back("gamora");
-    vn.push_back("groot");
-    vn.push_back("drax");
-    vn.push_back("rocket");
-    vn.push_back("mantis");
-    vn.push_back("yondu");
-    vn.push_back("nebula");
-
-    SD += (1,2); X[1,2] = 1;
-    SD += (1,3); X[1,3] = 1;
-    SD += (1,4); X[1,4] = 1;
-    SD += (2,2); X[2,2] = 1;
-    SD += (2,4); X[2,4] = 1;
-    SD += (3,4); X[3,4] = 1;
-    SD += (4,5); X[4,5] = 1;
-    SD += (5,6); X[5,6] = 1;
-    SD += (6,7); X[6,7] = 1;
-    SD += (6,8); X[6,8] = 1;
-    SD += (7,8); X[7,8] = 1;
     var g = new Graph(X=X, name=graphName, directed = true, vnames=vn);
     //g.intoxicate();  // g needs to be undirected
 
@@ -216,7 +190,8 @@ class ChingonTest : UnitTest {
 
     assertRealApproximates("Subgraph entropy is correct {1,2,3,4,5}", expected=1.9183
       , actual=g.subgraphEntropy(subgraph={1,2,3,4,5}, base=g.flow()));
-    writeln("...done");
+
+    this.tearDown(t);
   }
 
   proc testGameBoard() {
@@ -262,9 +237,9 @@ class ChingonTest : UnitTest {
   }
 
   proc run() {
-//    testConstructors();
-    testConnectedness();
-//    testOperators();
+    testConstructors();
+    //testConnectedness();
+    testOperators();
 //    testEntropyMethods();
 //    testGameBoard();
     return 0;
