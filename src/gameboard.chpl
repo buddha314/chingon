@@ -53,6 +53,30 @@ proc GameBoard.addWall(cell1: string, cell2: string) {
   this.removeEdge(x,y, directed=this.directed);
 }
 
+proc GameBoard.canMove(fromId: int, dir: string) {
+  if dir == "N" {
+    return this.hasEdge(fromId=fromId, toId=fromId-this.width);
+  } else if dir == "E" {
+    return this.hasEdge(fromId=fromId, toId=fromId+1);
+  } else if dir == "W" {
+    return this.hasEdge(fromId=fromId, toId=fromId-1);
+  } else if dir == "S" {
+    return this.hasEdge(fromId=fromId, toId=fromId+this.width);
+  } else if dir == "NE" {
+    return this.hasEdge(fromId=fromId, toId=fromId-this.width+1);
+  } else if dir == "NW" {
+    return this.hasEdge(fromId=fromId, toId=fromId-this.width-1);
+  } else if dir == "SE" {
+    return this.hasEdge(fromId=fromId, toId=fromId+this.width+1);
+  } else if dir == "SW" {
+    return this.hasEdge(fromId=fromId, toId=fromId+this.width-1);
+  } else {
+    return false;
+  }
+}
+proc GameBoard.canMove(from: string, dir: string) {
+  return this.canMove(fromId=this.verts.get(from), dir=dir);
+}
 
   /*
    Intends to print an ascii representation of the world.  Don't use it on large boards

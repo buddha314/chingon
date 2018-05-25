@@ -172,10 +172,16 @@ proc Graph.addEdge(fromId: int, toId: int, w: real = 1.0) {
    :arg w real: Weight of the edges.  Default = 1.0
  */
 proc Graph.addEdge(from: string, to: string, w: real = 1.0) {
-  this.addEdge(fromId=this.vnames.get(from), toId=this.vnames.get(to), w=w);
+  this.addEdge(fromId=this.verts.get(from), toId=this.verts.get(to), w=w);
 }
 
+proc Graph.hasEdge(fromId: int, toId: int) {
+  return this.SD.member(fromId, toId);
+}
 
+proc Graph.hasEdge(from: string, to:string) {
+  return this.hasEdge(fromId=this.verts.get(from),toId=this.verts.get(to));
+}
 
 /*
 Removes the edge between vertices `fromId` and `toId`.  If `directed=false` (default) it will

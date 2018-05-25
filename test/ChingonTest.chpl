@@ -74,6 +74,13 @@ class ChingonTest : UnitTest {
     assertArrayEquals("Graph has correct degrees", expected=dgs, actual=g.degree());
     assertIntEquals("'Star Lord' has correct degree", expected=3, actual=g.degree('star lord'));
 
+    assertBoolEquals(msg="Edge exists from Star Lord to Gamora by ID", expected=true
+      ,actual=g.hasEdge(fromId=1, toId=2));
+    assertBoolEquals(msg="Edge exists from Star Lord to Gamora by name", expected=true
+      ,actual=g.hasEdge(from="star lord", to="gamora"));
+    assertBoolEquals(msg="Edge does not exist between Gamora and Nebula by name", expected=false
+      ,actual=g.hasEdge(from="gamora", to="nebula"));
+
     this.tearDown(t);
   }
 
@@ -134,6 +141,7 @@ class ChingonTest : UnitTest {
   proc testOperators() {
     var t = this.setUp("Operators");
 
+    // Update the edge weights
     X[1,2] = 5;
     X[1,3] = 23.0;
     X[1,4] = 17;
@@ -229,9 +237,38 @@ class ChingonTest : UnitTest {
     B.isolate("C6");
     assertIntEquals("C6 now has no neighbors", expected=0, actual=B.neighbors("C6").size());
 
+    assertBoolEquals(msg="A2 is not a neighbor of A1", expected=false
+      ,actual=B.hasEdge(from="A1", to="A2"));
+    assertBoolEquals(msg="B2 is  a neighbor of B3", expected=true
+      ,actual=B.hasEdge(from="B2", to="B3"));
+
+    assertBoolEquals(msg="You can move North from B1", expected=true
+      ,actual=B.canMove(fromId=9, dir="N"));
+
+    assertBoolEquals(msg="You can move North from B1", expected=true
+      ,actual=B.canMove(from="B2", dir="N"));
+    assertBoolEquals(msg="You can move South from B1", expected=true
+      ,actual=B.canMove(from="B2", dir="S"));
+    assertBoolEquals(msg="You can move East from B1", expected=true
+      ,actual=B.canMove(from="B2", dir="E"));
+    assertBoolEquals(msg="You can't move West from B1", expected=false
+      ,actual=B.canMove(from="B2", dir="W"));
+
+    assertBoolEquals(msg="You can't move NE from B1", expected=false
+      ,actual=B.canMove(from="B2", dir="NE"));
+
+    // Add an edge for NE travel
+    B.addEdge(from="B2", to="A3");
+    assertBoolEquals(msg="You can now move NE from B1", expected=true
+      ,actual=B.canMove(from="B2", dir="NE"));
+
+
+
+    /*
     var expectedActions: domain(string);
     expectedActions += "S"; expectedActions += "E"; expectedActions += "N";
     assertBoolEquals("Can only go S E N from B2", expected=true, actual=(expectedActions == B.availableActions("B2")));
+     */
     writeln("\n",B);
     this.tearDown(t);
   }
@@ -241,7 +278,7 @@ class ChingonTest : UnitTest {
     //testConnectedness();
     testOperators();
 //    testEntropyMethods();
-//    testGameBoard();
+    testGameBoard();
     return 0;
   }
 }
