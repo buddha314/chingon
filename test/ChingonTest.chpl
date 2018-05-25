@@ -195,7 +195,7 @@ class ChingonTest : UnitTest {
   }
 
   proc testGameBoard() {
-    write("testing game board...");
+    var t = this.setUp("Game Board");
     //var b = new GameBoard(7);
     /*
       1  2  3  4  5
@@ -233,7 +233,7 @@ class ChingonTest : UnitTest {
     expectedActions += "S"; expectedActions += "E"; expectedActions += "N";
     assertBoolEquals("Can only go S E N from B2", expected=true, actual=(expectedActions == B.availableActions("B2")));
     writeln("\n",B);
-    writeln("...done");
+    this.tearDown(t);
   }
 
   proc run() {
