@@ -273,7 +273,8 @@ class ChingonTest : UnitTest {
     var dto = g.DTO();
     assertIntEquals(msg="DTO has correct number of nodes", expected=8, actual=dto.nodes.size);
     assertIntEquals(msg="DTO has correct number of links", expected=10, actual=dto.links.size);
-
+    //writeln("%jt\n".format(dto));
+    
     this.tearDown(t);
   }
 
