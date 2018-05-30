@@ -1,6 +1,6 @@
 include local.mk
 CC=chpl
-MODULES=-M$(NUMSUCH_HOME)/src -M$(CHREST_HOME)/src -M$(CHARCOAL_HOME)/src 
+MODULES=-M$(NUMSUCH_HOME)/src -M$(CHREST_HOME)/src -M$(CHARCOAL_HOME)/src
 INCLUDES = -I/usr/include -I$(BLAS_HOME)/include -I$(POSTGRES_HOME)
 LIBS=-L$(BLAS_HOME)/lib -lblas
 FLAGS=--fast --print-callstack-on-error --print-commands
@@ -14,7 +14,7 @@ default: $(SRCDIR)/Chingon.chpl
 
 run-test: test
 
-test: $(TESTDIR)/ChingonTest.chpl
-	$(CC) -M$(SRCDIR) $(MODULES) $(FLAGS) ${INCLUDES} ${LIBS} -o $(TESTDIR)/test $< ; \
+test:  $(wildcard src/*.chpl) $(TESTDIR)/ChingonTest.chpl
+	$(CC) -M$(SRCDIR) $(MODULES) $(FLAGS) ${INCLUDES} ${LIBS} -o $(TESTDIR)/test $(TESTDIR)/ChingonTest.chpl ; \
 	./$(TESTDIR)/test; \
 	rm $(TESTDIR)/test

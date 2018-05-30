@@ -172,10 +172,16 @@ proc Graph.addEdge(fromId: int, toId: int, w: real = 1.0) {
    :arg w real: Weight of the edges.  Default = 1.0
  */
 proc Graph.addEdge(from: string, to: string, w: real = 1.0) {
-  this.addEdge(fromId=this.vnames.get(from), toId=this.vnames.get(to), w=w);
+  this.addEdge(fromId=this.verts.get(from), toId=this.verts.get(to), w=w);
 }
 
+proc Graph.hasEdge(fromId: int, toId: int) {
+  return this.SD.member(fromId, toId);
+}
 
+proc Graph.hasEdge(from: string, to:string) {
+  return this.hasEdge(fromId=this.verts.get(from),toId=this.verts.get(to));
+}
 
 /*
 Removes the edge between vertices `fromId` and `toId`.  If `directed=false` (default) it will
@@ -537,4 +543,33 @@ proc Graph._topologicalUtil(x: int, ref visi: [?D1] bool, ref A: [?D2] int) {
     if visi[i] == false then _topologicalUtil(i, visi, A);
   }
   A.push_back(x);
+}
+
+record NodeDTO{
+  var id: int,
+      name: string,
+      community: int;
+}
+
+record LinkDTO {
+  var source: int,
+      target: int,
+      strength: real;
+}
+
+record GraphDTO {
+  var nodes:[1..0] NodeDTO,
+      links:[1..0] LinkDTO;
+  proc init() {}
+}
+
+proc Graph.DTO() {
+  var dto = new GraphDTO();
+  for key in this.verts.keys {
+    dto.nodes.push_back(new NodeDTO(id=this.verts.get(key), name=key, community=1));
+    for nbs in this.neighbors(key).keys {
+      dto.links.push_back(new LinkDTO(source=this.verts.get(key), target=this.verts.get(nbs), strength=1.0));
+    }
+  }
+  return dto;
 }

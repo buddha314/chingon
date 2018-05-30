@@ -10,7 +10,8 @@ class ChingonTest : UnitTest {
       X: [SD] real,
       graphName:string ="vato",
       vnDom = {1..0},
-      vn:[vnDom] string;
+      vn:[vnDom] string,
+      g: Graph;
 
 
   proc init(verbose=false) {
@@ -45,6 +46,7 @@ class ChingonTest : UnitTest {
     SD += (6,7); X[6,7] = 1;
     SD += (6,8); X[6,8] = 1;
     SD += (7,8); X[7,8] = 1;
+    g = new Graph(X=X, name=graphName, directed = false, vnames=vn);
 
     return super.setUp(name);
   }
@@ -73,6 +75,13 @@ class ChingonTest : UnitTest {
     const dgs: [1..nv] real = [3.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 0.0];
     assertArrayEquals("Graph has correct degrees", expected=dgs, actual=g.degree());
     assertIntEquals("'Star Lord' has correct degree", expected=3, actual=g.degree('star lord'));
+
+    assertBoolEquals(msg="Edge exists from Star Lord to Gamora by ID", expected=true
+      ,actual=g.hasEdge(fromId=1, toId=2));
+    assertBoolEquals(msg="Edge exists from Star Lord to Gamora by name", expected=true
+      ,actual=g.hasEdge(from="star lord", to="gamora"));
+    assertBoolEquals(msg="Edge does not exist between Gamora and Nebula by name", expected=false
+      ,actual=g.hasEdge(from="gamora", to="nebula"));
 
     this.tearDown(t);
   }
@@ -134,6 +143,7 @@ class ChingonTest : UnitTest {
   proc testOperators() {
     var t = this.setUp("Operators");
 
+    // Update the edge weights
     X[1,2] = 5;
     X[1,3] = 23.0;
     X[1,4] = 17;
@@ -195,7 +205,7 @@ class ChingonTest : UnitTest {
   }
 
   proc testGameBoard() {
-    write("testing game board...");
+    var t = this.setUp("Game Board");
     //var b = new GameBoard(7);
     /*
       1  2  3  4  5
@@ -229,19 +239,51 @@ class ChingonTest : UnitTest {
     B.isolate("C6");
     assertIntEquals("C6 now has no neighbors", expected=0, actual=B.neighbors("C6").size());
 
-    var expectedActions: domain(string);
-    expectedActions += "S"; expectedActions += "E"; expectedActions += "N";
-    assertBoolEquals("Can only go S E N from B2", expected=true, actual=(expectedActions == B.availableActions("B2")));
+    assertBoolEquals(msg="A2 is not a neighbor of A1", expected=false
+      ,actual=B.hasEdge(from="A1", to="A2"));
+    assertBoolEquals(msg="B2 is  a neighbor of B3", expected=true
+      ,actual=B.hasEdge(from="B2", to="B3"));
+
+    assertBoolEquals(msg="You can move North from B1", expected=true
+      ,actual=B.canMove(fromId=9, dir="N"));
+
+    assertBoolEquals(msg="You can move North from B1", expected=true
+      ,actual=B.canMove(from="B2", dir="N"));
+    assertBoolEquals(msg="You can move South from B1", expected=true
+      ,actual=B.canMove(from="B2", dir="S"));
+    assertBoolEquals(msg="You can move East from B1", expected=true
+      ,actual=B.canMove(from="B2", dir="E"));
+    assertBoolEquals(msg="You can't move West from B1", expected=false
+      ,actual=B.canMove(from="B2", dir="W"));
+
+    assertBoolEquals(msg="You can't move NE from B1", expected=false
+      ,actual=B.canMove(from="B2", dir="NE"));
+
+    // Add an edge for NE travel
+    B.addEdge(from="B2", to="A3");
+    assertBoolEquals(msg="You can now move NE from B1", expected=true
+      ,actual=B.canMove(from="B2", dir="NE"));
+
     writeln("\n",B);
-    writeln("...done");
+    this.tearDown(t);
+  }
+
+  proc testDTO() {
+    var t = this.setUp("DTO ");
+    var dto = g.DTO();
+    assertIntEquals(msg="DTO has correct number of nodes", expected=8, actual=dto.nodes.size);
+    assertIntEquals(msg="DTO has correct number of links", expected=10, actual=dto.links.size);
+
+    this.tearDown(t);
   }
 
   proc run() {
     testConstructors();
     //testConnectedness();
     testOperators();
-//    testEntropyMethods();
-//    testGameBoard();
+    testEntropyMethods();
+    testGameBoard();
+    testDTO();
     return 0;
   }
 }

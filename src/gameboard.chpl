@@ -9,25 +9,16 @@ use graph;
 class GameBoard : Graph {
   var width: int,
       height: int,
-      actions: BiMap = new BiMap();
+      wrap: bool;
+      //actions: BiMap = new BiMap();
 
 
   proc init(w: int) {
     this.init(w=w, h=w);
-    //this.complete();
-    /*
-    var n: [1..0] string;
-    for a in gridNames(w,w) do n.push_back(a);
-    var X = buildGameGrid(w,w);
-    super.init(X=X, name="Game Board", directed=false, vnames=n);
-    actions.add("N", -this.ncols());
-    actions.add("E", 1);
-    actions.add("W", -1);
-    actions.add("S", this.ncols());
-    */
+
   }
 
-  proc init(w: int, h: int) {
+  proc init(w: int, h: int, wrap:bool=false ) {
     var n: [1..0] string;
     for a in gridNames(i=h,j=w) do n.push_back(a);
     var X = buildGameGrid(c=w,r=h);
@@ -35,10 +26,7 @@ class GameBoard : Graph {
     this.complete();
     this.width=w;
     this.height=h;
-    actions.add("N", -this.width);
-    actions.add("E", 1);
-    actions.add("W", -1);
-    actions.add("S", this.width);
+    this.wrap=wrap;
   }
 
 }
@@ -53,6 +41,30 @@ proc GameBoard.addWall(cell1: string, cell2: string) {
   this.removeEdge(x,y, directed=this.directed);
 }
 
+proc GameBoard.canMove(fromId: int, dir: string) {
+  if dir == "N" {
+    return this.hasEdge(fromId=fromId, toId=fromId-this.width);
+  } else if dir == "E" {
+    return this.hasEdge(fromId=fromId, toId=fromId+1);
+  } else if dir == "W" {
+    return this.hasEdge(fromId=fromId, toId=fromId-1);
+  } else if dir == "S" {
+    return this.hasEdge(fromId=fromId, toId=fromId+this.width);
+  } else if dir == "NE" {
+    return this.hasEdge(fromId=fromId, toId=fromId-this.width+1);
+  } else if dir == "NW" {
+    return this.hasEdge(fromId=fromId, toId=fromId-this.width-1);
+  } else if dir == "SE" {
+    return this.hasEdge(fromId=fromId, toId=fromId+this.width+1);
+  } else if dir == "SW" {
+    return this.hasEdge(fromId=fromId, toId=fromId+this.width-1);
+  } else {
+    return false;
+  }
+}
+proc GameBoard.canMove(from: string, dir: string) {
+  return this.canMove(fromId=this.verts.get(from), dir=dir);
+}
 
   /*
    Intends to print an ascii representation of the world.  Don't use it on large boards
@@ -90,34 +102,6 @@ proc GameBoard.addWall(cell1: string, cell2: string) {
     }
   }
 
-/*
-Returns the available actions for a given state, e.g. grid location
- */
-proc GameBoard.availableActions(state: int) {
-  var x = this.verts.get(state);
-  //var a: [1..0] string;
-  var a: domain(string);
-  var ns = this.neighbors(state).ids;
-  for n in ns {
-      var r: string;
-      if this.SD.member(state, n) {
-        var d = state - n;
-        if d == this.width then r = "N";
-        if d == -1 then r = "E";
-        if d == 1 then r = "W";
-        if d == -this.width then r = "S";
-        a += r;
-      }
-  }
-  return a;
-}
-
-/*
- Returns the string names of the available actions
- */
-proc GameBoard.availableActions(state: string) {
-  return this.availableActions(this.verts.get(state));
-}
 
 /*
  Creates a sparse matrix with entries at the edges.
