@@ -10,7 +10,8 @@ class ChingonTest : UnitTest {
       X: [SD] real,
       graphName:string ="vato",
       vnDom = {1..0},
-      vn:[vnDom] string;
+      vn:[vnDom] string,
+      g: Graph;
 
 
   proc init(verbose=false) {
@@ -45,6 +46,7 @@ class ChingonTest : UnitTest {
     SD += (6,7); X[6,7] = 1;
     SD += (6,8); X[6,8] = 1;
     SD += (7,8); X[7,8] = 1;
+    g = new Graph(X=X, name=graphName, directed = false, vnames=vn);
 
     return super.setUp(name);
   }
@@ -262,14 +264,16 @@ class ChingonTest : UnitTest {
     assertBoolEquals(msg="You can now move NE from B1", expected=true
       ,actual=B.canMove(from="B2", dir="NE"));
 
-
-
-    /*
-    var expectedActions: domain(string);
-    expectedActions += "S"; expectedActions += "E"; expectedActions += "N";
-    assertBoolEquals("Can only go S E N from B2", expected=true, actual=(expectedActions == B.availableActions("B2")));
-     */
     writeln("\n",B);
+    this.tearDown(t);
+  }
+
+  proc testDTO() {
+    var t = this.setUp("DTO ");
+    var dto = g.DTO();
+    assertIntEquals(msg="DTO has correct number of nodes", expected=8, actual=dto.nodes.size);
+    assertIntEquals(msg="DTO has correct number of links", expected=10, actual=dto.links.size);
+
     this.tearDown(t);
   }
 
@@ -277,8 +281,9 @@ class ChingonTest : UnitTest {
     testConstructors();
     //testConnectedness();
     testOperators();
-//    testEntropyMethods();
+    testEntropyMethods();
     testGameBoard();
+    testDTO();
     return 0;
   }
 }

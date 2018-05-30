@@ -544,3 +544,32 @@ proc Graph._topologicalUtil(x: int, ref visi: [?D1] bool, ref A: [?D2] int) {
   }
   A.push_back(x);
 }
+
+record NodeDTO{
+  var id: int,
+      name: string,
+      community: int;
+}
+
+record LinkDTO {
+  var source: int,
+      target: int,
+      strength: real;
+}
+
+record GraphDTO {
+  var nodes:[1..0] NodeDTO,
+      links:[1..0] LinkDTO;
+  proc init() {}
+}
+
+proc Graph.DTO() {
+  var dto = new GraphDTO();
+  for key in this.verts.keys {
+    dto.nodes.push_back(new NodeDTO(id=this.verts.get(key), name=key, community=1));
+    for nbs in this.neighbors(key).keys {
+      dto.links.push_back(new LinkDTO(source=this.verts.get(key), target=this.verts.get(nbs), strength=1.0));
+    }
+  }
+  return dto;
+}
