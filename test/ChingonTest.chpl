@@ -265,6 +265,8 @@ class ChingonTest : UnitTest {
       ,actual=B.canMove(from="B2", dir="NE"));
 
     writeln("\n",B);
+
+    //writeln("\n B.DTO() ", B.DTO());
     this.tearDown(t);
   }
 
@@ -274,7 +276,7 @@ class ChingonTest : UnitTest {
     assertIntEquals(msg="DTO has correct number of nodes", expected=8, actual=dto.nodes.size);
     assertIntEquals(msg="DTO has correct number of links", expected=10, actual=dto.links.size);
     //writeln("%jt\n".format(dto));
-    
+
     this.tearDown(t);
   }
 
